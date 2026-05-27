@@ -33,7 +33,7 @@ android {
         versionName = "4.9.0"
         buildConfigField("String", "RELAY_SERVER_URL","\"${localProperties.getProperty("RELAY_SERVER_URL", "")}\"")
         buildConfigField("String", "MEDICATION_GTIN_FILE_VERSION", "\"1.2.0\"")
-        buildConfigField("String", "MEDICAL_DEVICES_GTIN_FILE_VERSION", "\"1.0.3\"")
+        buildConfigField("String", "MEDICAL_DEVICES_GTIN_FILE_VERSION", "\"1.0.4\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

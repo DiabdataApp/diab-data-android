@@ -363,6 +363,10 @@
     <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
     <string name="settings_notification_next_expiration_reminder">For the medication expiring on %1$s</string>
 
+    <!-- Toasts -->
+    <string name="medication_store_rebuilt_toast">Medication GPIN store rebuilt</string>
+    <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
+
     <!-- ============================================= -->
     <!-- NOTIFICATIONS -->
     <!-- ============================================= -->

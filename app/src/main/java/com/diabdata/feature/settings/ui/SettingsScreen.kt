@@ -39,11 +39,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.work.WorkManager
 import com.diabdata.BuildConfig
 import com.diabdata.core.database.DataViewModel
+import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.notifications.showNotification
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.ImExViewModel
+import com.diabdata.feature.settings.SettingsViewModel
 import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.workers.reminders.scheduleAppointmentReminders
@@ -75,6 +77,7 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
     val medicalDeviceGtinFileVersion = BuildConfig.MEDICAL_DEVICES_GTIN_FILE_VERSION
 
     val imExViewModel: ImExViewModel = hiltViewModel()
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
     val userProfileViewModel: UserProfileViewModel = hiltViewModel()
 
     val scope = rememberCoroutineScope()
@@ -97,6 +100,9 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
     val dataExportError = stringResource(shared.string.toast_data_export_error)
     val dataImportError = stringResource(shared.string.toast_data_import_error)
     val emptyImportFileError = stringResource(shared.string.toast_empty_file_error)
+
+    val medicationStoreRebuiltText = stringResource(shared.string.medication_store_rebuilt_toast)
+    val medicalDevicesStoreRebuiltText = stringResource(shared.string.medical_devices_store_rebuilt_toast)
 
     val createFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip"),
@@ -413,6 +419,16 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                             Text("Medication information file version $medicationsGtinFileVersion")
                         }
                     },
+                    onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            settingsViewModel.forceRebuildMedications()
+
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, medicationStoreRebuiltText, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    trailingIcon = shared.drawable.refresh_icon_vector
                 ),
                 CardItem(
                     leadingIcon = shared.drawable.medical_device_info_version_icon_vector,
@@ -421,6 +437,16 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                             Text("Medical devices information file version $medicalDeviceGtinFileVersion")
                         }
                     },
+                    onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            settingsViewModel.forceRebuildMedicalDevices()
+
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, medicalDevicesStoreRebuiltText, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    trailingIcon = shared.drawable.refresh_icon_vector
                 )
             )
 
