@@ -1,22 +1,9 @@
 package com.diabdata.core.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.diabdata.feature.appointments.data.AppointmentDao
-import com.diabdata.feature.hba1c.data.HBA1CDao
-import com.diabdata.feature.importantDates.data.ImportantDateDao
-import com.diabdata.feature.devices.data.MedicalDeviceDao
-import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
-import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
-import com.diabdata.feature.treatments.data.TreatmentDao
-import com.diabdata.feature.userProfile.data.UserDetailsDao
-import com.diabdata.feature.weight.data.WeightDao
 import com.diabdata.core.database.converters.DateConverters
-import com.diabdata.core.database.migrations.ALL_MIGRATIONS
 import com.diabdata.core.model.Appointment
 import com.diabdata.core.model.Hba1c
 import com.diabdata.core.model.ImportantDate
@@ -26,11 +13,15 @@ import com.diabdata.core.model.Medication
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
 import com.diabdata.core.model.Weight
-import com.diabdata.feature.dataMatrixScanner.utils.MedicalDevicesInitializer
-import com.diabdata.feature.dataMatrixScanner.utils.MedicationInitializer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.diabdata.feature.appointments.data.AppointmentDao
+import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
+import com.diabdata.feature.devices.data.MedicalDeviceDao
+import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
+import com.diabdata.feature.hba1c.data.HBA1CDao
+import com.diabdata.feature.importantDates.data.ImportantDateDao
+import com.diabdata.feature.treatments.data.TreatmentDao
+import com.diabdata.feature.userProfile.data.UserDetailsDao
+import com.diabdata.feature.weight.data.WeightDao
 
 @Database(
     entities = [

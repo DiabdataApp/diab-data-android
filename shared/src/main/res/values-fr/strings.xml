@@ -363,6 +363,10 @@
     <string name="settings_notification_next_appointment_reminder">Pour le prochain RDV prévu le %1$s</string>
     <string name="settings_notification_next_expiration_reminder">Pour le traitement qui expirera le %1$s</string>
 
+    <!-- Toasts -->
+    <string name="medication_store_rebuilt_toast">La base de données des GPIN des traitements a été reconstruite</string>
+    <string name="medical_devices_store_rebuilt_toast">La base de données des GPIN des appareils Médicaux a été reconstruite</string>
+
     <!-- ============================================= -->
     <!-- NOTIFICATIONS -->
     <!-- ============================================= -->

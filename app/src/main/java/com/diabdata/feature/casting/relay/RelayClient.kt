@@ -27,7 +27,7 @@ class RelayClient {
         /**
          * Relay server host, configured via local.properties or CI secrets.
          */
-        private val RELAY_HOST = BuildConfig.RELAY_SERVER_URL
+        private const val RELAY_HOST = BuildConfig.RELAY_SERVER_URL
         private const val RELAY_PORT = 443
         private const val RELAY_PATH = "/ws/app"
         private const val USE_SSL = true

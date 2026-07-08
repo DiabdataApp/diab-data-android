@@ -15,6 +15,11 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
+val storeF: File = file(localProperties.getProperty("RELEASE_STORE_FILE", ""))
+val storeP: String = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
+val keyA: String = localProperties.getProperty("RELEASE_KEY_ALIAS", "")
+val keyP: String = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
+
 android {
     namespace = "com.diabdata"
     compileSdk = 36
@@ -28,9 +33,20 @@ android {
         versionName = "4.9.0"
         buildConfigField("String", "RELAY_SERVER_URL","\"${localProperties.getProperty("RELAY_SERVER_URL", "")}\"")
         buildConfigField("String", "MEDICATION_GTIN_FILE_VERSION", "\"1.2.0\"")
-        buildConfigField("String", "MEDICAL_DEVICES_GTIN_FILE_VERSION", "\"1.0.3\"")
+        buildConfigField("String", "MEDICAL_DEVICES_GTIN_FILE_VERSION", "\"1.0.4\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    if (storeF.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = storeF
+                storePassword = storeP
+                keyAlias = keyA
+                keyPassword = keyP
+            }
+        }
     }
 
     buildTypes {
@@ -40,6 +56,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (storeF.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

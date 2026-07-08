@@ -8,21 +8,18 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.diabdata.feature.casting.castServer.castToUser.CastToUserServerService
-import com.diabdata.feature.casting.relay.ui.ShareDialog
-import com.diabdata.feature.casting.relay.ShareMode
-import com.diabdata.shared.R
 import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.feature.casting.relay.ShareMode
+import com.diabdata.feature.casting.relay.ui.ShareDialog
+import com.diabdata.shared.R
 
 // ui/UserAvatarMenu.kt
 @Composable
@@ -31,16 +28,7 @@ fun UserAvatarMenu(
     onDismiss: () -> Unit,
     onEditProfile: () -> Unit
 ) {
-    val context = LocalContext.current
     var showShareDialog by remember { mutableStateOf<ShareMode?>(null) }
-
-    var isServerRunning by remember { mutableStateOf(CastToUserServerService.isRunning) }
-
-    LaunchedEffect(expanded) {
-        if (expanded) {
-            isServerRunning = CastToUserServerService.isRunning
-        }
-    }
 
     showShareDialog?.let { mode ->
         ShareDialog(
