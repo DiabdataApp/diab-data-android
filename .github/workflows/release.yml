@@ -1,0 +1,97 @@
+name: "🚀 Production Release"
+run-name: "Release — ${{ github.sha }}"
+
+on:
+  pull_request:
+    branches: ['main']
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Create local.properties
+        run: |
+          echo "RELAY_SERVER_URL=${{ secrets.RELAY_SERVER_URL }}" > local.properties
+
+      - run: chmod +x ./gradlew
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/diabdata-release.jks
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts | head -1)
+          echo "tag=v${VERSION_NAME}" >> $GITHUB_OUTPUT
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "🚀 Release: v${VERSION_NAME}"
+
+      - name: Build Phone APK (Signed Release)
+        run: ./gradlew :app:assembleRelease
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          SIGNING_STORE_FILE: ${{ github.workspace }}/diabdata-release.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build Wear APK (Signed Release)
+        run: ./gradlew :wear:assembleRelease
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          SIGNING_STORE_FILE: ${{ github.workspace }}/diabdata-release.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Remove keystore
+        if: always()
+        run: rm -f ${{ github.workspace }}/diabdata-release.jks
+
+      - name: Rename APKs
+        run: |
+          mv app/build/outputs/apk/release/app-release.apk \
+             DiabData-phone-${{ steps.version.outputs.tag }}.apk
+          mv wear/build/outputs/apk/release/wear-release.apk \
+             DiabData-wear-${{ steps.version.outputs.tag }}.apk
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --target main \
+            --title "🚀 Release ${{ steps.version.outputs.tag }}" \
+            --generate-notes \
+            --notes "## 🚀 Production Release
+
+          **Version :** ${{ steps.version.outputs.version_name }}
+          **Tag :** \`${{ steps.version.outputs.tag }}\`
+
+          ### 📥 Downloads
+          - 📱 **DiabData-phone** — Mobile app (signed, minified)
+          - ⌚ **DiabData-wear** — Wear OS app (signed, minified)" \
+            DiabData-phone-${{ steps.version.outputs.tag }}.apk \
+            DiabData-wear-${{ steps.version.outputs.tag }}.apk
