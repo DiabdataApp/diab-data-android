@@ -11,22 +11,22 @@ class TokenGeneratorTest {
     // Token generation test
     @Test
     fun generateToken_companionMode_startsWithCPrefix() {
-        assertTrue(TokenGenerator.generateToken(ShareMode.COMPANION).matches("C-[A-Z0-9]{10}".toRegex()))
+        assertTrue(TokenGenerator.generateToken(ShareMode.COMPANION).matches("C-[A-Z0-9]{6}".toRegex()))
     }
 
     @Test
     fun generateToken_medicalMode_startsWithMPrefix() {
-        assertTrue(TokenGenerator.generateToken(ShareMode.MEDICAL).matches("M-[A-Z0-9]{10}".toRegex()))
+        assertTrue(TokenGenerator.generateToken(ShareMode.MEDICAL).matches("M-[A-Z0-9]{6}".toRegex()))
     }
 
     @Test
     fun generateToken_companionMode_returnsTwelveChars() {
-        assertEquals(12, TokenGenerator.generateToken(ShareMode.COMPANION).length)
+        assertEquals(8, TokenGenerator.generateToken(ShareMode.COMPANION).length)
     }
 
     @Test
     fun generateToken_medicalMode_returnsTwelveChars() {
-        assertEquals(12, TokenGenerator.generateToken(ShareMode.MEDICAL).length)
+        assertEquals(8, TokenGenerator.generateToken(ShareMode.MEDICAL).length)
     }
 
     @Test

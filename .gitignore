@@ -17,6 +17,7 @@ build/
 # Local configuration
 # --------------------
 local.properties
+.env
 
 # --------------------
 # Kotlin
@@ -41,6 +42,12 @@ local.properties
 # Android
 # --------------------
 captures/
+
+# --------------------
+# Keystores
+# --------------------
+*.jks
+*.keystore
 
 # --------------------
 # Logs
