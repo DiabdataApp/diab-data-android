@@ -15,21 +15,22 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
-val storeF: File = file(localProperties.getProperty("RELEASE_STORE_FILE", ""))
+val storeFilePath = localProperties.getProperty("RELEASE_STORE_FILE", "")
+val storeF: File? = if (storeFilePath.isNotEmpty()) file(storeFilePath) else null
 val storeP: String = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
 val keyA: String = localProperties.getProperty("RELEASE_KEY_ALIAS", "")
 val keyP: String = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
 
 android {
     namespace = "com.diabdata"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.diabdata"
         testApplicationId = "com.diabdata.test"
         minSdk = 26
         targetSdk = 36
-        versionCode = getVersionCode()
+        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: getLocalVersionCode()
         versionName = "4.9.0"
         buildConfigField("String", "RELAY_SERVER_URL","\"${localProperties.getProperty("RELAY_SERVER_URL", "")}\"")
         buildConfigField("String", "MEDICATION_GTIN_FILE_VERSION", "\"1.2.0\"")
@@ -38,7 +39,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    if (storeF.exists()) {
+    if (storeF != null && storeF.exists()) {
         signingConfigs {
             create("release") {
                 storeFile = storeF
@@ -52,11 +53,12 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (storeF.exists()) {
+            if (storeF != null && storeF.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
@@ -91,20 +93,7 @@ android {
     buildToolsVersion = "36.0.0"
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-        freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn"
-        )
-    }
-}
-
-fun getVersionCode(): Int {
+fun getLocalVersionCode(): Int {
     val versionFile = file("version.properties")
     if (!versionFile.exists()) {
         versionFile.writeText("1")
@@ -116,6 +105,19 @@ fun getVersionCode(): Int {
     val newCode = current + 1
     versionFile.writeText(newCode.toString())
     return newCode
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn"
+        )
+    }
 }
 
 dependencies {
