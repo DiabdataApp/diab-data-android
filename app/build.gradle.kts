@@ -15,7 +15,8 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
-val storeF: File = file(localProperties.getProperty("RELEASE_STORE_FILE", ""))
+val storeFilePath = localProperties.getProperty("RELEASE_STORE_FILE", "")
+val storeF: File? = if (storeFilePath.isNotEmpty()) file(storeFilePath) else null
 val storeP: String = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
 val keyA: String = localProperties.getProperty("RELEASE_KEY_ALIAS", "")
 val keyP: String = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
@@ -38,7 +39,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    if (storeF.exists()) {
+    if (storeF != null && storeF.exists()) {
         signingConfigs {
             create("release") {
                 storeFile = storeF
@@ -57,7 +58,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (storeF.exists()) {
+            if (storeF != null && storeF.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
