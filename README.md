@@ -4,8 +4,7 @@
 
 ![GitHub contributors](https://img.shields.io/github/contributors/DiabdataApp/diab-data-android?color=blue&label=CONTRIBUTORS)
 ![GitHub Release](https://img.shields.io/github/v/release/DiabdataApp/diab-data-android?color=teal&label=VERSION)
-![Build Status](https://img.shields.io/github/actions/workflow/status/DiabdataApp/diab-data-android/build.yml?branch=main&label=BUILD)
-![CodeQL](https://img.shields.io/github/actions/workflow/status/DiabdataApp/diab-data-android/codeql.yml?label=CodeQL&logo=github)
+![CI Tests](https://img.shields.io/github/actions/workflow/status/DiabdataApp/diab-data-android/ci-test.yml?branch=main&label=CI%20Tests)
 ![GitHub top language](https://img.shields.io/github/languages/top/DiabdataApp/diab-data-android)
 
 <!-- PROJECT LOGO -->
@@ -101,7 +100,7 @@ have everything in the same place and easier to find and update.
     </tr>
     <tr>
       <th scope="row">Cast data mode</th>
-      <td>Update your data via the webapp companion or send a link to get restricted access to your latest information to your practicionner</td>
+      <td>Update your data via the webapp companion or send a link to get restricted access to your latest information to your practitioner</td>
     </tr>
   </tbody>
 </table>
@@ -171,7 +170,7 @@ git clone https://github.com/DiabdataApp/diab-data-android.git
 
 #### Setting up your variables
 
-Next rename the local.properties.sample file to local.properties and fill in the required fields:
+Next, rename the local.properties.sample file to local.properties and fill in the required fields:
 ```
 sdk.dir=/path/to/your/sdk
 RELAY_SERVER_URL=your.relay.url
@@ -187,7 +186,7 @@ You can then open the project in Android Studio.
 
 ## Project's architecture
 
-This projects follows a feature based architectecture:
+This project follows a feature-based architecture:
 
 ```
 ├── app/
@@ -196,7 +195,7 @@ This projects follows a feature based architectecture:
 ├── core/
 │ ├── database/ # Room DB, DAOs, migrations
 │ ├── model/ # Database model entities
-│ ├── ui/ # Core UI components used accross the app
+│ ├── ui/ # Core UI components used across the app
 │ ├── utils/
 │ └── notifications/ # Notification management
 ├── feature/
@@ -214,27 +213,42 @@ This projects follows a feature based architectecture:
 
 ## Contributing
 
-When contributing to the project, always start by creating a branch from the `dev` branch and once you are done with your contribution, push into remote `dev`.
+This project follows a **feature branch** workflow with three main branches:
 
-1. Find a name for your branch. The naming convention is as follows:
+`feature branch` → PR → `dev` (beta pre-release)
+`dev` → PR → `main` (production release)
+
+### Branch naming convention
 
 - First letter of your first name, capitalized (e.g., `F`)
-
 - Your last name, in uppercase (e.g., `COSSU`)
-
 - A dash `-`
-
 - A short, capitalized identifier for the feature (spaces replaced by underscores)
 
-- **For example if Florian cossu is working on updating the database**
+**Example:** Florian Cossu working on updating the database → `FCOSSU-Database_migration`
 
-```
-FCOSSU-Database_migration
-```
+### Workflow
 
-2. Create your Feature Branch (`git checkout -b dev/FCOSSU-Database_migration`)
-3. Commit your Changes (`git commit -m 'Add some new feature'`)
-4. Push to the **`dev`** Branch (`git push origin/dev dev/FCOSSU-Database_migration`)
+1. Create your Feature Branch from `dev`:
+  ```bash
+  git checkout dev
+  git pull origin dev
+  git checkout -b FCOSSU-Database_migration
+  ```
+2. Commit your changes:
+  ```bash
+  git commit -m 'Add some new feature'
+  ```
+3. Push your branch and open a Pull Request → `dev`:
+  ```bash
+  git push origin FCOSSU-Database_migration
+  ```
+4. Once the PR is reviewed and merged into `dev`:
+   - CI tests run automatically
+   - A beta pre-release is created with debug APKs
+5. When `dev` is ready for production, a PR is opened `dev → main`:
+  - A production release is created with signed & minified APKs
+  - The content of the release notes will be retrieved from the PR description
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
