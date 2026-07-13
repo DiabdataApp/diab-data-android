@@ -64,27 +64,27 @@ jobs:
              DiabData-wear-${{ steps.version.outputs.tag }}.apk
 
       - name: Create GitHub Pre-Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          target_commitish: dev
-          name: "🧪 Beta ${{ steps.version.outputs.tag }}"
-          prerelease: true
-          generate_release_notes: true
-          body: |
-            ## 🧪 Pre-Release Beta
-
-            **Version :** ${{ steps.version.outputs.version_name }}
-            **Tag :** `${{ steps.version.outputs.tag }}`
-            **PR :** #${{ github.event.pull_request.number }} — ${{ github.event.pull_request.title }}
-            **Author :** @${{ github.event.pull_request.user.login }}
-
-            > ⚠️ Development build (debug, unsigned, not minified).
-            > For testing purposes only.
-
-            ### 📥 Downloads
-            - 📱 **DiabData-phone** — Mobile app
-            - ⌚ **DiabData-wear** — Wear OS app
-          files: |
-            DiabData-phone-${{ steps.version.outputs.tag }}.apk
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --target dev \
+            --title "🧪 Beta ${{ steps.version.outputs.tag }}" \
+            --prerelease \
+            --generate-notes \
+            --notes "## 🧪 Pre-Release Beta
+          
+          **Version :** ${{ steps.version.outputs.version_name }}
+          **Tag :** \`${{ steps.version.outputs.tag }}\`
+          **PR :** #${{ github.event.pull_request.number }} — ${{ github.event.pull_request.title }}
+          **Author :** @${{ github.event.pull_request.user.login }}
+          
+          > ⚠️ Development build (debug, unsigned, not minified).
+          > For testing purposes only.
+          
+          ### 📥 Downloads
+          - 📱 **DiabData-phone** — Mobile app
+          - ⌚ **DiabData-wear** — Wear OS app" \
+            DiabData-phone-${{ steps.version.outputs.tag }}.apk \
             DiabData-wear-${{ steps.version.outputs.tag }}.apk
