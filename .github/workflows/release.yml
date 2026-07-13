@@ -84,14 +84,6 @@ jobs:
             --repo "${{ github.repository }}" \
             --target main \
             --title "🚀 Release ${{ steps.version.outputs.tag }}" \
-            --generate-notes \
-            --notes "## 🚀 Production Release
-
-          **Version :** ${{ steps.version.outputs.version_name }}
-          **Tag :** \`${{ steps.version.outputs.tag }}\`
-
-          ### 📥 Downloads
-          - 📱 **DiabData-phone** — Mobile app (signed, minified)
-          - ⌚ **DiabData-wear** — Wear OS app (signed, minified)" \
+            --notes "${{ github.event.pull_request.body }}" \
             DiabData-phone-${{ steps.version.outputs.tag }}.apk \
             DiabData-wear-${{ steps.version.outputs.tag }}.apk
