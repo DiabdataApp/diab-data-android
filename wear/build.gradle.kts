@@ -1,30 +1,59 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val storeF: File = file(localProperties.getProperty("RELEASE_STORE_FILE", ""))
+val storeP: String = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
+val keyA: String = localProperties.getProperty("RELEASE_KEY_ALIAS", "")
+val keyP: String = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
+
 android {
     namespace = "com.diabdata.wear"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.diabdata"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
+        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 4
         versionName = "1.7"
 
+    }
+
+    if (storeF.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = storeF
+                storePassword = storeP
+                keyAlias = keyA
+                keyPassword = keyP
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (storeF.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
