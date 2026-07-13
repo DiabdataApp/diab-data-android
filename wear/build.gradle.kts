@@ -11,11 +11,16 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
-val storeFilePath = localProperties.getProperty("RELEASE_STORE_FILE", "")
+val ciStoreFile = System.getenv("SIGNING_STORE_FILE")
+val ciStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
+val ciKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
+val ciKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+
+val storeFilePath = ciStoreFile ?: localProperties.getProperty("RELEASE_STORE_FILE", "")
 val storeF: File? = if (storeFilePath.isNotEmpty()) file(storeFilePath) else null
-val storeP: String = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
-val keyA: String = localProperties.getProperty("RELEASE_KEY_ALIAS", "")
-val keyP: String = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
+val storeP: String = ciStorePassword ?: localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
+val keyA: String = ciKeyAlias ?: localProperties.getProperty("RELEASE_KEY_ALIAS", "")
+val keyP: String = ciKeyPassword ?: localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
 
 android {
     namespace = "com.diabdata.wear"
