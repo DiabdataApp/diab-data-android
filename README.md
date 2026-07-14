@@ -4,7 +4,7 @@
 
 ![GitHub contributors](https://img.shields.io/github/contributors/DiabdataApp/diab-data-android?color=blue&label=CONTRIBUTORS)
 ![GitHub Release](https://img.shields.io/github/v/release/DiabdataApp/diab-data-android?color=teal&label=VERSION)
-![CI Tests](https://img.shields.io/github/actions/workflow/status/DiabdataApp/diab-data-android/ci-test.yml?branch=main&label=CI%20Tests)
+![CI Tests](https://img.shields.io/github/actions/workflow/status/DiabdataApp/diab-data-android/ci-test.yml?label=CI%20Tests)
 ![GitHub top language](https://img.shields.io/github/languages/top/DiabdataApp/diab-data-android)
 
 <!-- PROJECT LOGO -->
