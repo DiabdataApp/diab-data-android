@@ -76,6 +76,12 @@ jobs:
           mv wear/build/outputs/apk/release/wear-release.apk \
              DiabData-wear-${{ steps.version.outputs.tag }}.apk
 
+      - name: Generate release notes
+        run: |
+          cat << 'RELEASE_NOTES_EOF' > release_notes.md
+          ${{ github.event.pull_request.body }}
+          RELEASE_NOTES_EOF
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -84,6 +90,6 @@ jobs:
             --repo "${{ github.repository }}" \
             --target main \
             --title "🚀 Release ${{ steps.version.outputs.tag }}" \
-            --notes "${{ github.event.pull_request.body }}" \
+            --notes-file release_notes.md \
             DiabData-phone-${{ steps.version.outputs.tag }}.apk \
             DiabData-wear-${{ steps.version.outputs.tag }}.apk
