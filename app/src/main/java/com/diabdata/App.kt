@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -41,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -180,7 +183,6 @@ fun App(
                             modifier = Modifier.width(280.dp),
                             drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
                         ) {
-                            // ── Avatar dans le drawer ──
                             Spacer(Modifier.height(16.dp))
                             Row(
                                 modifier = Modifier
@@ -249,62 +251,51 @@ fun App(
         ScreenSize.MEDIUM -> {
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                // TODO
-                // Get rid of the topbar and move avatar
-                // To side rail
-                topBar = {
-                    if (!isProfileRoute) {
-                        TopAppBar(
-                            title = { Text("") },
-                            actions = {
-                                UserAvatarWithMenu(
-                                    firstName = userDetails?.firstName,
-                                    lastName = userDetails?.lastName,
-                                    profilePhotoPath = userDetails?.profilePhotoPath,
-                                    onEditProfile = { navController.navigate("profile") }
-                                )
-                            },
-                            contentPadding = PaddingValues(
-                                start = 32.dp,
-                                top = 5.dp,
-                                end = 32.dp,
-                                bottom = 10.dp
-                            ),
-                            expandedHeight = 40.dp,
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer
-                            )
-                        )
-                    }
-                }
             ) { paddingValues ->
                 Row(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    if (!isProfileRoute) {
-                        val currentBackStack by navController.currentBackStackEntryAsState()
-                        val currentDestination = currentBackStack?.destination
-
-                        NavigationRail(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                        ) {
-                            Spacer(Modifier.height(12.dp))
-                            items.forEach { item ->
-                                val selected = currentDestination?.route == item.route
-                                NavigationRailItem(
-                                    icon = { NavItemIcon(item, selected) },
-                                    label = { Text(stringResource(item.label)) },
-                                    selected = selected,
-                                    onClick = { onNavigate(item.route) },
-                                    alwaysShowLabel = false
+                    NavigationRail(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        header = {
+                            Column(
+                                modifier = Modifier
+                                    .widthIn(max = 80.dp)
+                                    .padding(top = 16.dp, bottom = 8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                UserAvatarWithMenu(
+                                    firstName = userDetails?.firstName,
+                                    lastName = userDetails?.lastName,
+                                    profilePhotoPath = userDetails?.profilePhotoPath,
+                                    onEditProfile = { navController.navigate("profile") }
                                 )
+                                userDetails?.firstName?.let {
+                                    Text(
+                                        text = it,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
+                        }
+                    ) {
+                        items.forEach { item ->
+                            NavigationRailItem(
+                                icon = { NavItemIcon(item, false) },
+                                label = { Text(text = stringResource(item.label), overflow = TextOverflow.Ellipsis) },
+                                selected = false,
+                                onClick = { }
+                            )
                         }
                     }
 
-                    // ── Contenu ──
                     DiabDataNavHost(
                         navController = navController,
                         dataViewModel = dataViewModel,
