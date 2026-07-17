@@ -214,7 +214,6 @@ fun App(
                             )
                             Spacer(Modifier.height(12.dp))
 
-                            // ── Items de navigation ──
                             val currentBackStack by navController.currentBackStackEntryAsState()
                             val currentDestination = currentBackStack?.destination
 
@@ -263,7 +262,7 @@ fun App(
                             Column(
                                 modifier = Modifier
                                     .widthIn(max = 80.dp)
-                                    .padding(top = 16.dp, bottom = 8.dp),
+                                    .padding(top = 12.dp, bottom = 8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
@@ -286,12 +285,22 @@ fun App(
                             }
                         }
                     ) {
+                        val currentBackStack by navController.currentBackStackEntryAsState()
+                        val currentDestination = currentBackStack?.destination
+
                         items.forEach { item ->
+                            val selected = currentDestination?.route == item.route
                             NavigationRailItem(
                                 icon = { NavItemIcon(item, false) },
-                                label = { Text(text = stringResource(item.label), overflow = TextOverflow.Ellipsis) },
-                                selected = false,
-                                onClick = { }
+                                label = {
+                                    Text(
+                                        text = stringResource(item.label),
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                selected = selected,
+                                onClick = { onNavigate(item.route) },
+                                alwaysShowLabel = false
                             )
                         }
                     }
