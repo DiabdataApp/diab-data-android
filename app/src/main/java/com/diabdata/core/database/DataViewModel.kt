@@ -12,6 +12,7 @@ import com.diabdata.core.model.Hba1c
 import com.diabdata.core.model.ImportantDate
 import com.diabdata.core.model.MedicalDevice
 import com.diabdata.core.model.Treatment
+import com.diabdata.core.model.UserDetails
 import com.diabdata.core.model.Weight
 import com.diabdata.feature.graphs.classes.PlotPoint
 import com.diabdata.shared.R
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,21 +42,18 @@ class DataViewModel @Inject constructor(
     // Load all data
     val weights: StateFlow<List<Weight>> = repository.getAllWeights()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
-
     val hba1cEntries: StateFlow<List<Hba1c>> = repository.getAllHba1c()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
-
     val appointments: StateFlow<List<Appointment>> = repository.getAllAppointments()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
-
     val treatments: StateFlow<List<Treatment>> = repository.getAllTreatments()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
-
     val importantDates: StateFlow<List<ImportantDate>> = repository.getAllImportantDates()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
-
     val medicalDevices: StateFlow<List<MedicalDevice>> = repository.getAllDevices()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+    val userProfile: StateFlow<UserDetails?> = repository.getUserDetails()
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
 
     // Helpers to check if we have Data
     data class DataAvailability(
@@ -64,7 +63,8 @@ class DataViewModel @Inject constructor(
         val hasTreatments: Boolean,
         val hasImportantDates: Boolean,
         val hasHba1c: Boolean,
-        val hasDevices: Boolean
+        val hasDevices: Boolean,
+        val hasDiabetesDiagnosisDate: Boolean
     ) {
         companion object {
             val EMPTY = DataAvailability(
@@ -74,7 +74,8 @@ class DataViewModel @Inject constructor(
                 hasTreatments = false,
                 hasImportantDates = false,
                 hasHba1c = false,
-                hasDevices = false
+                hasDevices = false,
+                hasDiabetesDiagnosisDate = false
             )
         }
     }
@@ -82,22 +83,27 @@ class DataViewModel @Inject constructor(
     val part1 = combine(weights, hba1cEntries, appointments) { w, h, a ->
         Triple(w, h, a)
     }
-
     val part2 = combine(treatments, importantDates, medicalDevices) { t, d, md ->
         Triple(t, d, md)
     }
 
     val dataAvailability: StateFlow<DataAvailability> =
-        combine(part1, part2) { (w, h, a), (t, d, md) ->
+        combine(part1, part2, userProfile) { (w, h, a), (t, d, md), profile ->
+
+            val hasDiagnosisDate = profile?.diagnosisDate != null
+                    && profile.diabetesType != null
+
             DataAvailability(
-                hasAnyData = w.isNotEmpty() || h.isNotEmpty() || a.isNotEmpty() ||
-                        t.isNotEmpty() || d.isNotEmpty() || md.isNotEmpty(),
+                hasAnyData = w.isNotEmpty() || h.isNotEmpty() || a.isNotEmpty()
+                        || t.isNotEmpty() || d.isNotEmpty() || md.isNotEmpty()
+                        || hasDiagnosisDate,
                 hasWeights = w.isNotEmpty(),
                 hasAppointments = a.isNotEmpty(),
                 hasTreatments = t.isNotEmpty(),
-                hasImportantDates = d.isNotEmpty(),
+                hasImportantDates = d.isNotEmpty() || hasDiagnosisDate,
                 hasHba1c = h.isNotEmpty(),
-                hasDevices = md.isNotEmpty()
+                hasDevices = md.isNotEmpty(),
+                hasDiabetesDiagnosisDate = hasDiagnosisDate
             )
         }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), DataAvailability.EMPTY)
 
