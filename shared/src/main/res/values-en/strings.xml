@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- ============================================= -->
+    <!-- APP INFO -->
+    <!-- ============================================= -->
+    <string name="app_tagline">An app for diabetics, by a diabetic.</string>
+
+    <!-- ============================================= -->
     <!-- AVATAR MENU -->
     <!-- ============================================= -->
     <string name="edit_profile">Update profile</string>
@@ -347,8 +352,10 @@
     <string name="settings_section_data">Data</string>
     <string name="settings_section_application">Application</string>
     <string name="settings_section_notifications">Reminder notifications</string>
+    <string name="settings_section_website_label">Website</string>
 
     <!-- Data management -->
+    <string name="settings_data_description">Import, export, clear data</string>
     <string name="settings_export_data">Export data</string>
     <string name="settings_import_data">Import data</string>
     <string name="settings_purge_database">Empty database</string>
