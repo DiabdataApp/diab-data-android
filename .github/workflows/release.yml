@@ -31,7 +31,8 @@ jobs:
 
       - name: Create local.properties
         run: |
-          echo "RELAY_SERVER_URL=${{ secrets.RELAY_SERVER_URL }}\nAPP_VARIANT=production" > local.properties
+          echo "RELAY_SERVER_URL=${{ secrets.RELAY_SERVER_URL }}" > local.properties
+          echo "APP_VARIANT=production" >> local.properties
 
       - run: chmod +x ./gradlew
 
