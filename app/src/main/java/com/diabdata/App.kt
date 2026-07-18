@@ -20,9 +20,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -47,10 +50,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.utils.ScreenSize
@@ -60,6 +65,7 @@ import com.diabdata.feature.databaseView.DatabaseEditionView
 import com.diabdata.feature.devices.ui.DevicesScreen
 import com.diabdata.feature.graphs.GraphViewer
 import com.diabdata.feature.home.HomeScreen
+import com.diabdata.feature.settings.dataSettingsSection.DataSettingsScreen
 import com.diabdata.feature.settings.ui.SettingsScreen
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.feature.userProfile.ui.UserAvatarWithMenu
@@ -89,7 +95,6 @@ fun App(
     // View Models
     val userProfileViewModel: UserProfileViewModel = hiltViewModel()
 
-
     // ── State ──
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -98,6 +103,8 @@ fun App(
     val pendingDestination by shortcutDestination.collectAsStateWithLifecycle()
     val activity = LocalActivity.current as? MainActivity
     val isProfileRoute = currentRoute == "profile"
+    val isSubSettingsRoute = currentRoute?.startsWith("settings/") == true
+            && currentRoute != "settings/main"
 
     // ── Shortcuts ──
     LaunchedEffect(pendingDestination) {
@@ -214,12 +221,12 @@ fun App(
                             )
                             Spacer(Modifier.height(12.dp))
 
-                            // ── Items de navigation ──
                             val currentBackStack by navController.currentBackStackEntryAsState()
                             val currentDestination = currentBackStack?.destination
 
                             items.forEach { item ->
-                                val selected = currentDestination?.route == item.route
+                                val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                        || currentDestination?.route?.startsWith(item.route) == true
                                 NavigationDrawerItem(
                                     icon = { NavItemIcon(item, selected) },
                                     label = { Text(stringResource(item.label)) },
@@ -233,7 +240,29 @@ fun App(
                     }
                 ) {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        topBar = {
+                            if (isSubSettingsRoute) {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            when (currentRoute) {
+                                                "settings/data" -> stringResource(shared.string.settings_section_data)
+                                                else -> ""
+                                            }
+                                        )
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = { navController.popBackStack() }) {
+                                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                    )
+                                )
+                            }
+                        }
                     ) { paddingValues ->
                         DiabDataNavHost(
                             navController = navController,
@@ -251,6 +280,28 @@ fun App(
         ScreenSize.MEDIUM -> {
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                topBar = {
+                    if (isSubSettingsRoute) {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    when (currentRoute) {
+                                        "settings/data" -> stringResource(shared.string.settings_section_data)
+                                        else -> ""
+                                    }
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = { navController.popBackStack() }) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            )
+                        )
+                    }
+                }
             ) { paddingValues ->
                 Row(
                     modifier = Modifier
@@ -263,7 +314,7 @@ fun App(
                             Column(
                                 modifier = Modifier
                                     .widthIn(max = 80.dp)
-                                    .padding(top = 16.dp, bottom = 8.dp),
+                                    .padding(top = 12.dp, bottom = 8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
@@ -286,12 +337,23 @@ fun App(
                             }
                         }
                     ) {
+                        val currentBackStack by navController.currentBackStackEntryAsState()
+                        val currentDestination = currentBackStack?.destination
+
                         items.forEach { item ->
+                            val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                    || currentDestination?.route?.startsWith(item.route) == true
                             NavigationRailItem(
                                 icon = { NavItemIcon(item, false) },
-                                label = { Text(text = stringResource(item.label), overflow = TextOverflow.Ellipsis) },
-                                selected = false,
-                                onClick = { }
+                                label = {
+                                    Text(
+                                        text = stringResource(item.label),
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                selected = selected,
+                                onClick = { onNavigate(item.route) },
+                                alwaysShowLabel = false
                             )
                         }
                     }
@@ -312,57 +374,80 @@ fun App(
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 topBar = {
-                    if (!isProfileRoute) {
-                        TopAppBar(
-                            title = { Text("") },
-                            actions = {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(
-                                        16.dp,
-                                        Alignment.End
+                    when {
+                        isProfileRoute -> { /* Pas de TopAppBar */ }
+                        isSubSettingsRoute -> {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        text = currentRoute.let { route ->
+                                            when (route) {
+                                                "settings/data" -> stringResource(shared.string.settings_section_data)
+
+                                                else -> ""
+                                            }
+                                        }
                                     )
-                                ) {
-                                    userDetails?.firstName?.let {
-                                        Text(
-                                            text = it,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.primary
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = stringResource(shared.string.action_back)
                                         )
                                     }
-                                    UserAvatarWithMenu(
-                                        firstName = userDetails?.firstName,
-                                        lastName = userDetails?.lastName,
-                                        profilePhotoPath = userDetails?.profilePhotoPath,
-                                        size = 30.dp,
-                                        onEditProfile = { navController.navigate("profile") }
-                                    )
-                                }
-                            },
-                            contentPadding = PaddingValues(
-                                start = 32.dp,
-                                top = 5.dp,
-                                end = 32.dp,
-                                bottom = 10.dp
-                            ),
-                            expandedHeight = 40.dp,
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                )
                             )
-                        )
+                        }
+                        else -> {
+                            TopAppBar(
+                                title = { Text("") },
+                                actions = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)
+                                    ) {
+                                        userDetails?.firstName?.let {
+                                            Text(
+                                                text = it,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                        UserAvatarWithMenu(
+                                            firstName = userDetails?.firstName,
+                                            lastName = userDetails?.lastName,
+                                            profilePhotoPath = userDetails?.profilePhotoPath,
+                                            size = 30.dp,
+                                            onEditProfile = { navController.navigate("profile") }
+                                        )
+                                    }
+                                },
+                                contentPadding = PaddingValues(
+                                    start = 32.dp, top = 5.dp, end = 32.dp, bottom = 10.dp
+                                ),
+                                expandedHeight = 40.dp,
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                )
+                            )
+                        }
                     }
                 },
                 bottomBar = {
-                    if (!isProfileRoute) {
+                    if (!isProfileRoute && !isSubSettingsRoute) {
                         NavigationBar(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                         ) {
                             val currentBackStack by navController.currentBackStackEntryAsState()
                             val currentDestination = currentBackStack?.destination
                             items.forEach { item ->
-                                val selected = currentDestination?.route == item.route
+                                val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                        || currentDestination?.route?.startsWith(item.route) == true
                                 NavigationBarItem(
                                     icon = { NavItemIcon(item, selected) },
                                     label = { Text(stringResource(item.label)) },
@@ -452,9 +537,28 @@ fun DiabDataNavHost(
         composable("charts") { GraphViewer(viewModel = dataViewModel) }
         composable("data") { DatabaseEditionView(dataViewModel) }
         composable("devices") { DevicesScreen(dataViewModel) }
-        composable("settings") { SettingsScreen(dataViewModel) }
         composable("profile") {
             UserDetailsScreen { navController.popBackStack() }
+        }
+
+        // ── Settings nested graph ──
+        navigation(
+            startDestination = "settings/main",
+            route = "settings"
+        ) {
+            composable("settings/main") {
+                SettingsScreen(
+                    dataViewModel = dataViewModel,
+                    onNavigateToDataSettings = {
+                        navController.navigate("settings/data")
+                    }
+                )
+            }
+            composable("settings/data") {
+                DataSettingsScreen(
+                    dataViewModel = dataViewModel
+                )
+            }
         }
     }
 }

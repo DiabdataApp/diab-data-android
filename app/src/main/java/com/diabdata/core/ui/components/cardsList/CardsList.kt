@@ -88,7 +88,7 @@ import com.diabdata.core.utils.ui.getItemShape
  */
 @Composable
 fun CardsList(
-    header: String,
+    header: String? = null,
     cards: List<CardItem>,
     modifier: Modifier = Modifier,
     pageSize: Int? = null
@@ -112,12 +112,14 @@ fun CardsList(
             .fillMaxWidth()
             .animateContentSize()
     ) {
-        Text(
-            text = header,
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.surfaceTint,
-            modifier = Modifier.padding(start = 0.dp, bottom = 8.dp, top = 8.dp)
-        )
+        if (header != null) {
+            Text(
+                text = header,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.surfaceTint,
+                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp, top = 8.dp)
+            )
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
