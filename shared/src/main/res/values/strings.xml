@@ -367,6 +367,7 @@
     <string name="settings_section_website_label">Website</string>
 
     <!-- Data management -->
+    <string name="settings_data_description">Import, export, clear data</string>
     <string name="settings_export_data">Export data</string>
     <string name="settings_import_data">Import data</string>
     <string name="settings_purge_database">Empty database</string>

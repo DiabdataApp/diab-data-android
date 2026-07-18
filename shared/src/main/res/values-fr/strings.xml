@@ -352,8 +352,10 @@
     <string name="settings_section_data">Données</string>
     <string name="settings_section_application">Application</string>
     <string name="settings_section_notifications">Notifications de rappel</string>
+    <string name="settings_section_website_label">Site web</string>
 
     <!-- Data management -->
+    <string name="settings_data_description">Importer, exporter, supprimer les données</string>
     <string name="settings_export_data">Exporter les données</string>
     <string name="settings_import_data">Importer les données</string>
     <string name="settings_purge_database">Vider la base de données</string>

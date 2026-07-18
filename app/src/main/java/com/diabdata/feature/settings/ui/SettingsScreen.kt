@@ -2,11 +2,7 @@ package com.diabdata.feature.settings.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -21,22 +17,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.ButtonGroup
-import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.ButtonGroupScope
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,9 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
@@ -59,52 +44,42 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.work.WorkManager
 import com.diabdata.BuildConfig
 import com.diabdata.core.database.DataViewModel
-import com.diabdata.core.notifications.showNotification
 import com.diabdata.core.ui.components.cardsList.CardItem
+import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.utils.ui.SvgIcon
-import com.diabdata.feature.settings.ImExViewModel
 import com.diabdata.feature.settings.SettingsViewModel
 import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
-import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.workers.reminders.scheduleAppointmentReminders
 import com.diabdata.workers.reminders.scheduleMedicationExpirationReminders
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Date
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 import com.diabdata.shared.R as shared
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun SettingsScreen(dataViewModel: DataViewModel) {
-    val dateFormat = SimpleDateFormat("dd-MM-yyyy", LocalLocale.current.platformLocale)
-    val currentDate = dateFormat.format(Date())
-    val fileName = "diabdata_export_$currentDate.zip"
+fun SettingsScreen(
+    dataViewModel: DataViewModel,
+    onNavigateToDataSettings: () -> Unit
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val versionName = BuildConfig.VERSION_NAME
+    val isBeta = BuildConfig.APP_VARIANT == "development"
     val medicationsGtinFileVersion = BuildConfig.MEDICATION_GTIN_FILE_VERSION
     val medicalDeviceGtinFileVersion = BuildConfig.MEDICAL_DEVICES_GTIN_FILE_VERSION
 
-    val imExViewModel: ImExViewModel = hiltViewModel()
     val settingsViewModel: SettingsViewModel = hiltViewModel()
-    val userProfileViewModel: UserProfileViewModel = hiltViewModel()
 
     val scope = rememberCoroutineScope()
 
-    var showConfirmDialog by remember { mutableStateOf(false) }
     var showChangeLogDialog by remember { mutableStateOf(false) }
 
     val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -116,148 +91,9 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
         mutableStateOf(prefs.getBoolean("appointment_reminder", false))
     }
 
-    val notifChannelName = stringResource(shared.string.notification_channel_data)
-    val dataExportSuccess = stringResource(shared.string.toast_data_export_success)
-    val dataImportSuccess = stringResource(shared.string.toast_data_import_success)
-    val dataExportError = stringResource(shared.string.toast_data_export_error)
-    val dataImportError = stringResource(shared.string.toast_data_import_error)
-    val emptyImportFileError = stringResource(shared.string.toast_empty_file_error)
-
     val medicationStoreRebuiltText = stringResource(shared.string.medication_store_rebuilt_toast)
-    val medicalDevicesStoreRebuiltText = stringResource(shared.string.medical_devices_store_rebuilt_toast)
-
-    val createFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("application/zip"),
-        onResult = { uri: Uri? ->
-            uri?.let {
-                scope.launch(Dispatchers.IO) {
-                    val profilePhotoPath = userProfileViewModel.getProfilePhotoPath()
-                    try {
-                        context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                            ZipOutputStream(outputStream).use { zip ->
-                                val jsonString = imExViewModel.exportDataAsJsonString()
-                                zip.putNextEntry(ZipEntry("data.json"))
-                                zip.write(jsonString.toByteArray())
-                                zip.closeEntry()
-
-                                // 2. Export profile pic if it exists
-                                profilePhotoPath?.let { path ->
-                                    val photoFile = File(path)
-                                    if (photoFile.exists()) {
-                                        zip.putNextEntry(ZipEntry("profile_photo.jpg"))
-                                        photoFile.inputStream().use { it.copyTo(zip) }
-                                        zip.closeEntry()
-                                    }
-                                }
-                            }
-                        }
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, dataExportSuccess, Toast.LENGTH_SHORT).show()
-                        }
-                        context.showNotification(
-                            title = dataExportSuccess,
-                            content = uri.lastPathSegment.orEmpty(),
-                            channelName = notifChannelName,
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        context.showNotification(
-                            title = "$dataExportError : ${e.message}",
-                            content = uri.lastPathSegment.orEmpty(),
-                            channelName = notifChannelName,
-                        )
-                    }
-                }
-            }
-        }
-    )
-
-    val importFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri: Uri? ->
-            uri?.let {
-                scope.launch(Dispatchers.IO) {
-                    try {
-                        context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                            val bytes = inputStream.readBytes()
-
-                            val isZip = bytes.size >= 2
-                                    && bytes[0] == 0x50.toByte()
-                                    && bytes[1] == 0x4B.toByte()
-
-                            if (isZip) {
-                                var jsonString: String? = null
-                                var photoBytes: ByteArray? = null
-
-                                ZipInputStream(bytes.inputStream()).use { zip ->
-                                    var entry = zip.nextEntry
-                                    while (entry != null) {
-                                        when (entry.name) {
-                                            "data.json" -> jsonString = String(zip.readBytes())
-                                            "profile_photo.jpg" -> photoBytes = zip.readBytes()
-                                        }
-                                        zip.closeEntry()
-                                        entry = zip.nextEntry
-                                    }
-                                }
-
-                                var newPhotoPath: String? = null
-                                photoBytes?.let { pBytes ->
-                                    val photoFile = File(
-                                        context.filesDir,
-                                        "profile_photo_${System.currentTimeMillis()}.jpg"
-                                    )
-                                    photoFile.outputStream().use { output ->
-                                        output.write(pBytes)
-                                    }
-                                    context.filesDir.listFiles()
-                                        ?.filter {
-                                            it.name.startsWith("profile_photo")
-                                                    && it.name != photoFile.name
-                                        }
-                                        ?.forEach { it.delete() }
-
-                                    newPhotoPath = photoFile.absolutePath
-                                }
-
-                                jsonString?.let { json ->
-                                    if (json.isNotEmpty()) {
-                                        imExViewModel.importDataFromJsonString(json, newPhotoPath)
-                                    }
-                                }
-                            } else {
-                                val jsonString = String(bytes)
-                                if (jsonString.isNotEmpty()) {
-                                    imExViewModel.importDataFromJsonString(jsonString)
-                                } else {
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(context,
-                                            emptyImportFileError, Toast.LENGTH_LONG).show()
-                                    }
-                                    return@use
-                                }
-                            }
-
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(context, dataImportSuccess, Toast.LENGTH_SHORT).show()
-                            }
-                            context.showNotification(
-                                title = dataImportSuccess,
-                                content = uri.lastPathSegment.orEmpty(),
-                                channelName = notifChannelName,
-                            )
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Import", "GLOBAL CRASH", e)
-                        e.printStackTrace()
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "$dataImportError : ${e.message}", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            }
-        }
-    )
+    val medicalDevicesStoreRebuiltText =
+        stringResource(shared.string.medical_devices_store_rebuilt_toast)
 
     val nextAppointmentDate by dataViewModel.upcomingAppointment
         .map { appointments ->
@@ -297,12 +133,20 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                     horizontalArrangement = spacedBy(10.dp),
                 ) {
                     ColoredIconCircle(
-                        baseColor = MaterialTheme.colorScheme.primary,
-                        iconRes = shared.drawable.ic_logo_filled,
+                        baseColor = if (isBeta) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.primary
+                        },
+                        iconRes = if (isBeta) {
+                            shared.drawable.ic_logo_outlined
+                        } else {
+                            shared.drawable.ic_logo_filled
+                        },
                         size = 38.dp,
                         iconSize = 28.dp
                     )
-                    Column() {
+                    Column {
                         Text(
                             text = stringResource(shared.string.app_name),
                             style = MaterialTheme.typography.titleLarge,
@@ -326,20 +170,36 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                     val uriHandler = LocalUriHandler.current
 
                     AssistChip(
-                        label = { Text("v$versionName") },
+                        label = { Text("v$versionName${if (isBeta) "-beta" else "" }") },
                         leadingIcon = {
                             SvgIcon(
                                 resId = shared.drawable.app_version_filled_icon_vector,
                                 modifier = Modifier
                                     .size(18.dp)
-                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
-                                color = MaterialTheme.colorScheme.onPrimary
+                                    .border(
+                                        0.dp,
+                                        Color.Transparent,
+                                        shape = RoundedCornerShape(50)
+                                    ),
+                                color = if (isBeta) {
+                                    MaterialTheme.colorScheme.onTertiaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onPrimary
+                                }
                             )
                         },
                         shape = RoundedCornerShape(50),
                         colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            labelColor = MaterialTheme.colorScheme.onPrimary
+                            containerColor = if (isBeta) {
+                                MaterialTheme.colorScheme.tertiaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            },
+                            labelColor = if (isBeta) {
+                                MaterialTheme.colorScheme.onTertiaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onPrimary
+                            }
                         ),
                         onClick = {},
                     )
@@ -347,7 +207,7 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                     AssistChip(
                         onClick = {
                             uriHandler.openUri(
-                                "https://https://github.com/DiabdataApp/diab-data-android/releases/tag/v$versionName"
+                                "https://github.com/DiabdataApp/diab-data-android/releases/tag/v$versionName"
                             )
                         },
                         label = { Text("Github") },
@@ -356,7 +216,11 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                                 resId = shared.drawable.github_icon_vector,
                                 modifier = Modifier
                                     .size(18.dp)
-                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                    .border(
+                                        0.dp,
+                                        Color.Transparent,
+                                        shape = RoundedCornerShape(50)
+                                    ),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         },
@@ -375,7 +239,11 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                                 resId = shared.drawable.breaking_new_filled_icon_vector,
                                 modifier = Modifier
                                     .size(18.dp)
-                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                    .border(
+                                        0.dp,
+                                        Color.Transparent,
+                                        shape = RoundedCornerShape(50)
+                                    ),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         },
@@ -396,7 +264,11 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                                 resId = shared.drawable.arrow_outward_icon_vector,
                                 modifier = Modifier
                                     .size(18.dp)
-                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                    .border(
+                                        0.dp,
+                                        Color.Transparent,
+                                        shape = RoundedCornerShape(50)
+                                    ),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         },
@@ -408,48 +280,6 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                     )
                 }
             }
-
-            val dataBaseSection: List<CardItem> = listOf(
-                CardItem(
-                    leadingIcon = shared.drawable.backup_db_icon_vector,
-                    content = {
-                        Row {
-                            Text(stringResource(shared.string.settings_export_data))
-                        }
-                    },
-                    onClick = { createFileLauncher.launch(fileName) },
-                    trailingIcon = shared.drawable.arrow_right_icon
-                ),
-                CardItem(
-                    leadingIcon = shared.drawable.restore_db_icon_vector,
-                    content = {
-                        Row {
-                            Text(stringResource(shared.string.settings_import_data))
-                        }
-                    },
-                    onClick = {
-                        importFileLauncher.launch(
-                            arrayOf(
-                                "application/json",
-                                "application/zip",
-                            )
-                        )
-                    },
-                    trailingIcon = shared.drawable.arrow_right_icon
-                ),
-                CardItem(
-                    leadingIcon = shared.drawable.purge_db_icon_vector,
-                    leadingIconColor = MaterialTheme.colorScheme.error,
-                    isDestructive = true,
-                    content = {
-                        Row {
-                            Text(stringResource(shared.string.settings_purge_database))
-                        }
-                    },
-                    onClick = { showConfirmDialog = true },
-                    trailingIcon = shared.drawable.arrow_right_icon
-                )
-            )
 
             val toastExpirationEnabled =
                 stringResource(shared.string.toast_expiration_reminders_enabled)
@@ -562,7 +392,11 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                             settingsViewModel.forceRebuildMedications()
 
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, medicationStoreRebuiltText, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    medicationStoreRebuiltText,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     },
@@ -580,7 +414,11 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                             settingsViewModel.forceRebuildMedicalDevices()
 
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, medicalDevicesStoreRebuiltText, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    medicalDevicesStoreRebuiltText,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     },
@@ -589,59 +427,40 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
             )
 
             // Database section
-            CardsList(
-                header = stringResource(shared.string.settings_section_data),
-                cards = dataBaseSection
+            CardListItem(
+                CardItem(
+                    leadingIcon = shared.drawable.database_icon_vector,
+                    content = {
+                        Column {
+                            Text(
+                                text = stringResource(shared.string.settings_section_data),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = stringResource(shared.string.settings_data_description),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    },
+                    onClick = onNavigateToDataSettings,
+                    trailingIcon = shared.drawable.arrow_right_icon
+                ),
+                shape = RoundedCornerShape(20.dp)
             )
 
             // Notification section
             CardsList(
-                header = stringResource(shared.string.settings_section_notifications),
                 cards = notificationSection
             )
 
             // About app section
             CardsList(
-                header = stringResource(shared.string.settings_section_application),
                 cards = aboutApplicationSection
             )
         }
     }
 
-    if (showConfirmDialog) {
-        val purgeDatabaseModalTitle = stringResource(shared.string.dialog_purge_title)
-        val purgeDatabaseModalContents = stringResource(shared.string.dialog_purge_message)
-        val confirmButtonText = stringResource(shared.string.action_confirm)
-        val cancelButtonText = stringResource(shared.string.action_cancel)
-
-        AlertDialog(
-            onDismissRequest = { showConfirmDialog = false },
-            icon = {
-                SvgIcon(
-                    resId = shared.drawable.purge_db_icon_vector,
-                    modifier = Modifier.size(48.dp),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            title = { Text(purgeDatabaseModalTitle) },
-            text = { Text(purgeDatabaseModalContents) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        dataViewModel.clearDatabase(context)
-                        showConfirmDialog = false
-                    }) {
-                    Text(confirmButtonText, color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showConfirmDialog = false }) {
-                    Text(cancelButtonText)
-                }
-            }
-        )
-    }
     if (showChangeLogDialog) {
         ChangelogDialog(onDismiss = { showChangeLogDialog = false })
     }
