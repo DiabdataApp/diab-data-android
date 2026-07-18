@@ -4,6 +4,7 @@
     <!-- APP INFO -->
     <!-- ============================================= -->
     <string name="app_name" translatable="false">Diab Data</string>
+    <string name="app_tagline">An app for diabetics, by a diabetic.</string>
 
     <!-- ============================================= -->
     <!-- AVATAR MENU -->
@@ -362,6 +363,8 @@
     <string name="settings_section_data">Data</string>
     <string name="settings_section_application">Application</string>
     <string name="settings_section_notifications">Reminder notifications</string>
+    <string name="settings_section_changelogs_label" translatable="false">Changelog</string>
+    <string name="settings_section_website_label">Website</string>
 
     <!-- Data management -->
     <string name="settings_export_data">Export data</string>

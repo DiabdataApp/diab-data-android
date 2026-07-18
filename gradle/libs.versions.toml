@@ -54,6 +54,7 @@ hilt = "2.59.2"
 androidxHilt = "1.3.0"
 hiltNavigationCompose = "1.4.0-alpha01"
 roomTesting = "2.8.4"
+foundationLayout = "1.11.4"
 
 [libraries]
 # Camera
@@ -174,6 +175,7 @@ androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref 
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidxHilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomTesting" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

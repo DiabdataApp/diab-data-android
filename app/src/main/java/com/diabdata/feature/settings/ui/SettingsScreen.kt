@@ -8,16 +8,32 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ButtonGroupScope
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,19 +46,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLocale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle.Companion.Italic
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.work.WorkManager
 import com.diabdata.BuildConfig
 import com.diabdata.core.database.DataViewModel
-import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.notifications.showNotification
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
+import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.ImExViewModel
 import com.diabdata.feature.settings.SettingsViewModel
@@ -64,6 +85,7 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import com.diabdata.shared.R as shared
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SettingsScreen(dataViewModel: DataViewModel) {
@@ -261,6 +283,132 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
                 .padding(20.dp),
             verticalArrangement = spacedBy(32.dp)
         ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    MaterialTheme.colorScheme.surface
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 22.dp, vertical = 22.dp),
+                    horizontalArrangement = spacedBy(10.dp),
+                ) {
+                    ColoredIconCircle(
+                        baseColor = MaterialTheme.colorScheme.primary,
+                        iconRes = shared.drawable.ic_logo_filled,
+                        size = 38.dp,
+                        iconSize = 28.dp
+                    )
+                    Column() {
+                        Text(
+                            text = stringResource(shared.string.app_name),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = GoogleSansFlexFontFamily,
+                            fontWeight = FontWeight(1000),
+                            fontStyle = Italic
+                        )
+                        Text(
+                            text = stringResource(shared.string.app_tagline),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = GoogleSansFlexFontFamily,
+                        )
+                    }
+                }
+
+                FlowRow(
+                    modifier = Modifier
+                        .padding(start = 22.dp, end = 22.dp, bottom = 22.dp),
+                    horizontalArrangement = spacedBy(8.dp),
+                ) {
+                    val uriHandler = LocalUriHandler.current
+
+                    AssistChip(
+                        label = { Text("v$versionName") },
+                        leadingIcon = {
+                            SvgIcon(
+                                resId = shared.drawable.app_version_filled_icon_vector,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        },
+                        shape = RoundedCornerShape(50),
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            labelColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        onClick = {},
+                    )
+
+                    AssistChip(
+                        onClick = {
+                            uriHandler.openUri(
+                                "https://https://github.com/DiabdataApp/diab-data-android/releases/tag/v$versionName"
+                            )
+                        },
+                        label = { Text("Github") },
+                        leadingIcon = {
+                            SvgIcon(
+                                resId = shared.drawable.github_icon_vector,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        shape = RoundedCornerShape(50),
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                    )
+
+                    AssistChip(
+                        onClick = { showChangeLogDialog = true },
+                        label = { Text(stringResource(shared.string.settings_section_changelogs_label)) },
+                        leadingIcon = {
+                            SvgIcon(
+                                resId = shared.drawable.breaking_new_filled_icon_vector,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        shape = RoundedCornerShape(50),
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                    )
+
+                    AssistChip(
+                        onClick = {
+                            uriHandler.openUri("https://app.diabdata.fr/")
+                        },
+                        label = { Text(stringResource(shared.string.settings_section_website_label)) },
+                        leadingIcon = {
+                            SvgIcon(
+                                resId = shared.drawable.arrow_outward_icon_vector,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .border(0.dp, Color.Transparent, shape = RoundedCornerShape(50)),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        shape = RoundedCornerShape(50),
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                    )
+                }
+            }
+
             val dataBaseSection: List<CardItem> = listOf(
                 CardItem(
                     leadingIcon = shared.drawable.backup_db_icon_vector,
@@ -402,16 +550,6 @@ fun SettingsScreen(dataViewModel: DataViewModel) {
             )
 
             val aboutApplicationSection: List<CardItem> = listOf(
-                CardItem(
-                    leadingIcon = shared.drawable.app_version_icon_vector,
-                    content = {
-                        Row {
-                            Text("Diabdata $versionName")
-                        }
-                    },
-                    onClick = { showChangeLogDialog = true },
-                    trailingIcon = shared.drawable.arrow_right_icon
-                ),
                 CardItem(
                     leadingIcon = shared.drawable.medication_info_icon_vector,
                     content = {

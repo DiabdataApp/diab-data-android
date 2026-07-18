@@ -89,7 +89,6 @@ fun App(
     // View Models
     val userProfileViewModel: UserProfileViewModel = hiltViewModel()
 
-
     // ── State ──
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()

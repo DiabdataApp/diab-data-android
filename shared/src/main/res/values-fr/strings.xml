@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- ============================================= -->
+    <!-- APP INFO -->
+    <!-- ============================================= -->
+    <string name="app_tagline">Une application pour les diabétiques par un diabétique.</string>
+
+    <!-- ============================================= -->
     <!-- AVATAR MENU -->
     <!-- ============================================= -->
     <string name="edit_profile">Éditer le profil</string>
