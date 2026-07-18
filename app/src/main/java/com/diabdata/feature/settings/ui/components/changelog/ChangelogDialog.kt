@@ -76,7 +76,7 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Updates - 16/03/2026",
+                        text = "Updates - 18/08/2026",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -93,6 +93,13 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                         "GUI",
                         listOf(
                             "Improved navigation bar responsiveness",
+                            "Overhauled settings menu"
+                        )
+                    )
+                    changelogSection(
+                        "Bug fixes",
+                        listOf(
+                            "Fixed conditional display issue of important date card on home screen"
                         )
                     )
                 }

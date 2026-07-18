@@ -359,6 +359,8 @@
     <string name="settings_export_data">Exporter les données</string>
     <string name="settings_import_data">Importer les données</string>
     <string name="settings_purge_database">Vider la base de données</string>
+    <string name="settings_set_data_backup_scheduler_label">Sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_description">Activer la sauvegarde automatique pour la configurer.</string>
 
     <!-- Purge confirmation dialog -->
     <string name="dialog_purge_title">Confirmer la suppression</string>

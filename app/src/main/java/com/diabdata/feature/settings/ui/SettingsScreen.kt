@@ -72,7 +72,10 @@ fun SettingsScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val versionName = BuildConfig.VERSION_NAME
+
+    @Suppress("KotlinConstantConditions", "SimplifyBooleanWithConstants")
     val isBeta = BuildConfig.APP_VARIANT == "development"
+
     val medicationsGtinFileVersion = BuildConfig.MEDICATION_GTIN_FILE_VERSION
     val medicalDeviceGtinFileVersion = BuildConfig.MEDICAL_DEVICES_GTIN_FILE_VERSION
 
@@ -95,17 +98,19 @@ fun SettingsScreen(
     val medicalDevicesStoreRebuiltText =
         stringResource(shared.string.medical_devices_store_rebuilt_toast)
 
-    val nextAppointmentDate by dataViewModel.upcomingAppointment
-        .map { appointments ->
-            appointments.minByOrNull { it.date }?.date
-        }
-        .collectAsState(initial = null)
+    val nextAppointmentDate by remember {
+        dataViewModel.upcomingAppointment
+            .map { appointments ->
+                appointments.minByOrNull { it.date }?.date
+            }
+    }.collectAsState(initial = null)
 
-    val nextTreatmentExpirationDate by dataViewModel.upcomingExpiringTreatmentDates
-        .map { treatments ->
-            treatments.minByOrNull { it.expirationDate }?.expirationDate
-        }
-        .collectAsState(initial = null)
+    val nextTreatmentExpirationDate by remember {
+        dataViewModel.upcomingExpiringTreatmentDates
+            .map { treatments ->
+                treatments.minByOrNull { it.expirationDate }?.expirationDate
+            }
+    }.collectAsState(initial = null)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -127,6 +132,7 @@ fun SettingsScreen(
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp)
             ) {
+                @Suppress("KotlinConstantConditions")
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 22.dp, vertical = 22.dp),
@@ -169,6 +175,7 @@ fun SettingsScreen(
                 ) {
                     val uriHandler = LocalUriHandler.current
 
+                    @Suppress("KotlinConstantConditions")
                     AssistChip(
                         label = { Text("v$versionName${if (isBeta) "-beta" else "" }") },
                         leadingIcon = {
