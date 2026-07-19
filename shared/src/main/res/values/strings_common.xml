@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ============================================= -->
+    <!-- COMMON ACTIONS -->
+    <!-- ============================================= -->
+    <string name="common_confirm">Confirm</string>
+    <string name="common_back">Back</string>
+    <string name="common_close">Close</string>
+    <string name="common_open">Open</string>
+    <string name="common_update">Update</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_archive">Archive</string>
+    <string name="common_add">Add</string>
+    <string name="common_set_lifespan">Discarded</string>
+    <string name="common_retry">Retry</string>
+
+    <!-- ======================== -->
+    <!--    Common Form Labels     -->
+    <!-- ======================== -->
+    <!-- Field placeholders -->
+    <string name="popup_placeholder_weight">Weight</string>
+    <string name="popup_placeholder_hba1c" tools:ignore="Typos">HBA1C (%)</string>
+    <string name="popup_placeholder_medication_name">Medication name</string>
+    <string name="popup_placeholder_date">Select a date</string>
+    <string name="popup_placeholder_expiration_date">Select expiration date</string>
+    <string name="popup_placeholder_start_date">Installation date</string>
+    <string name="popup_placeholder_end_date">Expected removal date</string>
+    <string name="popup_placeholder_date_range">Select date range</string>
+    <string name="popup_placeholder_doctor">Doctor\'s name</string>
+    <string name="popup_placeholder_event">Event</string>
+    <string name="popup_placeholder_appointment_type">Appointment type</string>
+    <string name="popup_placeholder_medication_type">Medication type</string>
+    <string name="popup_placeholder_device_type">Device type</string>
+    <string name="popup_placeholder_search">Search…</string>
+
+</resources>

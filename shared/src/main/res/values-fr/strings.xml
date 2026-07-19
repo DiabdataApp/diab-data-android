@@ -54,118 +54,7 @@
     <string name="settings_menu_title_long">Ouvrir la page des paramètres</string>
     <string name="chart_menu_title">Graphiques</string>
     <string name="chart_menu_title_long">Ouvrir la page des graphiques</string>
-
-    <!-- ============================================= -->
-    <!-- COMMON ACTIONS -->
-    <!-- ============================================= -->
-    <string name="action_confirm">Confirmer</string>
-    <string name="action_back">Retour</string>
-    <string name="action_close">Fermer</string>
-    <string name="action_open">Ouvrir</string>
-    <string name="action_update">Mettre à jour</string>
-    <string name="action_cancel">Annuler</string>
-    <string name="action_delete">Supprimer</string>
-    <string name="action_archive">Archiver</string>
-    <string name="action_add">Ajouter</string>
-    <string name="action_set_lifespan">Désactivé</string>
-    <string name="action_retry">Réessayer</string>
-
-    <!-- ============================================= -->
-    <!-- DATE & TIME -->
-    <!-- ============================================= -->
-    <!-- Single strings for special cases -->
-    <!-- Abbreviations -->
-    <string name="date_abbr_today">auj</string>
-    <string name="date_abbr_tomorrow">dem</string>
-    <plurals name="date_abbr_days">
-        <item quantity="one" tools:ignore="ImpliedQuantity">dem</item>
-        <item quantity="other">%dj</item>
-    </plurals>
-
-    <!-- For current date -->
-    <string name="date_today">Aujourd\'hui</string>
-    <string name="date_this_month">Ce mois-ci</string>
-    <string name="date_this_year">Cette année</string>
-
-    <!-- For null quantities-->
-    <string name="date_zero_days">0 days</string>
-    <string name="date_zero_months">0 months</string>
-    <string name="date_zero_years">0 years</string>
-
-    <!-- For upcoming date -->
-    <string name="date_tomorrow">Demain</string>
-    <string name="date_in_days">Dans %d jours</string>
-
-    <string name="date_next_month">Le mois prochain</string>
-    <string name="date_in_months">Dans %d mois</string>
-
-    <string name="date_next_year">L\'an prochain</string>
-    <string name="date_in_years">Dans %d ans</string>
-
-    <!-- For anterior dates -->
-    <string name="date_yesterday">Hier</string>
-    <string name="date_days_ago">Il y a %d jours</string>
-
-    <string name="date_last_month">Le mois dernier</string>
-    <string name="date_months_ago">Il y a %d mois</string>
-
-    <string name="date_last_year">L\'an dernier</string>
-    <string name="date_years_ago">Il y a %d ans</string>
-
-    <!-- Date formats -->
-    <string name="important_date_on_text">Le %1$s</string>
-    <string name="expires_on_text">Expire le %1$s</string>
-    <string name="scheduled_on_date_text">Programmé le %1$s</string>
-    <string name="hba1c_on_date_text">HbA1c mesurée le %1$s</string>
-    <string name="weight_on_date_text">Pesée réalisée le %1$s</string>
-
-    <!-- Plurals for time periods -->
-    <plurals name="plurals_days">
-        <item quantity="one">%d jour</item>
-        <item quantity="other">%d jours</item>
-    </plurals>
-
-    <plurals name="plurals_months">
-        <item quantity="one">%d mois</item>
-        <item quantity="other">%d mois</item>
-    </plurals>
-
-    <plurals name="plurals_years">
-        <item quantity="one">%d année</item>
-        <item quantity="other">%d ans</item>
-    </plurals>
-
-    <plurals name="in_days">
-        <item quantity="one">Dans %d jour</item>
-        <item quantity="other">Dans %d jours</item>
-    </plurals>
-
-    <plurals name="in_months">
-        <item quantity="one">Dans %d mois</item>
-        <item quantity="other">Dans %d mois</item>
-    </plurals>
-
-    <plurals name="in_years">
-        <item quantity="one">Dans %d an</item>
-        <item quantity="other">Dans %d ans</item>
-    </plurals>
-
-    <!-- Complex date formats (consider using code for these) -->
-    <plurals name="in_years_and_months">
-        <item quantity="one">Dans %d an et %d mois</item>
-        <item quantity="other">Dans %d ans et %d mois</item>
-    </plurals>
-
-    <plurals name="years_and_months">
-        <item quantity="one">%d an et %d mois</item>
-        <item quantity="other">%d ans et %d mois</item>
-    </plurals>
-
-    <plurals name="years_and_months_ago">
-        <item quantity="one">Il y a %d an et %d mois</item>
-        <item quantity="other">Il y a %d ans et %d mois</item>
-    </plurals>
-
+    
     <!-- ============================================= -->
     <!-- MEDICATIONS -->
     <!-- ============================================= -->
@@ -305,22 +194,6 @@
     <string name="popup_title_add">Ajouter %1$s</string>
     <string name="popup_title_update">Mise à jour de l\'entrée de %1$s</string>
 
-    <!-- Field placeholders -->
-    <string name="popup_placeholder_weight">Poids</string>
-    <string name="popup_placeholder_hba1c">HbA1c (%)</string>
-    <string name="popup_placeholder_medication_name">Nom du traitement</string>
-    <string name="popup_placeholder_date">Sélectionner une date</string>
-    <string name="popup_placeholder_expiration_date">Sélectionner la date d\'expiration</string>
-    <string name="popup_placeholder_start_date">Date de pose</string>
-    <string name="popup_placeholder_end_date">Date de retrait prévue</string>
-    <string name="popup_placeholder_date_range">Sélectionner une plage de date</string>
-    <string name="popup_placeholder_doctor">Nom du praticien</string>
-    <string name="popup_placeholder_event">Évènement</string>
-    <string name="popup_placeholder_appointment_type">Type de RDV</string>
-    <string name="popup_placeholder_medication_type">Type de traitement</string>
-    <string name="popup_placeholder_device_type">Type d\'appareil</string>
-    <string name="popup_placeholder_search">Rechercher…</string>
-
     <!-- Device fields -->
     <string name="popup_device_name_label">Nom de l\'appareil</string>
     <string name="popup_device_batch_label">Numéro de lot</string>
@@ -349,22 +222,34 @@
     <!-- SETTINGS -->
     <!-- ============================================= -->
     <!-- Section headings -->
-    <string name="settings_section_data">Données</string>
     <string name="settings_section_application">Application</string>
     <string name="settings_section_notifications">Notifications de rappel</string>
     <string name="settings_section_website_label">Site web</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > DATA -->
+    <!-- ============================================= -->
+
+    <string name="settings_section_data">Données</string>
 
     <!-- Data management -->
     <string name="settings_data_description">Importer, exporter, supprimer les données</string>
     <string name="settings_export_data">Exporter les données</string>
     <string name="settings_import_data">Importer les données</string>
     <string name="settings_purge_database">Vider la base de données</string>
-    <string name="settings_set_data_backup_scheduler_label">Sauvegarde automatique</string>
-    <string name="settings_set_data_backup_scheduler_description">Activer la sauvegarde automatique pour la configurer.</string>
 
     <!-- Purge confirmation dialog -->
     <string name="dialog_purge_title">Confirmer la suppression</string>
     <string name="dialog_purge_message">Êtes-vous sûr de vouloir vider complètement la base de données ? Cette action est irréversible. Vous pouvez sauvegarder une copie des données actuelles via le bouton "Exporter les données" avant de confirmer.</string>
+    <string name="settings_data_automated_backup_section">Confirmer la suppression</string>
+
+    <!-- Automated backup section -->
+    <string name="settings_set_data_backup_scheduler_label">Sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_description">Activer la sauvegarde automatique pour la configurer.</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > NOTIFICATIONS -->
+    <!-- ============================================= -->
 
     <!-- Notifications -->
     <string name="settings_notification_expiration">Expiration des traitements</string>
@@ -376,9 +261,6 @@
     <string name="medication_store_rebuilt_toast">La base de données des GPIN des traitements a été reconstruite</string>
     <string name="medical_devices_store_rebuilt_toast">La base de données des GPIN des appareils Médicaux a été reconstruite</string>
 
-    <!-- ============================================= -->
-    <!-- NOTIFICATIONS -->
-    <!-- ============================================= -->
     <!-- Channel names -->
     <string name="notification_channel_data">Gestion de données</string>
     <string name="notification_channel_appointments">Rappels de rendez-vous</string>

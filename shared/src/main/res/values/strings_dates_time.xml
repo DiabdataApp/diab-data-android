@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ============================================= -->
+    <!-- DATE & TIME -->
+    <!-- ============================================= -->
+    <!-- Single strings for special cases -->
+    <!-- Abbreviations -->
+    <string name="date_abbr_today">tdy</string>
+    <string name="date_abbr_tomorrow">tmw</string>
+    <plurals name="date_abbr_days">
+        <item quantity="one">tmw</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+
+    <!-- For current date -->
+    <string name="date_today">Today</string>
+    <string name="date_this_month">This month</string>
+    <string name="date_this_year">This year</string>
+
+    <!-- For null quantities-->
+    <string name="date_zero_days">0 days</string>
+    <string name="date_zero_months">0 months</string>
+    <string name="date_zero_years">0 years</string>
+
+    <!-- For upcoming date -->
+    <string name="date_tomorrow">Tomorrow</string>
+    <string name="date_in_days">In %d days</string>
+
+    <string name="date_next_month">Next month</string>
+    <string name="date_in_months">In %d months</string>
+
+    <string name="date_next_year">Next year</string>
+    <string name="date_in_years">In %d years</string>
+
+    <!-- For anterior dates -->
+    <string name="date_yesterday">Yesterday</string>
+    <string name="date_days_ago">%d days ago</string>
+
+    <string name="date_last_month">Last month</string>
+    <string name="date_months_ago">%d months ago</string>
+
+    <string name="date_last_year">Last year</string>
+    <string name="date_years_ago">%d years ago</string>
+
+    <!-- Date formats -->
+    <string name="important_date_on_text">On %1$s</string>
+    <string name="expires_on_text">Expires on %1$s</string>
+    <string name="scheduled_on_date_text">Scheduled on %1$s</string>
+    <string name="hba1c_on_date_text" tools:ignore="Typos">HBA1C measured on %1$s</string>
+    <string name="weight_on_date_text">Weighing performed on %1$s</string>
+
+    <!-- Plurals for time periods -->
+    <plurals name="plurals_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
+    <plurals name="plurals_months">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+
+    <plurals name="plurals_years">
+        <item quantity="one">%d year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
+
+    <plurals name="in_days">
+        <item quantity="one">In %d day</item>
+        <item quantity="other">In %d days</item>
+    </plurals>
+
+    <plurals name="in_months">
+        <item quantity="one">In %d month</item>
+        <item quantity="other">In %d months</item>
+    </plurals>
+
+    <plurals name="in_years">
+        <item quantity="one">In %d year</item>
+        <item quantity="other">In %d years</item>
+    </plurals>
+
+    <!-- Complex date formats (consider using code for these) -->
+    <plurals name="in_years_and_months">
+        <item quantity="one">In %d year and %d months</item>
+        <item quantity="other">In %d years and %d months</item>
+    </plurals>
+
+    <plurals name="years_and_months">
+        <item quantity="one">%d year and %d months</item>
+        <item quantity="other">%d years and %d months</item>
+    </plurals>
+
+    <plurals name="years_and_months_ago">
+        <item quantity="one">%d year and %d months ago</item>
+        <item quantity="other">%d years and %d months ago</item>
+    </plurals>
+
+    <!-- Days of the week -->
+    <string name="date_days_monday">Monday</string>
+    <string name="date_days_monday_abbreviation">M</string>
+
+    <string name="date_days_tuesday">Tuesday</string>
+    <string name="date_days_tuesday_abbreviation">T</string>
+
+    <string name="date_days_wednesday">Wednesday</string>
+    <string name="date_days_wednesday_abbreviation">W</string>
+
+    <string name="date_days_thursday">Thursday</string>
+    <string name="date_days_thursday_abbreviation">T</string>
+
+    <string name="date_days_friday">Friday</string>
+    <string name="date_days_friday_abbreviation">F</string>
+
+    <string name="date_days_saturday">Saturday</string>
+    <string name="date_days_saturday_abbreviation">S</string>
+
+    <string name="date_days_sunday">Sunday</string>
+    <string name="date_days_sunday_abbreviation">S</string>
+
+    <!-- Recurrence periods -->
+    <string name="recurrence_period_dayly">Daily</string>
+    <string name="recurrence_period_weekly">Weekly</string>
+    <string name="recurrence_period_monthly">Monthly</string>
+
+</resources>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ============================================= -->
+    <!-- DATE & TIME -->
+    <!-- ============================================= -->
+    <!-- Single strings for special cases -->
+    <!-- Abbreviations -->
+    <string name="date_abbr_today">auj</string>
+    <string name="date_abbr_tomorrow">dem</string>
+    <plurals name="date_abbr_days">
+        <item quantity="one" tools:ignore="ImpliedQuantity">dem</item>
+        <item quantity="other">%dj</item>
+    </plurals>
+
+    <!-- For current date -->
+    <string name="date_today">Aujourd\'hui</string>
+    <string name="date_this_month">Ce mois-ci</string>
+    <string name="date_this_year">Cette année</string>
+
+    <!-- For null quantities-->
+    <string name="date_zero_days">0 days</string>
+    <string name="date_zero_months">0 months</string>
+    <string name="date_zero_years">0 years</string>
+
+    <!-- For upcoming date -->
+    <string name="date_tomorrow">Demain</string>
+    <string name="date_in_days">Dans %d jours</string>
+
+    <string name="date_next_month">Le mois prochain</string>
+    <string name="date_in_months">Dans %d mois</string>
+
+    <string name="date_next_year">L\'an prochain</string>
+    <string name="date_in_years">Dans %d ans</string>
+
+    <!-- For anterior dates -->
+    <string name="date_yesterday">Hier</string>
+    <string name="date_days_ago">Il y a %d jours</string>
+
+    <string name="date_last_month">Le mois dernier</string>
+    <string name="date_months_ago">Il y a %d mois</string>
+
+    <string name="date_last_year">L\'an dernier</string>
+    <string name="date_years_ago">Il y a %d ans</string>
+
+    <!-- Date formats -->
+    <string name="important_date_on_text">Le %1$s</string>
+    <string name="expires_on_text">Expire le %1$s</string>
+    <string name="scheduled_on_date_text">Programmé le %1$s</string>
+    <string name="hba1c_on_date_text">HbA1c mesurée le %1$s</string>
+    <string name="weight_on_date_text">Pesée réalisée le %1$s</string>
+
+    <!-- Plurals for time periods -->
+    <plurals name="plurals_days">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+
+    <plurals name="plurals_months">
+        <item quantity="one">%d mois</item>
+        <item quantity="other">%d mois</item>
+    </plurals>
+
+    <plurals name="plurals_years">
+        <item quantity="one">%d année</item>
+        <item quantity="other">%d ans</item>
+    </plurals>
+
+    <plurals name="in_days">
+        <item quantity="one">Dans %d jour</item>
+        <item quantity="other">Dans %d jours</item>
+    </plurals>
+
+    <plurals name="in_months">
+        <item quantity="one">Dans %d mois</item>
+        <item quantity="other">Dans %d mois</item>
+    </plurals>
+
+    <plurals name="in_years">
+        <item quantity="one">Dans %d an</item>
+        <item quantity="other">Dans %d ans</item>
+    </plurals>
+
+    <!-- Complex date formats (consider using code for these) -->
+    <plurals name="in_years_and_months">
+        <item quantity="one">Dans %d an et %d mois</item>
+        <item quantity="other">Dans %d ans et %d mois</item>
+    </plurals>
+
+    <plurals name="years_and_months">
+        <item quantity="one">%d an et %d mois</item>
+        <item quantity="other">%d ans et %d mois</item>
+    </plurals>
+
+    <plurals name="years_and_months_ago">
+        <item quantity="one">Il y a %d an et %d mois</item>
+        <item quantity="other">Il y a %d ans et %d mois</item>
+    </plurals>
+
+    <!-- Days of the week -->
+    <string name="date_days_monday">Lundi</string>
+    <string name="date_days_monday_abbreviation">L</string>
+
+    <string name="date_days_tuesday">Mardi</string>
+    <string name="date_days_tuesday_abbreviation">M</string>
+
+    <string name="date_days_wednesday">Mercredi</string>
+    <string name="date_days_wednesday_abbreviation">M</string>
+
+    <string name="date_days_thursday">Jeudi</string>
+    <string name="date_days_thursday_abbreviation">J</string>
+
+    <string name="date_days_friday">Vendredi</string>
+    <string name="date_days_friday_abbreviation">V</string>
+
+    <string name="date_days_saturday">Samedi</string>
+    <string name="date_days_saturday_abbreviation">S</string>
+
+    <string name="date_days_sunday">Dimanche</string>
+    <string name="date_days_sunday_abbreviation">D</string>
+
+    <!-- Recurrence periods -->
+    <string name="recurrence_period_dayly">Quotidien</string>
+    <string name="recurrence_period_weekly">Hebdomadaire</string>
+    <string name="recurrence_period_monthly">Mensuel</string>
+
+</resources>

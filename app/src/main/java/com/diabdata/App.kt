@@ -393,7 +393,7 @@ fun App(
                                     IconButton(onClick = { navController.popBackStack() }) {
                                         Icon(
                                             Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = stringResource(shared.string.action_back)
+                                            contentDescription = stringResource(shared.string.common_back)
                                         )
                                     }
                                 },

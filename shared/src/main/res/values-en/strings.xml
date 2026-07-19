@@ -56,117 +56,6 @@
     <string name="chart_menu_title_long">Open graphs page</string>
 
     <!-- ============================================= -->
-    <!-- COMMON ACTIONS -->
-    <!-- ============================================= -->
-    <string name="action_confirm">Confirm</string>
-    <string name="action_back">Back</string>
-    <string name="action_close">Close</string>
-    <string name="action_open">Open</string>
-    <string name="action_update">Update</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_archive">Archive</string>
-    <string name="action_add">Add</string>
-    <string name="action_set_lifespan">Discarded</string>
-    <string name="action_retry">Retry</string>
-
-    <!-- ============================================= -->
-    <!-- DATE & TIME -->
-    <!-- ============================================= -->
-    <!-- Single strings for special cases -->
-    <!-- Abbreviations -->
-    <string name="date_abbr_today">tdy</string>
-    <string name="date_abbr_tomorrow">tmw</string>
-    <plurals name="date_abbr_days">
-        <item quantity="one">tmw</item>
-        <item quantity="other">%dd</item>
-    </plurals>
-
-    <!-- For current date -->
-    <string name="date_today">Today</string>
-    <string name="date_this_month">This month</string>
-    <string name="date_this_year">This year</string>
-
-    <!-- For null quantities-->
-    <string name="date_zero_days">0 days</string>
-    <string name="date_zero_months">0 months</string>
-    <string name="date_zero_years">0 years</string>
-
-    <!-- For upcoming date -->
-    <string name="date_tomorrow">Tomorrow</string>
-    <string name="date_in_days">In %d days</string>
-
-    <string name="date_next_month">Next month</string>
-    <string name="date_in_months">In %d months</string>
-
-    <string name="date_next_year">Next year</string>
-    <string name="date_in_years">In %d years</string>
-
-    <!-- For anterior dates -->
-    <string name="date_yesterday">Yesterday</string>
-    <string name="date_days_ago">%d days ago</string>
-
-    <string name="date_last_month">Last month</string>
-    <string name="date_months_ago">%d months ago</string>
-
-    <string name="date_last_year">Last year</string>
-    <string name="date_years_ago">%d years ago</string>
-
-    <!-- Date formats -->
-    <string name="important_date_on_text">On %1$s</string>
-    <string name="expires_on_text">Expires on %1$s</string>
-    <string name="scheduled_on_date_text">Scheduled on %1$s</string>
-    <string name="hba1c_on_date_text" tools:ignore="Typos">HBA1C measured on %1$s</string>
-    <string name="weight_on_date_text">Weighing performed on %1$s</string>
-
-    <!-- Plurals for time periods -->
-    <plurals name="plurals_days">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
-    </plurals>
-
-    <plurals name="plurals_months">
-        <item quantity="one">%d month</item>
-        <item quantity="other">%d months</item>
-    </plurals>
-
-    <plurals name="plurals_years">
-        <item quantity="one">%d year</item>
-        <item quantity="other">%d years</item>
-    </plurals>
-
-    <plurals name="in_days">
-        <item quantity="one">In %d day</item>
-        <item quantity="other">In %d days</item>
-    </plurals>
-
-    <plurals name="in_months">
-        <item quantity="one">In %d month</item>
-        <item quantity="other">In %d months</item>
-    </plurals>
-
-    <plurals name="in_years">
-        <item quantity="one">In %d year</item>
-        <item quantity="other">In %d years</item>
-    </plurals>
-
-    <!-- Complex date formats (consider using code for these) -->
-    <plurals name="in_years_and_months">
-        <item quantity="one">In %d year and %d months</item>
-        <item quantity="other">In %d years and %d months</item>
-    </plurals>
-
-    <plurals name="years_and_months">
-        <item quantity="one">%d year and %d months</item>
-        <item quantity="other">%d years and %d months</item>
-    </plurals>
-
-    <plurals name="years_and_months_ago">
-        <item quantity="one">%d year and %d months ago</item>
-        <item quantity="other">%d years and %d months ago</item>
-    </plurals>
-
-    <!-- ============================================= -->
     <!-- MEDICATIONS -->
     <!-- ============================================= -->
     <string name="medication_ketone_test_strip">Blood ketone test strips</string>
@@ -305,22 +194,6 @@
     <string name="popup_title_add">Add new %1$s</string>
     <string name="popup_title_update">Update %1$s entry</string>
 
-    <!-- Field placeholders -->
-    <string name="popup_placeholder_weight">Weight</string>
-    <string name="popup_placeholder_hba1c" tools:ignore="Typos">HBA1C (%)</string>
-    <string name="popup_placeholder_medication_name">Medication name</string>
-    <string name="popup_placeholder_date">Select a date</string>
-    <string name="popup_placeholder_expiration_date">Select expiration date</string>
-    <string name="popup_placeholder_start_date">Installation date</string>
-    <string name="popup_placeholder_end_date">Expected removal date</string>
-    <string name="popup_placeholder_date_range">Select date range</string>
-    <string name="popup_placeholder_doctor">Doctor\'s name</string>
-    <string name="popup_placeholder_event">Event</string>
-    <string name="popup_placeholder_appointment_type">Appointment type</string>
-    <string name="popup_placeholder_medication_type">Medication type</string>
-    <string name="popup_placeholder_device_type">Device type</string>
-    <string name="popup_placeholder_search">Search…</string>
-
     <!-- Device fields -->
     <string name="popup_device_name_label">Device\'s name</string>
     <string name="popup_device_batch_label">Batch number</string>
@@ -349,22 +222,34 @@
     <!-- SETTINGS -->
     <!-- ============================================= -->
     <!-- Section headings -->
-    <string name="settings_section_data">Data</string>
     <string name="settings_section_application">Application</string>
     <string name="settings_section_notifications">Reminder notifications</string>
     <string name="settings_section_website_label">Website</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > DATA -->
+    <!-- ============================================= -->
+
+    <string name="settings_section_data">Data</string>
 
     <!-- Data management -->
     <string name="settings_data_description">Import, export, clear data</string>
     <string name="settings_export_data">Export data</string>
     <string name="settings_import_data">Import data</string>
     <string name="settings_purge_database">Empty database</string>
-    <string name="settings_set_data_backup_scheduler_label">Schedule backup</string>
-    <string name="settings_set_data_backup_scheduler_description">Enable to set your data\'s automatic backup schedule up.</string>
 
     <!-- Purge confirmation dialog -->
     <string name="dialog_purge_title">Confirm delete</string>
     <string name="dialog_purge_message">Are you sure you want to completely empty the database? This action cannot be undone. You can save your current data using the \"Export data\" button before confirming.</string>
+    <string name="settings_data_automated_backup_section">Confirm delete</string>
+
+    <!-- Automated backup section -->
+    <string name="settings_set_data_backup_scheduler_label">Backup schedule</string>
+    <string name="settings_set_data_backup_scheduler_description">Enable to set your data\'s automatic backup schedule up.</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > NOTIFICATIONS -->
+    <!-- ============================================= -->
 
     <!-- Notifications -->
     <string name="settings_notification_expiration">Medication expiration</string>
@@ -376,9 +261,6 @@
     <string name="medication_store_rebuilt_toast">Medication GPIN store rebuilt</string>
     <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
 
-    <!-- ============================================= -->
-    <!-- NOTIFICATIONS -->
-    <!-- ============================================= -->
     <!-- Channel names -->
     <string name="notification_channel_data">Data Management</string>
     <string name="notification_channel_appointments">Appointments reminders</string>

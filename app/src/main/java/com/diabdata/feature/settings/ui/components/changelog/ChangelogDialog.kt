@@ -37,7 +37,7 @@ import com.diabdata.shared.R as shared
 @Composable
 fun ChangelogDialog(onDismiss: () -> Unit) {
     rememberScrollState()
-    val confirmButtonText = stringResource(shared.string.action_close)
+    val confirmButtonText = stringResource(shared.string.common_close)
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val maxHeight = with(density) { windowInfo.containerSize.height.toDp() * 0.45f }

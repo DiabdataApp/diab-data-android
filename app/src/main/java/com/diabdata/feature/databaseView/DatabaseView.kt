@@ -135,8 +135,8 @@ fun DatabaseEditionView(
                     val isPressed by interactionSource.collectIsPressedAsState()
                     val isHovered by interactionSource.collectIsHoveredAsState()
 
-                    val deleteButtonText = stringResource(shared.string.action_delete)
-                    val discardedItemText = stringResource(shared.string.action_set_lifespan)
+                    val deleteButtonText = stringResource(shared.string.common_delete)
+                    val discardedItemText = stringResource(shared.string.common_set_lifespan)
 
 
                     val bgColor = if (isPressed || isHovered) MaterialTheme.colorScheme.error

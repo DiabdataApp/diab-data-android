@@ -120,12 +120,12 @@ fun DatePickerModal(
                 onDateSelected(datePickerState.selectedDateMillis)
                 onDismiss()
             }) {
-                Text(stringResource(shared.string.action_confirm))
+                Text(stringResource(shared.string.common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(shared.string.action_cancel))
+                Text(stringResource(shared.string.common_cancel))
             }
         }
     ) {
@@ -232,12 +232,12 @@ fun TimePickerModal(
             TextButton(onClick = {
                 onTimeSelected(timePickerState.hour, timePickerState.minute)
             }) {
-                Text(stringResource(shared.string.action_confirm))
+                Text(stringResource(shared.string.common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(shared.string.action_cancel))
+                Text(stringResource(shared.string.common_cancel))
             }
         },
         text = {

@@ -128,7 +128,7 @@ fun UpcomingAppointmentsListContent(
                                                 TextButton(onClick = {
                                                     showNotesDialog = false
                                                 }) {
-                                                    Text(text = stringResource(shared.string.action_confirm))
+                                                    Text(text = stringResource(shared.string.common_confirm))
                                                 }
                                             }
                                         )

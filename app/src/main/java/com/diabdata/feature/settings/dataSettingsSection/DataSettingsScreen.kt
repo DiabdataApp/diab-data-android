@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -386,14 +385,14 @@ fun DataSettingsScreen(
                     }
                 ) {
                     Text(
-                        stringResource(shared.string.action_confirm),
+                        stringResource(shared.string.common_confirm),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showConfirmDialog = false }) {
-                    Text(stringResource(shared.string.action_cancel))
+                    Text(stringResource(shared.string.common_cancel))
                 }
             }
         )
