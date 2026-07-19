@@ -17,9 +17,11 @@ import com.diabdata.core.model.MedicalDeviceInfoEntity
 import com.diabdata.core.model.Medication
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
+import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.model.Weight
 import com.diabdata.feature.devices.classes.FaultyBatchCount
 import com.diabdata.feature.graphs.classes.PlotPoint
+import com.diabdata.feature.settings.data.UserPreferencesDao
 import com.diabdata.shared.utils.dataTypes.MedicalDeviceInfoType
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -35,6 +37,7 @@ class DataRepository(
     private val medicalDevicesDao: MedicalDeviceDao,
     private val medicalDeviceInfo: MedicalDevicesInfoDao,
     private val userDetailsDao: UserDetailsDao,
+    private val userPreferencesDao: UserPreferencesDao,
     val database: DiabDataDatabase,
 ) {
     // ----------------
@@ -220,6 +223,31 @@ class DataRepository(
     /** Add profile photo path */
     suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(path)
 
+    // ----------------
+    // User preferences
+    // ----------------
+    /** Flow of user preferences */
+    suspend fun insertOrUpdate(preferences: UserPreferences) = userPreferencesDao.insertOrUpdate(preferences)
+    fun getUserPreferences(): Flow<UserPreferences?> =
+        userPreferencesDao.getUserPreferences()
+
+    suspend fun setAutoBackupEnabled(enabled: Boolean) =
+        userPreferencesDao.setAutoBackupEnabled(enabled)
+
+    suspend fun setBackupFrequency(frequency: String) =
+        userPreferencesDao.setFrequency(frequency)
+
+    suspend fun setBackupPath(path: String) =
+        userPreferencesDao.setBackupPath(path)
+
+    suspend fun setLastBackupUpdate(date: String) =
+        userPreferencesDao.setLastBackupDate(date)
+
+    suspend fun restorePreferences(preferences: UserPreferences) =
+        userPreferencesDao.insertOrUpdate(preferences)
+
+    suspend fun resetBackupPreferences() =
+        userPreferencesDao.resetBackupPreferences()
 
     /** Delete a devices record by Id**/
     suspend fun deleteDevice(id: Int) = medicalDevicesDao.deleteById(id)

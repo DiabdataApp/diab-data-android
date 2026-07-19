@@ -13,6 +13,7 @@ import com.diabdata.feature.devices.data.MedicalDeviceDao
 import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
 import com.diabdata.feature.hba1c.data.HBA1CDao
 import com.diabdata.feature.importantDates.data.ImportantDateDao
+import com.diabdata.feature.settings.data.UserPreferencesDao
 import com.diabdata.feature.treatments.data.TreatmentDao
 import com.diabdata.feature.userProfile.data.UserDetailsDao
 import com.diabdata.feature.weight.data.WeightDao
@@ -111,6 +112,11 @@ object DatabaseModule {
     }
 
     @Provides
+    fun userPreferencesDao(db: DiabDataDatabase): UserPreferencesDao {
+        return db.userPreferencesDao()
+    }
+
+    @Provides
     @Singleton
     fun dataRepository (
         weightDao: WeightDao,
@@ -122,6 +128,7 @@ object DatabaseModule {
         medicalDevicesDao: MedicalDeviceDao,
         medicalDeviceInfo: MedicalDevicesInfoDao,
         userDetailsDao: UserDetailsDao,
+        userPreferencesDao: UserPreferencesDao,
         database: DiabDataDatabase
     ): DataRepository {
         val repository = DataRepository(
@@ -134,7 +141,8 @@ object DatabaseModule {
             medicalDevicesDao = medicalDevicesDao,
             medicalDeviceInfo = medicalDeviceInfo,
             userDetailsDao = userDetailsDao,
-            database = database
+            userPreferencesDao = userPreferencesDao,
+            database = database,
         )
         return repository
     }

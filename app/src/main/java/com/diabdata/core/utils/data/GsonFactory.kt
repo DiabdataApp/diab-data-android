@@ -1,6 +1,7 @@
 package com.diabdata.core.utils.data
 
 import com.diabdata.shared.utils.dataTypes.AppointmentType
+import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import com.diabdata.shared.utils.dataTypes.BloodType
 import com.diabdata.shared.utils.dataTypes.DiabetesType
 import com.diabdata.shared.utils.dataTypes.Gender
@@ -20,6 +21,7 @@ object GsonFactory {
             .registerTypeAdapter(Gender::class.java, EnumTypeAdapter(Gender::class.java))
             .registerTypeAdapter(BloodType::class.java, EnumTypeAdapter(BloodType::class.java))
             .registerTypeAdapter(GlucoseUnit::class.java, EnumTypeAdapter(GlucoseUnit::class.java))
+            .registerTypeAdapter(BackupFrequency::class.java, EnumTypeAdapter(BackupFrequency::class.java))
             .apply { if (prettyPrint) setPrettyPrinting() }
             .create()
     }

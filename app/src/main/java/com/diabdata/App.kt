@@ -35,12 +35,17 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -58,6 +63,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diabdata.core.database.DataViewModel
+import com.diabdata.core.ui.LocalSnackbarHostState
 import com.diabdata.core.utils.ScreenSize
 import com.diabdata.core.utils.getScreenSize
 import com.diabdata.core.utils.ui.SvgIcon
@@ -65,7 +71,7 @@ import com.diabdata.feature.databaseView.DatabaseEditionView
 import com.diabdata.feature.devices.ui.DevicesScreen
 import com.diabdata.feature.graphs.GraphViewer
 import com.diabdata.feature.home.HomeScreen
-import com.diabdata.feature.settings.dataSettingsSection.DataSettingsScreen
+import com.diabdata.feature.settings.dataSettingsSection.ui.DataSettingsScreen
 import com.diabdata.feature.settings.ui.SettingsScreen
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.feature.userProfile.ui.UserAvatarWithMenu
@@ -105,6 +111,8 @@ fun App(
     val isProfileRoute = currentRoute == "profile"
     val isSubSettingsRoute = currentRoute?.startsWith("settings/") == true
             && currentRoute != "settings/main"
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // ── Shortcuts ──
     LaunchedEffect(pendingDestination) {
@@ -168,101 +176,16 @@ fun App(
         }
     }
 
-    when (windowSize) {
-        // ┌─────────────────────────────────────────────┐
-        // │  🖥️ EXPANDED (≥ 840dp) : Permanent Drawer   │
-        // └─────────────────────────────────────────────┘
-        ScreenSize.LARGE -> {
-            if (isProfileRoute) {
-                Scaffold(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                ) { paddingValues ->
-                    DiabDataNavHost(
-                        navController = navController,
-                        dataViewModel = dataViewModel,
-                        modifier = Modifier.padding(paddingValues)
-                    )
-                }
-            } else {
-                PermanentNavigationDrawer(
-                    drawerContent = {
-                        PermanentDrawerSheet(
-                            modifier = Modifier.width(280.dp),
-                            drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                        ) {
-                            Spacer(Modifier.height(16.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 26.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                UserAvatarWithMenu(
-                                    firstName = userDetails?.firstName,
-                                    lastName = userDetails?.lastName,
-                                    profilePhotoPath = userDetails?.profilePhotoPath,
-                                    onEditProfile = { navController.navigate("profile") }
-                                )
-                                userDetails?.firstName?.let {
-                                    Text(
-                                        text = it,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
-                            }
-
-                            Spacer(Modifier.height(16.dp))
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .background(color = MaterialTheme.colorScheme.onPrimary)
-                            )
-                            Spacer(Modifier.height(12.dp))
-
-                            val currentBackStack by navController.currentBackStackEntryAsState()
-                            val currentDestination = currentBackStack?.destination
-
-                            items.forEach { item ->
-                                val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
-                                        || currentDestination?.route?.startsWith(item.route) == true
-                                NavigationDrawerItem(
-                                    icon = { NavItemIcon(item, selected) },
-                                    label = { Text(stringResource(item.label)) },
-                                    selected = selected,
-                                    onClick = { onNavigate(item.route) },
-                                    modifier = Modifier.padding(horizontal = 12.dp)
-                                )
-                                Spacer(Modifier.height(4.dp))
-                            }
-                        }
-                    }
-                ) {
+    CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+        when (windowSize) {
+            // ┌─────────────────────────────────────────────┐
+            // │  🖥️ EXPANDED (≥ 840dp) : Permanent Drawer   │
+            // └─────────────────────────────────────────────┘
+            ScreenSize.LARGE -> {
+                if (isProfileRoute) {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        topBar = {
-                            if (isSubSettingsRoute) {
-                                TopAppBar(
-                                    title = {
-                                        Text(
-                                            when (currentRoute) {
-                                                "settings/data" -> stringResource(shared.string.settings_section_data)
-                                                else -> ""
-                                            }
-                                        )
-                                    },
-                                    navigationIcon = {
-                                        IconButton(onClick = { navController.popBackStack() }) {
-                                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                                        }
-                                    },
-                                    colors = TopAppBarDefaults.topAppBarColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                    )
-                                )
-                            }
-                        }
+                        snackbarHost = { SnackbarHost(snackbarHostState) },
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ) { paddingValues ->
                         DiabDataNavHost(
                             navController = navController,
@@ -270,208 +193,301 @@ fun App(
                             modifier = Modifier.padding(paddingValues)
                         )
                     }
-                }
-            }
-        }
-
-        // ┌─────────────────────────────────────────────┐
-        // │  📱 MEDIUM (≥ 600dp) : Navigation Rail      │
-        // └─────────────────────────────────────────────┘
-        ScreenSize.MEDIUM -> {
-            Scaffold(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                topBar = {
-                    if (isSubSettingsRoute) {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    when (currentRoute) {
-                                        "settings/data" -> stringResource(shared.string.settings_section_data)
-                                        else -> ""
-                                    }
-                                )
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = { navController.popBackStack() }) {
-                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                                }
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer
-                            )
-                        )
-                    }
-                }
-            ) { paddingValues ->
-                Row(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                ) {
-                    NavigationRail(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                        header = {
-                            Column(
-                                modifier = Modifier
-                                    .widthIn(max = 80.dp)
-                                    .padding(top = 12.dp, bottom = 8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                } else {
+                    PermanentNavigationDrawer(
+                        drawerContent = {
+                            PermanentDrawerSheet(
+                                modifier = Modifier.width(280.dp),
+                                drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             ) {
-                                UserAvatarWithMenu(
-                                    firstName = userDetails?.firstName,
-                                    lastName = userDetails?.lastName,
-                                    profilePhotoPath = userDetails?.profilePhotoPath,
-                                    onEditProfile = { navController.navigate("profile") }
-                                )
-                                userDetails?.firstName?.let {
-                                    Text(
-                                        text = it,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                Spacer(Modifier.height(16.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 26.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    UserAvatarWithMenu(
+                                        firstName = userDetails?.firstName,
+                                        lastName = userDetails?.lastName,
+                                        profilePhotoPath = userDetails?.profilePhotoPath,
+                                        onEditProfile = { navController.navigate("profile") }
                                     )
+                                    userDetails?.firstName?.let {
+                                        Text(
+                                            text = it,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
+
+                                Spacer(Modifier.height(16.dp))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .background(color = MaterialTheme.colorScheme.onPrimary)
+                                )
+                                Spacer(Modifier.height(12.dp))
+
+                                val currentBackStack by navController.currentBackStackEntryAsState()
+                                val currentDestination = currentBackStack?.destination
+
+                                items.forEach { item ->
+                                    val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                            || currentDestination?.route?.startsWith(item.route) == true
+                                    NavigationDrawerItem(
+                                        icon = { NavItemIcon(item, selected) },
+                                        label = { Text(stringResource(item.label)) },
+                                        selected = selected,
+                                        onClick = { onNavigate(item.route) },
+                                        modifier = Modifier.padding(horizontal = 12.dp)
+                                    )
+                                    Spacer(Modifier.height(4.dp))
                                 }
                             }
                         }
                     ) {
-                        val currentBackStack by navController.currentBackStackEntryAsState()
-                        val currentDestination = currentBackStack?.destination
-
-                        items.forEach { item ->
-                            val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
-                                    || currentDestination?.route?.startsWith(item.route) == true
-                            NavigationRailItem(
-                                icon = { NavItemIcon(item, false) },
-                                label = {
-                                    Text(
-                                        text = stringResource(item.label),
-                                        overflow = TextOverflow.Ellipsis
+                        Scaffold(
+                            snackbarHost = {
+                                SnackbarHost(hostState = snackbarHostState)
+                            },
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            topBar = {
+                                if (isSubSettingsRoute) {
+                                    TopAppBar(
+                                        title = {
+                                            Text(
+                                                when (currentRoute) {
+                                                    "settings/data" -> stringResource(shared.string.settings_section_data)
+                                                    else -> ""
+                                                }
+                                            )
+                                        },
+                                        navigationIcon = {
+                                            IconButton(onClick = { navController.popBackStack() }) {
+                                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                                            }
+                                        },
+                                        colors = TopAppBarDefaults.topAppBarColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                        )
                                     )
-                                },
-                                selected = selected,
-                                onClick = { onNavigate(item.route) },
-                                alwaysShowLabel = false
+                                }
+                            }
+                        ) { paddingValues ->
+                            DiabDataNavHost(
+                                navController = navController,
+                                dataViewModel = dataViewModel,
+                                modifier = Modifier.padding(paddingValues)
                             )
                         }
                     }
-
-                    DiabDataNavHost(
-                        navController = navController,
-                        dataViewModel = dataViewModel,
-                        modifier = Modifier.weight(1f)
-                    )
                 }
             }
-        }
 
-        // ┌─────────────────────────────────────────────┐
-        // │  📱 COMPACT (< 600dp) : Bottom Bar          │
-        // └─────────────────────────────────────────────┘
-        ScreenSize.COMPACT -> {
-            Scaffold(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                topBar = {
-                    when {
-                        isProfileRoute -> { /* Pas de TopAppBar */ }
-                        isSubSettingsRoute -> {
+            // ┌─────────────────────────────────────────────┐
+            // │  📱 MEDIUM (≥ 600dp) : Navigation Rail      │
+            // └─────────────────────────────────────────────┘
+            ScreenSize.MEDIUM -> {
+                Scaffold(
+                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    topBar = {
+                        if (isSubSettingsRoute) {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        text = currentRoute.let { route ->
-                                            when (route) {
-                                                "settings/data" -> stringResource(shared.string.settings_section_data)
-
-                                                else -> ""
-                                            }
+                                        when (currentRoute) {
+                                            "settings/data" -> stringResource(shared.string.settings_section_data)
+                                            else -> ""
                                         }
                                     )
                                 },
                                 navigationIcon = {
                                     IconButton(onClick = { navController.popBackStack() }) {
-                                        Icon(
-                                            Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = stringResource(shared.string.common_back)
-                                        )
+                                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                                     }
                                 },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                )
-                            )
-                        }
-                        else -> {
-                            TopAppBar(
-                                title = { Text("") },
-                                actions = {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)
-                                    ) {
-                                        userDetails?.firstName?.let {
-                                            Text(
-                                                text = it,
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        }
-                                        UserAvatarWithMenu(
-                                            firstName = userDetails?.firstName,
-                                            lastName = userDetails?.lastName,
-                                            profilePhotoPath = userDetails?.profilePhotoPath,
-                                            size = 30.dp,
-                                            onEditProfile = { navController.navigate("profile") }
-                                        )
-                                    }
-                                },
-                                contentPadding = PaddingValues(
-                                    start = 32.dp, top = 5.dp, end = 32.dp, bottom = 10.dp
-                                ),
-                                expandedHeight = 40.dp,
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceContainer
                                 )
                             )
                         }
                     }
-                },
-                bottomBar = {
-                    if (!isProfileRoute && !isSubSettingsRoute) {
-                        NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ) { paddingValues ->
+                    Row(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                    ) {
+                        NavigationRail(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                            header = {
+                                Column(
+                                    modifier = Modifier
+                                        .widthIn(max = 80.dp)
+                                        .padding(top = 12.dp, bottom = 8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    UserAvatarWithMenu(
+                                        firstName = userDetails?.firstName,
+                                        lastName = userDetails?.lastName,
+                                        profilePhotoPath = userDetails?.profilePhotoPath,
+                                        onEditProfile = { navController.navigate("profile") }
+                                    )
+                                    userDetails?.firstName?.let {
+                                        Text(
+                                            text = it,
+                                            fontWeight = FontWeight.Bold,
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+                            }
                         ) {
                             val currentBackStack by navController.currentBackStackEntryAsState()
                             val currentDestination = currentBackStack?.destination
+
                             items.forEach { item ->
                                 val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
                                         || currentDestination?.route?.startsWith(item.route) == true
-                                NavigationBarItem(
-                                    icon = { NavItemIcon(item, selected) },
-                                    label = { Text(stringResource(item.label)) },
+                                NavigationRailItem(
+                                    icon = { NavItemIcon(item, false) },
+                                    label = {
+                                        Text(
+                                            text = stringResource(item.label),
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    },
                                     selected = selected,
-                                    onClick = { onNavigate(item.route) }
+                                    onClick = { onNavigate(item.route) },
+                                    alwaysShowLabel = false
                                 )
                             }
                         }
+
+                        DiabDataNavHost(
+                            navController = navController,
+                            dataViewModel = dataViewModel,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
-            ) { paddingValues ->
-                DiabDataNavHost(
-                    navController = navController,
-                    dataViewModel = dataViewModel,
-                    modifier = Modifier.padding(
-                        if (isProfileRoute) PaddingValues(
-                            start = 0.dp,
-                            top = 0.dp,
-                            end = 0.dp,
-                            bottom = paddingValues.calculateBottomPadding()
+            }
+
+            // ┌─────────────────────────────────────────────┐
+            // │  📱 COMPACT (< 600dp) : Bottom Bar          │
+            // └─────────────────────────────────────────────┘
+            ScreenSize.COMPACT -> {
+                Scaffold(
+                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    topBar = {
+                        when {
+                            isProfileRoute -> { /* Pas de TopAppBar */ }
+                            isSubSettingsRoute -> {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            text = currentRoute.let { route ->
+                                                when (route) {
+                                                    "settings/data" -> stringResource(shared.string.settings_section_data)
+
+                                                    else -> ""
+                                                }
+                                            }
+                                        )
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = { navController.popBackStack() }) {
+                                            Icon(
+                                                Icons.AutoMirrored.Filled.ArrowBack,
+                                                contentDescription = stringResource(shared.string.common_back)
+                                            )
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.topAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                    )
+                                )
+                            }
+                            else -> {
+                                TopAppBar(
+                                    title = { Text("") },
+                                    actions = {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)
+                                        ) {
+                                            userDetails?.firstName?.let {
+                                                Text(
+                                                    text = it,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                            }
+                                            UserAvatarWithMenu(
+                                                firstName = userDetails?.firstName,
+                                                lastName = userDetails?.lastName,
+                                                profilePhotoPath = userDetails?.profilePhotoPath,
+                                                size = 30.dp,
+                                                onEditProfile = { navController.navigate("profile") }
+                                            )
+                                        }
+                                    },
+                                    contentPadding = PaddingValues(
+                                        start = 32.dp, top = 5.dp, end = 32.dp, bottom = 10.dp
+                                    ),
+                                    expandedHeight = 40.dp,
+                                    colors = TopAppBarDefaults.topAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                    )
+                                )
+                            }
+                        }
+                    },
+                    bottomBar = {
+                        if (!isProfileRoute && !isSubSettingsRoute) {
+                            NavigationBar(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            ) {
+                                val currentBackStack by navController.currentBackStackEntryAsState()
+                                val currentDestination = currentBackStack?.destination
+                                items.forEach { item ->
+                                    val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                            || currentDestination?.route?.startsWith(item.route) == true
+                                    NavigationBarItem(
+                                        icon = { NavItemIcon(item, selected) },
+                                        label = { Text(stringResource(item.label)) },
+                                        selected = selected,
+                                        onClick = { onNavigate(item.route) }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                ) { paddingValues ->
+                    DiabDataNavHost(
+                        navController = navController,
+                        dataViewModel = dataViewModel,
+                        modifier = Modifier.padding(
+                            if (isProfileRoute) PaddingValues(
+                                start = 0.dp,
+                                top = 0.dp,
+                                end = 0.dp,
+                                bottom = paddingValues.calculateBottomPadding()
+                            )
+                            else paddingValues
                         )
-                        else paddingValues
                     )
-                )
+                }
             }
         }
     }

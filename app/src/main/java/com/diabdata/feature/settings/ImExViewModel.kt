@@ -24,6 +24,8 @@ class ImExViewModel @Inject constructor (
         val importantDates = repository.getAllImportantDates().first()
         val medicalDevices = repository.getAllDevices().first()
         val userDetails = repository.getUserDetails().first()
+        val userPreferences = repository.getUserPreferences().first()
+
 
         val exportData = ExportData(
             weights = weights,
@@ -32,7 +34,8 @@ class ImExViewModel @Inject constructor (
             treatments = treatments,
             importantDates = importantDates,
             devices = medicalDevices,
-            userDetails = userDetails
+            userDetails = userDetails,
+            userPreferences = userPreferences
         )
 
         return gson.toJson(exportData)
@@ -64,6 +67,9 @@ class ImExViewModel @Inject constructor (
             }
             importedData.userDetails?.let { userDetails ->
                 repository.updateUserDetails(userDetails.copy(profilePhotoPath = profilePhotoPath))
+            }
+            importedData.userPreferences?.let { userPreferences ->
+                repository.insertOrUpdate(userPreferences.copy())
             }
         }
     }

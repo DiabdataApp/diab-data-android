@@ -15,6 +15,8 @@
     <string name="common_add">Add</string>
     <string name="common_set_lifespan">Discarded</string>
     <string name="common_retry">Retry</string>
+    <string name="common_reset">Reset</string>
+    <string name="common_undo">Undo</string>
 
     <!-- ======================== -->
     <!--    Common Form Labels     -->
@@ -35,4 +37,10 @@
     <string name="popup_placeholder_device_type">Device type</string>
     <string name="popup_placeholder_search">Search…</string>
 
+    <!-- ======================== -->
+    <!--      Storage types       -->
+    <!-- ======================== -->
+    <string name="common_internal_storage">Root</string>
+    <string name="common_storage_sd_card">SD_Card</string>
+    <string name="common_storage_home">Documents/</string>
 </resources>

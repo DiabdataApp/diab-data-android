@@ -120,8 +120,8 @@
     <string name="date_days_sunday_abbreviation">S</string>
 
     <!-- Recurrence periods -->
-    <string name="recurrence_period_dayly">Daily</string>
-    <string name="recurrence_period_weekly">Weekly</string>
-    <string name="recurrence_period_monthly">Monthly</string>
+    <string name="recurrence_period_dayly">Day</string>
+    <string name="recurrence_period_weekly">Week</string>
+    <string name="recurrence_period_monthly">Month</string>
 
 </resources>

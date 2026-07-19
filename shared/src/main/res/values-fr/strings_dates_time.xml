@@ -120,8 +120,8 @@
     <string name="date_days_sunday_abbreviation">D</string>
 
     <!-- Recurrence periods -->
-    <string name="recurrence_period_dayly">Quotidien</string>
-    <string name="recurrence_period_weekly">Hebdomadaire</string>
-    <string name="recurrence_period_monthly">Mensuel</string>
+    <string name="recurrence_period_dayly">Jour</string>
+    <string name="recurrence_period_weekly">Semaine</string>
+    <string name="recurrence_period_monthly">Mois</string>
 
 </resources>

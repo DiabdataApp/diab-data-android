@@ -85,6 +85,7 @@ import com.diabdata.core.utils.ui.getItemShape
  * @param shape     The [Shape] applied to the card's corners. Typically provided by [getItemShape]
  *                  to ensure correct rounding based on position within the stack.
  * @param modifier  [Modifier] applied to the root [Card] container.
+ * @param alignTop  If true, the content will be aligned to the top of the card,
  *
  * @see CardItem                Data model describing the content of a single card.
  * @see CardsList               Parent composable that orchestrates the full card stack.
@@ -97,7 +98,8 @@ import com.diabdata.core.utils.ui.getItemShape
 fun CardListItem(
     cardItem: CardItem,
     shape: Shape,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    alignTop: Boolean = false
 ) {
     val surfaceModifier = modifier.fillMaxWidth()
 
@@ -106,7 +108,7 @@ fun CardListItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 22.dp, vertical = 22.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = if (alignTop) Alignment.Top else Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             when {

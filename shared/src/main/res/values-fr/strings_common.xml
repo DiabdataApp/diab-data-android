@@ -15,6 +15,8 @@
     <string name="common_add">Ajouter</string>
     <string name="common_set_lifespan">Désactivé</string>
     <string name="common_retry">Réessayer</string>
+    <string name="common_reset">Réinitialiser</string>
+    <string name="common_undo">Rétablir</string>
 
     <!-- ======================== -->
     <!--    Common Form Labels     -->
@@ -34,5 +36,12 @@
     <string name="popup_placeholder_medication_type">Type de traitement</string>
     <string name="popup_placeholder_device_type">Type d\'appareil</string>
     <string name="popup_placeholder_search">Rechercher…</string>
+
+    <!-- ======================== -->
+    <!--      Storage types       -->
+    <!-- ======================== -->
+    <string name="common_internal_storage">Racine</string>
+    <string name="common_storage_sd_card">Carte_SD</string>
+    <string name="common_storage_home">Documents/</string>
 
 </resources>

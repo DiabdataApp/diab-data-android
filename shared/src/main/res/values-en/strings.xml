@@ -246,6 +246,11 @@
     <!-- Automated backup section -->
     <string name="settings_set_data_backup_scheduler_label">Backup schedule</string>
     <string name="settings_set_data_backup_scheduler_description">Enable to set your data\'s automatic backup schedule up.</string>
+    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_set_data_backup_path">Choose backup folder</string>
+
+    <!-- Automated backup section > snackbar -->
+    <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
 
     <!-- ============================================= -->
     <!-- SETTINGS > NOTIFICATIONS -->

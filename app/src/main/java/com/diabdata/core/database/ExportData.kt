@@ -6,6 +6,7 @@ import com.diabdata.core.model.ImportantDate
 import com.diabdata.core.model.MedicalDevice
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
+import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.model.Weight
 
 data class ExportData(
@@ -15,5 +16,6 @@ data class ExportData(
     val treatments: List<Treatment> = emptyList(),
     val importantDates: List<ImportantDate> = emptyList(),
     val devices: List<MedicalDevice> = emptyList(),
-    val userDetails: UserDetails? = null
+    val userDetails: UserDetails? = null,
+    val userPreferences: UserPreferences? = null
 )
