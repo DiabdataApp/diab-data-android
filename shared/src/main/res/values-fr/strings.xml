@@ -270,12 +270,18 @@
     <string name="notification_channel_data">Gestion de données</string>
     <string name="notification_channel_appointments">Rappels de rendez-vous</string>
     <string name="notification_channel_expirations">Rappels de dates d\'expiration</string>
+    <string name="notification_channel_scheduled_backup">Sauvegarde programmée</string>
 
     <!-- Notification content -->
     <string name="notification_appointment_title">Rappel de rendez-vous</string>
     <string name="notification_appointment_content">Votre rendez-vous %1$s du %2$s approche.</string>
     <string name="notification_expiration_title">Rappel de date d\'expiration</string>
     <string name="notification_expiration_content">Votre traitement %1$s arrivera à expiration le %2$s !</string>
+    <string name="notification_scheduled_backup_success_title">Sauvegarde automatique réussie.</string>
+    <string name="notification_scheduled_backup_success">Sauvegarde automatique ajoutée dans %1$s à %2$s.</string>
+    <string name="notification_scheduled_backup_error_title">Échec de sauvegarde automatique.</string>
+    <string name="notification_scheduled_backup_error">La sauvegarde programmée a échoué: %1$s.</string>
+    <string name="notification_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes: %1$s.</string>
 
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->

@@ -274,6 +274,7 @@
     <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
     <string name="settings_notification_next_expiration_reminder">For the medication expiring on %1$s</string>
 
+
     <!-- Toasts -->
     <string name="medication_store_rebuilt_toast">Medication GPIN store rebuilt</string>
     <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
@@ -285,12 +286,18 @@
     <string name="notification_channel_data">Data Management</string>
     <string name="notification_channel_appointments">Appointments reminders</string>
     <string name="notification_channel_expirations">Expiration date reminders</string>
+    <string name="notification_channel_scheduled_backup">Backup schedule</string>
 
     <!-- Notification content -->
     <string name="notification_appointment_title">Appointment reminder</string>
     <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
     <string name="notification_expiration_title">Expiry date reminder</string>
     <string name="notification_expiration_content">Your medication %1$s will expire on the %2$s!</string>
+    <string name="notification_scheduled_backup_success_title">Scheduled backup success.</string>
+    <string name="notification_scheduled_backup_success">Scheduled backup saved in %1$s at %2$s.</string>
+    <string name="notification_scheduled_backup_error_title">Scheduled backup fail.</string>
+    <string name="notification_scheduled_backup_error">Scheduled backup failed: %1$s.</string>
+    <string name="notification_scheduled_backup_error_permission_denied">Scheduled backup failed due to permission denial: %1$s.</string>
 
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->
