@@ -14,35 +14,6 @@
     <string name="stop_casting">Stop casting</string>
 
     <!-- ============================================= -->
-    <!-- USER PROFILE -->
-    <!-- ============================================= -->
-    <string name="save">Save</string>
-    <string name="change_photo">Change photo</string>
-    <string name="section_identity">Identity</string>
-    <string name="section_diabetes">Diabetes</string>
-    <string name="section_medical_team">Medical team</string>
-    <string name="section_treatments">Treatments</string>
-    <string name="section_glucose_goals">Blood sugar goals</string>
-    <string name="section_emergency_contact">Emergency contact</string>
-    <string name="first_name">First name</string>
-    <string name="last_name">Last name</string>
-    <string name="endocrinologist">Endocrinologist</string>
-    <string name="general_practitioner">General practitioner</string>
-    <string name="ophthalmologist">Ophthalmologist</string>
-    <string name="cardiologist">Cardiologist</string>
-    <string name="nephrologist">Nephrologist</string>
-    <string name="insulin_pump_model">Insulin pump model</string>
-    <string name="cgm_model">CGM model</string>
-    <string name="insulin_type">Insulin type</string>
-    <string name="basal_insulin_type">Basal insulin type</string>
-    <string name="target_glucose_min">Min</string>
-    <string name="target_glucose_max">Max</string>
-    <string name="emergency_contact_name">Contact name</string>
-    <string name="emergency_contact_phone">Contact phone</string>
-    <string name="diagnosis_date">Diagnosis date</string>
-    <string name="birth_date">Birth date</string>
-
-    <!-- ============================================= -->
     <!-- NAVIGATION -->
     <!-- ============================================= -->
     <string name="home_menu_title">Home</string>
@@ -86,40 +57,6 @@
     <!-- ============================================= -->
     <string name="appointment_annual_checkup">Annual Checkup</string>
     <string name="appointment_one_time">One-time appointment</string>
-
-    <!-- ============================================= -->
-    <!-- BLOOD TYPES -->
-    <!-- ============================================= -->
-    <string name="blood_type">Blood type</string>
-
-    <!-- ============================================= -->
-    <!-- GLUCOSE UNITS -->
-    <!-- ============================================= -->
-    <string name="glucose_unit">Glucose unit</string>
-
-    <!-- ============================================= -->
-    <!-- DIABETES TYPES -->
-    <!-- ============================================= -->
-    <string name="diabetes_type">Diabetes type</string>
-    <string name="diabetes_type_1">Type 1 Diabetes</string>
-    <string name="diabetes_type_2">Type 2 Diabetes</string>
-    <string name="diabetes_type_gestational">Gestational diabetes</string>
-    <string name="diabetes_type_mody">MODY</string>
-    <string name="diabetes_type_neonatal">Neonatal diabetes</string>
-    <string name="diabetes_type_wolfram">Wolfram Syndrome</string>
-    <string name="diabetes_type_lada">Latent Autoimmune Diabetes in Adults (LADA)</string>
-    <string name="diabetes_type_3c">Type 3c Diabetes</string>
-    <string name="diabetes_type_steroid_induced">Steroid-induced Diabetes</string>
-    <string name="diabetes_type_cystic_fibrosis">Cystic Fibrosis Diabetes</string>
-
-    <!-- ============================================= -->
-    <!-- GENDERS -->
-    <!-- ============================================= -->
-    <string name="gender">Gender</string>
-    <string name="gender_male">Male</string>
-    <string name="gender_female">Female</string>
-    <string name="gender_other">Other</string>
-    <string name="gender_prefer_not_to_say">Prefer not to say</string>
 
     <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
@@ -286,7 +223,7 @@
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->
     <!-- ============================================= -->
-    <string name="toast_data_unknown_medication_code">Unknown medication with GTIN: %1$s</string>
+    <string name="toast_data_unknown_medication_code">Unknown medication with GTIN:</string>
     <string name="toast_data_export_success">Data exported successfully</string>
     <string name="toast_data_export_error">Error while exporting data</string>
     <string name="toast_data_import_success">Data imported successfully</string>
@@ -350,4 +287,5 @@
     <string name="share_dialog_compagnon_mode_instruction_message">Scan QR code or type the token on the connection form</string>
     <string name="share_dialog_medical_mode_instruction_message">Show this QR code to your doctor</string>
     <string name="share_dialog_stop_sharing_button_label">Stop sharing</string>
+
 </resources>

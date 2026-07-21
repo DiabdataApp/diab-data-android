@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- ============================================= -->
     <!-- APP INFO -->
     <!-- ============================================= -->
@@ -286,7 +287,7 @@
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->
     <!-- ============================================= -->
-    <string name="toast_data_unknown_medication_code">Code GTIN du traitement inconnu: %1$s</string>
+    <string name="toast_data_unknown_medication_code">Code GTIN du traitement inconnu:</string>
     <string name="toast_data_export_success">Données exportées avec succès</string>
     <string name="toast_data_export_error">Erreur lors de l\'export des données</string>
     <string name="toast_data_import_success">Données importées avec succès</string>
@@ -350,4 +351,5 @@
     <string name="share_dialog_compagnon_mode_instruction_message">Scannez le QR code ou saisissez le code sur votre ordinateur</string>
     <string name="share_dialog_medical_mode_instruction_message">Montrez le QR code à votre médecin</string>
     <string name="share_dialog_stop_sharing_button_label">Arrêter le partage</string>
+    
 </resources>

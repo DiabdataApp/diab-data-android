@@ -34,8 +34,16 @@ class BackupWorker @AssistedInject constructor(
         return try {
             val prefs = dataRepository.getUserPreferences().first()
                 ?: return Result.failure()
-            val backupPath = prefs.backupPath
-                ?: return Result.failure()
+            val backupPath = prefs.backupPath ?: run {
+                Log.w("BackupWorker", "No backup path configured, skipping")
+                applicationContext.showNotification(
+                    title = applicationContext.getString(shared.string.notification_scheduled_backup_error_title),
+                    content = "Aucun dossier de sauvegarde configuré",
+                    channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
+                    importance = NotificationImportance.DEFAULT
+                )
+                return Result.failure()
+            }
 
             val userDetails: UserDetails? = dataRepository.getUserDetails().first()
             val profilePhotoPath = userDetails?.profilePhotoPath

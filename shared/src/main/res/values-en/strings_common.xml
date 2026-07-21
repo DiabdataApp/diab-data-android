@@ -43,4 +43,5 @@
     <string name="common_internal_storage">Root</string>
     <string name="common_storage_sd_card">SD_Card</string>
     <string name="common_storage_home">Documents/</string>
+    
 </resources>

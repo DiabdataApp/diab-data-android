@@ -2,6 +2,7 @@ package com.diabdata.feature.home
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -107,7 +108,8 @@ fun HomeScreen(
                                 scannerViewModel.updatePrefilledTreatment(treatment)
                                 setSelectedType(AddableType.TREATMENT)
                             } else {
-                                Toast.makeText(context, unknownGtin, Toast.LENGTH_SHORT).show()
+                                Log.d("HomeScreen", "Unknown Gtin: ${info.gtin}")
+                                Toast.makeText(context, "$unknownGtin ${info.gtin}", Toast.LENGTH_SHORT).show()
                             }
                         }
 
