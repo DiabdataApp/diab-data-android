@@ -1,6 +1,7 @@
 package com.diabdata.feature.settings.dataSettingsSection.workers
 
 import android.content.Context
+import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.Operation
 import androidx.work.PeriodicWorkRequest
@@ -15,9 +16,14 @@ object BackupScheduler {
 
     private fun buildWorkRequest(frequency: BackupFrequency): PeriodicWorkRequest {
         return PeriodicWorkRequestBuilder<BackupWorker>(
-            30, TimeUnit.MINUTES
+            frequency.days, TimeUnit.DAYS
         )
-            // .setInitialDelay(1, TimeUnit.MINUTES)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiresBatteryNotLow(true)
+                    .setRequiresStorageNotLow(true)
+                    .build()
+            )
             .addTag("auto_backup")
             .build()
     }
@@ -25,7 +31,7 @@ object BackupScheduler {
     fun scheduleFromUser(context: Context, frequency: BackupFrequency): Operation {
         return WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             UNIQUE_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.UPDATE,
             buildWorkRequest(frequency)
         )
     }

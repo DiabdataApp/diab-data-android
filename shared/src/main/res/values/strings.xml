@@ -217,6 +217,8 @@
     <string name="notification_channel_scheduled_backup">Backup schedule</string>
 
     <!-- Notification content -->
+    <string name="notification_scheduled_backup_in_progress_title">Backup in progress</string>
+    <string name="notification_scheduled_backup_in_progress_content">Your scheduled backup is being created…</string>
     <string name="notification_appointment_title">Appointment reminder</string>
     <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
     <string name="notification_expiration_title">Expiry date reminder</string>

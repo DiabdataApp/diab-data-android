@@ -109,13 +109,15 @@ class BackupWorker @AssistedInject constructor(
             Result.failure()
         } catch (e: Exception) {
             Log.e("BackupWorker", "Backup failed", e)
+            val errorDetail = "${e.javaClass.simpleName}: ${e.message}\nat ${e.stackTrace.firstOrNull()}"
             applicationContext.showNotification(
                 title = applicationContext.getString(shared.string.notification_scheduled_backup_error_title),
-                content = applicationContext.getString(shared.string.notification_scheduled_backup_error, e.message),
+                content = errorDetail,
                 channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
                 importance = NotificationImportance.DEFAULT
             )
-            Result.failure()
+
+            if (runAttemptCount < 3) Result.retry() else Result.failure()
         }
     }
 }

@@ -59,3 +59,4 @@ captures/
 # --------------------
 *.swp
 *.tmp
+/.artifacts/
