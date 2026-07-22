@@ -24,9 +24,7 @@ class ExpiringTreatmentComplicationService :
 
         val latestIconRes = treatmentTypeStr.toTreatmentIcon(filled = true)
 
-        var daysCountText = ""
-
-        daysCountText = if (daysBeforeExpiry > 0) {
+        val daysCountText = if (daysBeforeExpiry > 0) {
             resources.getQuantityString(
                 shared.plurals.date_abbr_days,
                 daysBeforeExpiry,
@@ -45,7 +43,7 @@ class ExpiringTreatmentComplicationService :
             value = rangeValue.coerceAtLeast(0f),
             min = 0f,
             max = if (totalLifespan > 0f) totalLifespan else 1f,
-            contentDescription = PlainComplicationText.Builder(getString(shared.string.wear_complication_expiring_treatments_plain_text_builder))
+            contentDescription = PlainComplicationText.Builder(getString(shared.string.medications_wear_complication_expiring_treatments_plain_text_builder))
                 .build()
         )
             .setTitle(PlainComplicationText.Builder(daysCountText).build())
@@ -63,7 +61,7 @@ class ExpiringTreatmentComplicationService :
             value = 2f,
             min = 0f,
             max = 3f,
-            contentDescription = PlainComplicationText.Builder(getString(shared.string.wear_complication_expiring_treatments_plain_text_builder))
+            contentDescription = PlainComplicationText.Builder(getString(shared.string.medications_wear_complication_expiring_treatments_plain_text_builder))
                 .build()
         )
             .setTitle(PlainComplicationText.Builder("1D").build())

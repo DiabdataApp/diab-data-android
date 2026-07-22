@@ -41,7 +41,7 @@ fun AddDeviceFab(
 
     val fabItems = listOf(
         Triple(
-            stringResource(shared.string.addable_treatment_scan),
+            stringResource(shared.string.medications_general_label_scan),
             shared.drawable.data_matrix_icon_vector
         ) { onScanClick() },
         Triple(

@@ -7,8 +7,8 @@
     <!-- ============================================= -->
     <!-- APPOINTMENT TYPES -->
     <!-- ============================================= -->
-    <string name="appointment_annual_checkup">Annual Checkup</string>
-    <string name="appointment_one_time">One-time appointment</string>
+    <string name="appointments_annual_checkup_appointment_label">Annual Checkup</string>
+    <string name="appointments_appointment_one_time_appointment_label">One-time appointment</string>
 
     <!-- ============================================= -->
     <!-- SETTINGS / REMINDERS -->

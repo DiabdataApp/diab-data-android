@@ -7,8 +7,8 @@
     <!-- ============================================= -->
     <!-- APPOINTMENT TYPES -->
     <!-- ============================================= -->
-    <string name="appointment_annual_checkup">Bilan annuel</string>
-    <string name="appointment_one_time">RDV ponctuel</string>
+    <string name="appointments_annual_checkup_appointment_label">Bilan annuel</string>
+    <string name="appointments_appointment_one_time_appointment_label">RDV ponctuel</string>
 
     <!-- ============================================= -->
     <!-- SETTINGS / REMINDERS -->

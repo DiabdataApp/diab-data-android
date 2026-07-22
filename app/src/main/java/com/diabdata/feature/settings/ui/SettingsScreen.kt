@@ -85,7 +85,7 @@ fun SettingsScreen(
         mutableStateOf(prefs.getBoolean("appointment_reminder", false))
     }
 
-    val medicationStoreRebuiltText = stringResource(shared.string.medication_store_rebuilt_toast)
+    val medicationStoreRebuiltText = stringResource(shared.string.medications_medication_store_rebuilt_toast_message)
     val medicalDevicesStoreRebuiltText =
         stringResource(shared.string.medical_devices_store_rebuilt_toast)
 
@@ -130,7 +130,7 @@ fun SettingsScreen(
             )
 
             val toastExpirationEnabled =
-                stringResource(shared.string.toast_expiration_reminders_enabled)
+                stringResource(shared.string.medications_reminders_enabled_success_toast)
             val toastAppointmentReminderEnabled =
                 stringResource(shared.string.appointments_reminders_enabled_success_toast)
 
@@ -139,7 +139,7 @@ fun SettingsScreen(
                     leadingColoredCircleIcon = iconCircleProps,
                     content = {
                         val displayText = if (nextTreatmentExpirationDate != null) stringResource(
-                            shared.string.settings_notification_next_expiration_reminder,
+                            shared.string.medications_setting_screen_reminder_details,
                             nextTreatmentExpirationDate!!.format(
                                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
                             )
@@ -147,7 +147,7 @@ fun SettingsScreen(
 
                         Column {
                             Text(
-                                text = stringResource(shared.string.notification_expiration_title),
+                                text = stringResource(shared.string.medications_expiry_notification_title_text),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(

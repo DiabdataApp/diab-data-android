@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- ============================================= -->
     <!-- APP INFO -->
@@ -28,21 +28,6 @@
     <string name="chart_menu_title_long">Ouvrir la page des graphiques</string>
 
     <!-- ============================================= -->
-    <!-- MEDICATIONS -->
-    <!-- ============================================= -->
-    <string name="medication_ketone_test_strip">Bandelettes cétonémie</string>
-    <string name="medication_glucose_test_strip">Bandelettes glycémie</string>
-    <string name="medication_fast_acting_insulin_cartridge">Insuline rapide cartouche</string>
-    <string name="medication_fast_acting_insulin_syringe">Insuline rapide stylo</string>
-    <string name="medication_fast_acting_insulin_vial">Insuline rapide flacon</string>
-    <string name="medication_slow_acting_insulin_syringe">Insuline lente stylo</string>
-    <string name="medication_slow_acting_insulin_cartridge">Insuline lente cartouche</string>
-    <string name="medication_slow_acting_insulin_vial">Insuline lente flacon</string>
-    <string name="medication_glucagon_syringe">Seringue glucagen</string>
-    <string name="medication_glucagon_spray">Glucagen voie nasale (Baqsimi)</string>
-    <string name="medication_unknown">Traitement inconnu</string>
-
-    <!-- ============================================= -->
     <!-- DEVICE TYPES -->
     <!-- ============================================= -->
     <string name="device_type_wireless_patch">Pompe patch</string>
@@ -58,8 +43,6 @@
     <!-- ============================================= -->
     <string name="addable_weight">Poids</string>
     <string name="addable_hba1c">HbA1c</string>
-    <string name="addable_treatment">Traitement</string>
-    <string name="addable_treatment_scan">Scanner un code</string>
     <string name="addable_important_date">Date importante</string>
     <string name="addable_device">Appareil</string>
 
@@ -71,7 +54,6 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Dates importantes</string>
     <string name="home_section_latest_measures">Derniers relevés</string>
-    <string name="home_section_upcoming_treatment_expirations">Mes traitements</string>
     <string name="home_section_current_consumable_devices">Périphériques actifs</string>
     <string name="home_section_current_non_consumable_devices">Mes appareils</string>
 
@@ -183,24 +165,16 @@
     <!-- SETTINGS > NOTIFICATIONS -->
     <!-- ============================================= -->
 
-    <!-- Notifications -->
-    <string name="settings_notification_expiration">Expiration des traitements</string>
-    <string name="settings_notification_next_expiration_reminder">Pour le traitement qui expirera le %1$s</string>
-
     <!-- Toasts -->
-    <string name="medication_store_rebuilt_toast">La base de données des GPIN des traitements a été reconstruite</string>
     <string name="medical_devices_store_rebuilt_toast">La base de données des GPIN des appareils Médicaux a été reconstruite</string>
 
     <!-- Channel names -->
     <string name="notification_channel_data">Gestion de données</string>
-    <string name="notification_channel_expirations">Rappels de dates d\'expiration</string>
     <string name="notification_channel_scheduled_backup">Sauvegarde programmée</string>
 
     <!-- Notification content -->
     <string name="notification_scheduled_backup_in_progress_title">Sauvegarde en cours</string>
     <string name="notification_scheduled_backup_in_progress_content">Votre sauvegarde automatique est en cours de création…</string>
-    <string name="notification_expiration_title">Rappel de date d\'expiration</string>
-    <string name="notification_expiration_content">Votre traitement %1$s arrivera à expiration le %2$s !</string>
     <string name="notification_scheduled_backup_success_title">Sauvegarde automatique réussie.</string>
     <string name="notification_scheduled_backup_success">Sauvegarde automatique ajoutée dans %1$s à %2$s.</string>
     <string name="notification_scheduled_backup_error_title">Échec de sauvegarde automatique.</string>
@@ -210,13 +184,11 @@
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->
     <!-- ============================================= -->
-    <string name="toast_data_unknown_medication_code">Code GTIN du traitement inconnu:</string>
     <string name="toast_data_export_success">Données exportées avec succès</string>
     <string name="toast_data_export_error">Erreur lors de l\'export des données</string>
     <string name="toast_data_import_success">Données importées avec succès</string>
     <string name="toast_data_import_error">Erreur lors de l\'import des données</string>
     <string name="toast_empty_file_error">Le fichier est vide</string>
-    <string name="toast_expiration_reminders_enabled">Rappels des dates d\'expiration activés !</string>
     <string name="toast_camera_permission_error">Permission d\'accès à la caméra refusée</string>
 
     <!-- ============================================= -->
@@ -240,12 +212,6 @@
     <string name="wear_complication_expiring_devices_label">Périphériques à remplacer</string>
     <string name="wear_complication_expiring_devices">À remplacer prochainement</string>
     <string name="wear_complication_expiring_devices_plain_text_builder">Jours restants</string>
-
-    <!-- ============================================= -->
-    <!-- TREATMENT EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_treatments_label">Traitements à remplacer</string>
-    <string name="wear_complication_expiring_treatments_plain_text_builder">Jours restants</string>
 
     <!-- ============================================= -->
     <!-- GLANCE TILE -->

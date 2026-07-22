@@ -28,21 +28,6 @@
     <string name="chart_menu_title_long">Open graphs page</string>
 
     <!-- ============================================= -->
-    <!-- MEDICATIONS -->
-    <!-- ============================================= -->
-    <string name="medication_ketone_test_strip">Blood ketone test strips</string>
-    <string name="medication_glucose_test_strip">Blood glucose test strips</string>
-    <string name="medication_fast_acting_insulin_cartridge">Fast acting insulin cartridge</string>
-    <string name="medication_fast_acting_insulin_syringe">Fast acting insulin pen</string>
-    <string name="medication_fast_acting_insulin_vial">Fast acting insulin vial</string>
-    <string name="medication_slow_acting_insulin_syringe">Slow acting insulin pen</string>
-    <string name="medication_slow_acting_insulin_cartridge">Slow acting insulin cartridge</string>
-    <string name="medication_slow_acting_insulin_vial">Slow acting insulin vial</string>
-    <string name="medication_glucagon_syringe">Glucagon syringe</string>
-    <string name="medication_glucagon_spray">Glucagon nasal spray (Baqsimi)</string>
-    <string name="medication_unknown">Unknown medication</string>
-
-    <!-- ============================================= -->
     <!-- DEVICE TYPES -->
     <!-- ============================================= -->
     <string name="device_type_wireless_patch">Patch pump</string>
@@ -58,8 +43,6 @@
     <!-- ============================================= -->
     <string name="addable_weight">Weight</string>
     <string name="addable_hba1c">HbA1c</string>
-    <string name="addable_treatment">Medication</string>
-    <string name="addable_treatment_scan">Scan a code</string>
     <string name="addable_important_date">Important date</string>
     <string name="addable_device">Device</string>
 
@@ -71,7 +54,6 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Important dates</string>
     <string name="home_section_latest_measures">Recent readings</string>
-    <string name="home_section_upcoming_treatment_expirations">My medication</string>
     <string name="home_section_current_consumable_devices">Active peripherals</string>
     <string name="home_section_current_non_consumable_devices">My devices</string>
 
@@ -182,25 +164,15 @@
     <!-- ============================================= -->
     <!-- SETTINGS > NOTIFICATIONS -->
     <!-- ============================================= -->
-
-    <!-- Notifications -->
-    <string name="settings_notification_expiration">Medication expiration</string>
-    <string name="settings_notification_next_expiration_reminder">For the medication expiring on %1$s</string>
-
-    <!-- Toasts -->
-    <string name="medication_store_rebuilt_toast">Medication GPIN store rebuilt</string>
     <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
 
     <!-- Channel names -->
     <string name="notification_channel_data">Data Management</string>
-    <string name="notification_channel_expirations">Expiration date reminders</string>
     <string name="notification_channel_scheduled_backup">Backup schedule</string>
 
     <!-- Notification content -->
     <string name="notification_scheduled_backup_in_progress_title">Backup in progress</string>
     <string name="notification_scheduled_backup_in_progress_content">Your scheduled backup is being created…</string>
-    <string name="notification_expiration_title">Expiry date reminder</string>
-    <string name="notification_expiration_content">Your medication %1$s will expire on the %2$s!</string>
     <string name="notification_scheduled_backup_success_title">Scheduled backup success.</string>
     <string name="notification_scheduled_backup_success">Scheduled backup saved in %1$s at %2$s.</string>
     <string name="notification_scheduled_backup_error_title">Scheduled backup fail.</string>
@@ -210,24 +182,17 @@
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->
     <!-- ============================================= -->
-    <string name="toast_data_unknown_medication_code">Unknown medication with GTIN:</string>
     <string name="toast_data_export_success">Data exported successfully</string>
     <string name="toast_data_export_error">Error while exporting data</string>
     <string name="toast_data_import_success">Data imported successfully</string>
     <string name="toast_data_import_error">Error while importing data</string>
     <string name="toast_empty_file_error">The file is empty</string>
-    <string name="toast_expiration_reminders_enabled">Expiry dates reminders enabled!</string>
     <string name="toast_camera_permission_error">Camera permission denied</string>
 
     <!-- ============================================= -->
     <!-- SCANNER -->
     <!-- ============================================= -->
     <string name="scanner_hint_datamatrix">Scan your medication DataMatrix (small QR Code)</string>
-
-    <!-- ============================================= -->
-    <!-- WEAR OS -->
-    <!-- ============================================= -->
-
     <!-- ============================================= -->
     <!-- GLANCE WIDGET -->
     <!-- ============================================= -->
@@ -240,12 +205,6 @@
     <string name="wear_complication_expiring_devices_label">Devices expiring soon</string>
     <string name="wear_complication_expiring_devices">To replace soon</string>
     <string name="wear_complication_expiring_devices_plain_text_builder">Days left</string>
-
-    <!-- ============================================= -->
-    <!-- TREATMENT EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_treatments_label">Treatments expiring soon</string>
-    <string name="wear_complication_expiring_treatments_plain_text_builder">Days left</string>
 
     <!-- ============================================= -->
     <!-- GLANCE TILE -->

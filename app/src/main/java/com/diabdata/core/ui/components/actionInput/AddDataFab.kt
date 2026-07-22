@@ -41,7 +41,7 @@ fun AddDataFab(
 
     val fabItems = listOf(
         Triple(
-            stringResource(shared.string.addable_treatment_scan),
+            stringResource(shared.string.medications_general_label_scan),
             shared.drawable.data_matrix_icon_vector
         ) { onScanClick() },
         Triple(
@@ -57,7 +57,7 @@ fun AddDataFab(
             shared.drawable.important_date_add_icon_vector
         ) { onSelect(AddableType.IMPORTANT_DATE) },
         Triple(
-            stringResource(shared.string.addable_treatment),
+            stringResource(shared.string.medications_general_label),
             shared.drawable.medication_add_icon_vector
         ) { onSelect(AddableType.TREATMENT) },
         Triple(

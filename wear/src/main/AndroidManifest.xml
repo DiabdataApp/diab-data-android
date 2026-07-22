@@ -89,7 +89,7 @@
         <service
             android:name=".complications.expiringTreatments.ExpiringTreatmentComplicationService"
             android:exported="true"
-            android:label="@string/wear_complication_expiring_treatments_label"
+            android:label="@string/medications_wear_complication_expiring_treatments_label"
             android:icon="@drawable/medication_info_icon_vector"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>

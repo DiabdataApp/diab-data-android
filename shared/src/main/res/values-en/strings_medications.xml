@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="medications_general_label">Medication</string>
+    <string name="medications_homscreen_upcoming_treatment_expirations">My medication</string>
+    <string name="medications_general_label_scan">Scann a code</string>
+
+    <!-- ============================================= -->
+    <!-- MEDICATIONS TYPES -->
+    <!-- ============================================= -->
+    <string name="medications_ketone_test_strip_label">Blood ketone test strips</string>
+    <string name="mmedications_glucose_test_strip_label">Blood glucose test strips</string>
+    <string name="medications_fast_acting_insulin_cartridge_label">Fast acting insulin cartridge</string>
+    <string name="medications_fast_acting_insulin_syringe_label">Fast acting insulin pen</string>
+    <string name="medications_fast_acting_insulin_vial_label">Fast acting insulin vial</string>
+    <string name="medications_slow_acting_insulin_syringe_label">Slow acting insulin pen</string>
+    <string name="medications_slow_acting_insulin_cartridge_label">Slow acting insulin cartridge</string>
+    <string name="medications_slow_acting_insulin_vial_label">Slow acting insulin vial</string>
+    <string name="medications_glucagon_syringe_label">Glucagon syringe</string>
+    <string name="medications_glucagon_spray_label">Glucagon nasal spray (Baqsimi)</string>
+    <string name="medications_medication_unknown_label">Unknown medication</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS / REMINDERS -->
+    <!-- ============================================= -->
+    <string name="medications_setting_screen_reminder_label">Medication expiration</string>
+    <string name="medications_setting_screen_reminder_details">For the medication expiring on %1$s</string>
+    <string name="medications_medication_store_rebuilt_toast_message">Medication GPIN store rebuilt</string>
+
+    <string name="medications_notification_channel_name">Expiration date reminders</string>
+
+    <string name="medications_expiry_notification_title_text">Expiry date reminder</string>
+    <string name="medications_expiry_notification_content_text">Your medication %1$s will expire on the %2$s!</string>
+    <string name="medications_reminders_enabled_success_toast">Expiry dates reminders enabled!</string>
+
+    <!-- Error toast message -->
+    <string name="medications_unknown_medication_code_error_message">Unknown medication with GTIN:</string>
+
+    <!-- ============================================= -->
+    <!-- WEAR COMPLICATIONS -->
+    <!-- ============================================= -->
+    <!-- Complication label -->
+    <string name="medications_wear_complication_expiring_treatments_label">Treatments expiring soon</string>
+
+    <string name="medications_wear_complication_expiring_treatments_plain_text_builder">Days left</string>
+
+</resources>

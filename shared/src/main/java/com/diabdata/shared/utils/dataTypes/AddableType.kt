@@ -36,7 +36,7 @@ enum class AddableType(
     ),
     TREATMENT(
         tableName = "treatments",
-        displayNameRes = R.string.addable_treatment,
+        displayNameRes = R.string.medications_general_label,
         baseColor = Color(0xFF4ADCC4),
         iconRes = R.drawable.medication_icon_vector,
         iconFilledRes = R.drawable.medication_filled_icon_vector
