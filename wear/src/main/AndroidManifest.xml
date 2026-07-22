@@ -55,7 +55,7 @@
         <service
             android:name=".complications.upcomingAppointments.UpcomingAppointmentComplicationService"
             android:exported="true"
-            android:label="@string/wear_complication_upcoming_appointment_label"
+            android:label="@string/appointments_wear_complication_upcoming_appointment_label"
             android:icon="@drawable/recurring_event_icon_vector"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>

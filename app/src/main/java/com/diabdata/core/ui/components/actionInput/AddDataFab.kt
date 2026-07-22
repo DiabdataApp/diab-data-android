@@ -61,7 +61,7 @@ fun AddDataFab(
             shared.drawable.medication_add_icon_vector
         ) { onSelect(AddableType.TREATMENT) },
         Triple(
-            stringResource(shared.string.addable_appointment), shared.drawable.event_add_icon_vector
+            stringResource(shared.string.appointments_general_label), shared.drawable.event_add_icon_vector
         ) { onSelect(AddableType.APPOINTMENT) })
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {

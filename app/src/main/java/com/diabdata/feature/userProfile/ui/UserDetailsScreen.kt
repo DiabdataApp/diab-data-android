@@ -146,7 +146,7 @@ fun UserDetailsView(
                 },
                 actions = {
                     TextButton(onClick = { onSave(buildUpdatedUserDetails()) }) {
-                        Text(stringResource(shared.string.save))
+                        Text(stringResource(shared.string.common_save))
                     }
                 }
             )
@@ -182,7 +182,7 @@ fun UserDetailsView(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = stringResource(shared.string.change_photo),
+                        text = stringResource(shared.string.profile_change_photo),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -192,13 +192,13 @@ fun UserDetailsView(
             // ═══════════════════════════
             //  IDENTITY
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_identity)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_identity_section)) }
 
             item {
                 OutlinedTextField(
                     value = firstName,
                     onValueChange = { firstName = it },
-                    label = { Text(stringResource(shared.string.first_name)) },
+                    label = { Text(stringResource(shared.string.profile_user_first_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -209,7 +209,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = lastName,
                     onValueChange = { lastName = it },
-                    label = { Text(stringResource(shared.string.last_name)) },
+                    label = { Text(stringResource(shared.string.profile_user_last_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -220,13 +220,13 @@ fun UserDetailsView(
                 DateSelector(
                     date = birthdate ?: today,
                     onDateSelected = { birthdate = it },
-                    labelRes = shared.string.birth_date
+                    labelRes = shared.string.profile_user_birth_date_label
                 )
             }
 
             item {
                 EnumDropdown(
-                    label = stringResource(shared.string.gender),
+                    label = stringResource(shared.string.profile_user_gender_label),
                     options = Gender.entries,
                     selected = gender,
                     displayName = { it.displayName(context) },
@@ -237,7 +237,7 @@ fun UserDetailsView(
 
             item {
                 EnumDropdown(
-                    label = stringResource(shared.string.blood_type),
+                    label = stringResource(shared.string.profile_user_blood_type_label),
                     options = BloodType.entries,
                     selected = bloodType,
                     displayName = { it.displayName(context) },
@@ -248,11 +248,11 @@ fun UserDetailsView(
             // ═══════════════════════════
             //  ABOUT DIABETES
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_diabetes)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_diabetes_details_section)) }
 
             item {
                 EnumDropdown(
-                    label = stringResource(shared.string.diabetes_type),
+                    label = stringResource(shared.string.profile_user_diabetes_type),
                     options = DiabetesType.entries,
                     selected = diabetesType,
                     displayName = { it.displayName(context) },
@@ -264,20 +264,20 @@ fun UserDetailsView(
                 DateSelector(
                     date = diagnosisDate ?: today,
                     onDateSelected = { diagnosisDate = it },
-                    labelRes = shared.string.diagnosis_date
+                    labelRes = shared.string.profile_user_diagnosis_date_label
                 )
             }
 
             // ═══════════════════════════
             //  DOCTORS
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_medical_team)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_medical_team_section)) }
 
             item {
                 OutlinedTextField(
                     value = endocrinologist,
                     onValueChange = { endocrinologist = it },
-                    label = { Text(stringResource(shared.string.endocrinologist)) },
+                    label = { Text(stringResource(shared.string.profile_user_endocrinologist_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -288,7 +288,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = generalPractitioner,
                     onValueChange = { generalPractitioner = it },
-                    label = { Text(stringResource(shared.string.general_practitioner)) },
+                    label = { Text(stringResource(shared.string.profile_user_general_practitioner_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -299,7 +299,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = ophthalmologist,
                     onValueChange = { ophthalmologist = it },
-                    label = { Text(stringResource(shared.string.ophthalmologist)) },
+                    label = { Text(stringResource(shared.string.profile_user_ophthalmologist_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -310,7 +310,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = cardiologist,
                     onValueChange = { cardiologist = it },
-                    label = { Text(stringResource(shared.string.cardiologist)) },
+                    label = { Text(stringResource(shared.string.profile_user_cardiologist_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -321,7 +321,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = nephrologist,
                     onValueChange = { nephrologist = it },
-                    label = { Text(stringResource(shared.string.nephrologist)) },
+                    label = { Text(stringResource(shared.string.profile_user_nephrologist_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -331,13 +331,13 @@ fun UserDetailsView(
             // ═══════════════════════════
             //  TREATMENT
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_treatments)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_treatments_section)) }
 
             item {
                 OutlinedTextField(
                     value = insulinPumpModel,
                     onValueChange = { insulinPumpModel = it },
-                    label = { Text(stringResource(shared.string.insulin_pump_model)) },
+                    label = { Text(stringResource(shared.string.profile_user_insulin_pump_model_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -348,7 +348,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = cgmModel,
                     onValueChange = { cgmModel = it },
-                    label = { Text(stringResource(shared.string.cgm_model)) },
+                    label = { Text(stringResource(shared.string.profile_user_cgm_model_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -359,7 +359,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = insulinType,
                     onValueChange = { insulinType = it },
-                    label = { Text(stringResource(shared.string.insulin_type)) },
+                    label = { Text(stringResource(shared.string.profile_user_insulin_type_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -370,7 +370,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = basalInsulinType,
                     onValueChange = { basalInsulinType = it },
-                    label = { Text(stringResource(shared.string.basal_insulin_type)) },
+                    label = { Text(stringResource(shared.string.profile_user_basal_insulin_type_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -380,7 +380,7 @@ fun UserDetailsView(
             // ═══════════════════════════
             //  GLYCEMIA TARGETS
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_glucose_goals)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_glucose_goals_section)) }
 
             item {
                 Row(
@@ -390,7 +390,7 @@ fun UserDetailsView(
                     OutlinedTextField(
                         value = targetGlucoseMin,
                         onValueChange = { targetGlucoseMin = it },
-                        label = { Text(stringResource(shared.string.target_glucose_min)) },
+                        label = { Text(stringResource(shared.string.profile_user_target_glucose_min_label)) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                         shape = MaterialTheme.shapes.small,
@@ -399,7 +399,7 @@ fun UserDetailsView(
                     OutlinedTextField(
                         value = targetGlucoseMax,
                         onValueChange = { targetGlucoseMax = it },
-                        label = { Text(stringResource(shared.string.target_glucose_max)) },
+                        label = { Text(stringResource(shared.string.profile_user_target_glucose_max_label)) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                         shape = MaterialTheme.shapes.small,
@@ -407,10 +407,10 @@ fun UserDetailsView(
                     )
                 }
             }
-            
+
             item {
                 EnumDropdown(
-                    label = stringResource(shared.string.glucose_unit),
+                    label = stringResource(shared.string.profile_user_glucose_unit_label),
                     options = GlucoseUnit.entries,
                     selected = glucoseUnit,
                     displayName = { it.displayName(context) },
@@ -421,13 +421,13 @@ fun UserDetailsView(
             // ═══════════════════════════
             //  EMERGENCY CONTACT
             // ═══════════════════════════
-            item { SectionHeader(stringResource(shared.string.section_emergency_contact)) }
+            item { SectionHeader(stringResource(shared.string.profile_user_emergency_contact_section)) }
 
             item {
                 OutlinedTextField(
                     value = emergencyContactName,
                     onValueChange = { emergencyContactName = it },
-                    label = { Text(stringResource(shared.string.emergency_contact_name)) },
+                    label = { Text(stringResource(shared.string.profile_user_emergency_contact_name_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small
@@ -438,7 +438,7 @@ fun UserDetailsView(
                 OutlinedTextField(
                     value = emergencyContactPhone,
                     onValueChange = { emergencyContactPhone = it },
-                    label = { Text(stringResource(shared.string.emergency_contact_phone)) },
+                    label = { Text(stringResource(shared.string.profile_user_emergency_contact_phone_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.small,

@@ -132,7 +132,7 @@ fun SettingsScreen(
             val toastExpirationEnabled =
                 stringResource(shared.string.toast_expiration_reminders_enabled)
             val toastAppointmentReminderEnabled =
-                stringResource(shared.string.toast_appointment_reminders_enabled)
+                stringResource(shared.string.appointments_reminders_enabled_success_toast)
 
             val notificationSection: List<CardItem> = listOf(
                 CardItem(
@@ -183,7 +183,7 @@ fun SettingsScreen(
                     ),
                     content = {
                         val displayText = if (nextAppointmentDate != null) stringResource(
-                            shared.string.settings_notification_next_appointment_reminder,
+                            shared.string.appointments_setting_screen_reminder_details,
                             nextAppointmentDate!!.format(
                                 DateTimeFormatter.ofLocalizedDateTime(
                                     FormatStyle.MEDIUM,
@@ -194,7 +194,7 @@ fun SettingsScreen(
 
                         Column {
                             Text(
-                                text = stringResource(shared.string.settings_notification_appointment),
+                                text = stringResource(shared.string.appointments_setting_screen_reminder_label),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(

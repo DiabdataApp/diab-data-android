@@ -4,6 +4,7 @@
     <!-- ============================================= -->
     <!-- COMMON ACTIONS -->
     <!-- ============================================= -->
+    <string name="common_save">Enregistrer</string>
     <string name="common_confirm">Confirmer</string>
     <string name="common_back">Retour</string>
     <string name="common_close">Fermer</string>
@@ -17,6 +18,7 @@
     <string name="common_retry">Réessayer</string>
     <string name="common_reset">Réinitialiser</string>
     <string name="common_undo">Rétablir</string>
+    <string name="common_notes_label">Notes</string>
 
     <!-- ======================== -->
     <!--    Common Form Labels     -->

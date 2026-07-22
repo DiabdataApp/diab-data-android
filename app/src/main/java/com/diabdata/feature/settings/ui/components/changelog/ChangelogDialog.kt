@@ -76,7 +76,7 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Updates - 18/08/2026",
+                        text = "Updates - 22/08/2026",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -90,12 +90,20 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                         .heightIn(max = maxHeight)
                 ) {
                     changelogSection(
+                        "New features",
+                        listOf(
+                            "Added scheduled backup feature"
+                        )
+                    )
+
+                    changelogSection(
                         "GUI",
                         listOf(
                             "Improved navigation bar responsiveness",
                             "Overhauled settings menu"
                         )
                     )
+
                     changelogSection(
                         "Bug fixes",
                         listOf(

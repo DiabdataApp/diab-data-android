@@ -128,9 +128,15 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
 
             AssistChip(
                 onClick = {
-                    uriHandler.openUri(
-                        "https://github.com/DiabdataApp/diab-data-android/releases/tag/v$versionName"
-                    )
+                    if (!isBeta) {
+                        uriHandler.openUri(
+                            "https://github.com/DiabdataApp/diab-data-android"
+                        )
+                    } else {
+                        uriHandler.openUri(
+                            "https://github.com/DiabdataApp/diab-data-android/tree/dev"
+                        )
+                    }
                 },
                 label = { Text("Github") },
                 leadingIcon = {

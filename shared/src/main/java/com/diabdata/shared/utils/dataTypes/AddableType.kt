@@ -29,7 +29,7 @@ enum class AddableType(
     ),
     APPOINTMENT(
         tableName = "appointments",
-        displayNameRes = R.string.addable_appointment,
+        displayNameRes = R.string.appointments_general_label,
         baseColor = Color(0xFFF637C5),
         iconRes = R.drawable.event_icon_vector,
         iconFilledRes = R.drawable.event_filled_icon_vector

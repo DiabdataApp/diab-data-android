@@ -53,7 +53,7 @@ fun UpcomingAppointmentsListContent(
     val primaryColor = MaterialTheme.colorScheme.primary
 
     CardsList(
-        header = stringResource(shared.string.home_section_upcoming_appointments),
+        header = stringResource(shared.string.appointments_homescreen_upcoming_appointments),
         pageSize = 3,
         cards = upcomingAppointments.map { appointment ->
             val remainingText = appointment.date.toRelativeString(context)
@@ -114,7 +114,7 @@ fun UpcomingAppointmentsListContent(
                                             },
                                             title = {
                                                 Text(
-                                                    text = stringResource(shared.string.appointment_card_notes_header),
+                                                    text = stringResource(shared.string.common_notes_label),
                                                     style = MaterialTheme.typography.titleMedium
                                                 )
                                             },

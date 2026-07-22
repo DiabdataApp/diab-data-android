@@ -19,7 +19,7 @@ class SingleNotificationWorker(
 
         val channelName = when (tag) {
             "treatments" -> applicationContext.getString(shared.string.notification_channel_expirations)
-            "appointments" -> applicationContext.getString(shared.string.notification_channel_appointments)
+            "appointments" -> applicationContext.getString(shared.string.appointments_notification_channel_name)
             else -> "DiabData Notifications"
         }
 

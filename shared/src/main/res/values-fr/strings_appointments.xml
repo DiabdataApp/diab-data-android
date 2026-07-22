@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <string name="addable_appointment">Rendez-vous</string>
-    <string name="home_section_upcoming_appointments">Prochains rendez-vous</string>
-
-    <!-- Appointment card -->
-    <string name="appointment_card_notes_header">Notes</string>
+    <string name="appointments_general_label">Rendez-vous</string>
+    <string name="appointments_homescreen_upcoming_appointments">Prochains rendez-vous</string>
 
     <!-- ============================================= -->
     <!-- APPOINTMENT TYPES -->
@@ -16,26 +13,26 @@
     <!-- ============================================= -->
     <!-- SETTINGS / REMINDERS -->
     <!-- ============================================= -->
-    <string name="settings_notification_appointment">Rendez-vous à venir</string>
-    <string name="settings_notification_next_appointment_reminder">Pour le prochain RDV prévu le %1$s</string>
+    <string name="appointments_setting_screen_reminder_label">Rendez-vous à venir</string>
+    <string name="appointments_setting_screen_reminder_details">Pour le prochain RDV prévu le %1$s</string>
 
-    <string name="notification_channel_appointments">Rappels de rendez-vous</string>
+    <string name="appointments_notification_channel_name">Rappels de rendez-vous</string>
 
-    <string name="notification_appointment_title">Rappel de rendez-vous</string>
-    <string name="notification_appointment_content">Votre rendez-vous %1$s du %2$s approche.</string>
+    <string name="appointments_notification_title_text">Rappel de rendez-vous</string>
+    <string name="appointments_notification_content_text">Votre rendez-vous %1$s du %2$s approche.</string>
 
-    <string name="toast_appointment_reminders_enabled">Rappels de rendez-vous activés !</string>
+    <string name="appointments_reminders_enabled_success_toast">Rappels de rendez-vous activés !</string>
 
     <!-- ============================================= -->
     <!-- WEAR COMPLICATIONS -->
     <!-- ============================================= -->
 
     <!-- Complication label -->
-    <string name="wear_complication_upcoming_appointment_label">Prochains rendez-vous</string>
+    <string name="appointments_wear_complication_upcoming_appointment_label">Prochains rendez-vous</string>
 
-    <string name="wear_complication_no_upcoming_appointment_text_description">Aucun rendez-vous</string>
-    <string name="wear_complication_upcoming_appointment_today_text_description">Rendez-vous aujourd\'hui</string>
-    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Rendez-vous demain</string>
-    <string name="wear_complication_upcoming_appointment_in_days_text_description">Rendez-vous dans %1$s jours</string>
+    <string name="appointments_wear_complication_no_upcoming_appointment_text_description">Aucun rendez-vous</string>
+    <string name="appointments_wear_complication_upcoming_appointment_today_text_description">Rendez-vous aujourd\'hui</string>
+    <string name="appointments_wear_complication_upcoming_appointment_tomorrow_text_description">Rendez-vous demain</string>
+    <string name="appointments_wear_complication_upcoming_appointment_in_days_text_description">Rendez-vous dans %1$s jours</string>
 
 </resources>

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <string name="addable_appointment">Appointment</string>
-    <string name="home_section_upcoming_appointments">Upcoming appointments</string>
-
-    <!-- Appointment card -->
-    <string name="appointment_card_notes_header">Notes</string>
+    <string name="appointments_general_label">Appointment</string>
+    <string name="appointments_homescreen_upcoming_appointments">Upcoming appointments</string>
 
     <!-- ============================================= -->
     <!-- APPOINTMENT TYPES -->
@@ -16,27 +13,27 @@
     <!-- ============================================= -->
     <!-- SETTINGS / REMINDERS -->
     <!-- ============================================= -->
-    <string name="settings_notification_appointment">Upcoming appointment</string>
-    <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
+    <string name="appointments_setting_screen_reminder_label">Upcoming appointment</string>
+    <string name="appointments_setting_screen_reminder_details">For the next appointment scheduled on %1$s</string>
 
-    <string name="notification_channel_appointments">Appointments reminders</string>
+    <string name="appointments_notification_channel_name">Appointments reminders</string>
 
-    <string name="notification_appointment_title">Appointment reminder</string>
-    <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
+    <string name="appointments_notification_title_text">Appointment reminder</string>
+    <string name="appointments_notification_content_text">Your appointment %1$s on the %2$s is coming soon.</string>
 
-    <string name="toast_appointment_reminders_enabled">Appointment reminders enabled!</string>
+    <string name="appointments_reminders_enabled_success_toast">Appointment reminders enabled!</string>
 
     <!-- ============================================= -->
     <!-- WEAR COMPLICATIONS -->
     <!-- ============================================= -->
 
     <!-- Complication label -->
-    <string name="wear_complication_upcoming_appointment_label">Upcoming appointments</string>
+    <string name="appointments_wear_complication_upcoming_appointment_label">Upcoming appointments</string>
 
 
-    <string name="wear_complication_no_upcoming_appointment_text_description">No appointments</string>
-    <string name="wear_complication_upcoming_appointment_today_text_description">Appointment today</string>
-    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Appointment tomorrow</string>
-    <string name="wear_complication_upcoming_appointment_in_days_text_description">Appointment in %1$s days</string>
+    <string name="appointments_wear_complication_no_upcoming_appointment_text_description">No appointments</string>
+    <string name="appointments_wear_complication_upcoming_appointment_today_text_description">Appointment today</string>
+    <string name="appointments_wear_complication_upcoming_appointment_tomorrow_text_description">Appointment tomorrow</string>
+    <string name="appointments_wear_complication_upcoming_appointment_in_days_text_description">Appointment in %1$s days</string>
 
 </resources>
