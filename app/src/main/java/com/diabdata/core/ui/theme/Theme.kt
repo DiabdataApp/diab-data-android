@@ -8,7 +8,42 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.diabdata.shared.theme.BetaVersionColorDark
+import com.diabdata.shared.theme.BetaVersionColorLight
+import com.diabdata.shared.theme.BetaVersionTextColorDark
+import com.diabdata.shared.theme.BetaVersionTextColorLight
+import com.diabdata.shared.theme.ReleaseVersionColorDark
+import com.diabdata.shared.theme.ReleaseVersionColorLight
+import com.diabdata.shared.theme.ReleaseVersionTextColorDark
+import com.diabdata.shared.theme.ReleaseVersionTextColorLight
+
+@Immutable
+data class ExtendedColors(
+    val betaContainer: Color,
+    val onBetaContainer: Color,
+    val releaseVersionContainer: Color,
+    val onReleaseVersionContainer: Color,
+)
+
+val LocalExtendedColors = staticCompositionLocalOf {
+    ExtendedColors(
+        betaContainer = Color.Unspecified,
+        onBetaContainer = Color.Unspecified,
+        releaseVersionContainer = Color.Unspecified,
+        onReleaseVersionContainer = Color.Unspecified,
+    )
+}
+
+object ExtendedTheme {
+    val colors: ExtendedColors
+        @Composable
+        get() = LocalExtendedColors.current
+}
 
 private val lightColorScheme = lightColorScheme(
     primary = PrimaryLight,
@@ -115,19 +150,39 @@ private val darkColorScheme = darkColorScheme(
 @Composable
 fun DiabDataTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true, content: @Composable () -> Unit
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> darkColorScheme
         else -> lightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme, typography = Typography, content = content
-    )
+    val extendedColors = if (darkTheme) {
+        ExtendedColors(
+            betaContainer = BetaVersionColorDark,
+            onBetaContainer = BetaVersionTextColorDark,
+            releaseVersionContainer = ReleaseVersionColorDark,
+            onReleaseVersionContainer = ReleaseVersionTextColorDark,
+        )
+    } else {
+        ExtendedColors(
+            betaContainer = BetaVersionColorLight,
+            onBetaContainer = BetaVersionTextColorLight,
+            releaseVersionContainer = ReleaseVersionColorLight,
+            onReleaseVersionContainer = ReleaseVersionTextColorLight,
+        )
+    }
+
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

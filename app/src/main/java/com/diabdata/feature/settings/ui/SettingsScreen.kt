@@ -4,23 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,10 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle.Companion.Italic
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -47,11 +36,13 @@ import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.components.cardsList.CardsList
-import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
-import com.diabdata.core.utils.ui.ColoredIconCircle
-import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.core.utils.ui.ColoredIconCircleProps
 import com.diabdata.feature.settings.SettingsViewModel
+import com.diabdata.feature.settings.ui.components.AppInfoCard
 import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
+import com.diabdata.shared.theme.DataIconColor
+import com.diabdata.shared.theme.GtinFilesIconColor
+import com.diabdata.shared.theme.NotificationIconColor
 import com.diabdata.workers.reminders.scheduleAppointmentReminders
 import com.diabdata.workers.reminders.scheduleMedicationExpirationReminders
 import kotlinx.coroutines.Dispatchers
@@ -112,6 +103,13 @@ fun SettingsScreen(
             }
     }.collectAsState(initial = null)
 
+    val iconCircleProps = ColoredIconCircleProps(
+        baseColor = NotificationIconColor,
+        iconRes = shared.drawable.notification_filled_icon_vector,
+        size = null,
+        iconSize = null
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -124,169 +122,12 @@ fun SettingsScreen(
                 .padding(20.dp),
             verticalArrangement = spacedBy(32.dp)
         ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    MaterialTheme.colorScheme.surface
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                @Suppress("KotlinConstantConditions")
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 22.dp, vertical = 22.dp),
-                    horizontalArrangement = spacedBy(10.dp),
-                ) {
-                    ColoredIconCircle(
-                        baseColor = if (isBeta) {
-                            MaterialTheme.colorScheme.tertiary
-                        } else {
-                            MaterialTheme.colorScheme.primary
-                        },
-                        iconRes = if (isBeta) {
-                            shared.drawable.ic_logo_outlined
-                        } else {
-                            shared.drawable.ic_logo_filled
-                        },
-                        size = 38.dp,
-                        iconSize = 28.dp
-                    )
-                    Column {
-                        Text(
-                            text = stringResource(shared.string.app_name),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontFamily = GoogleSansFlexFontFamily,
-                            fontWeight = FontWeight(1000),
-                            fontStyle = Italic
-                        )
-                        Text(
-                            text = stringResource(shared.string.app_tagline),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontFamily = GoogleSansFlexFontFamily,
-                        )
-                    }
-                }
-
-                FlowRow(
-                    modifier = Modifier
-                        .padding(start = 22.dp, end = 22.dp, bottom = 22.dp),
-                    horizontalArrangement = spacedBy(8.dp),
-                ) {
-                    val uriHandler = LocalUriHandler.current
-
-                    @Suppress("KotlinConstantConditions")
-                    AssistChip(
-                        label = { Text("v$versionName${if (isBeta) "-beta" else "" }") },
-                        leadingIcon = {
-                            SvgIcon(
-                                resId = shared.drawable.app_version_filled_icon_vector,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .border(
-                                        0.dp,
-                                        Color.Transparent,
-                                        shape = RoundedCornerShape(50)
-                                    ),
-                                color = if (isBeta) {
-                                    MaterialTheme.colorScheme.onTertiaryContainer
-                                } else {
-                                    MaterialTheme.colorScheme.onPrimary
-                                }
-                            )
-                        },
-                        shape = RoundedCornerShape(50),
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = if (isBeta) {
-                                MaterialTheme.colorScheme.tertiaryContainer
-                            } else {
-                                MaterialTheme.colorScheme.primary
-                            },
-                            labelColor = if (isBeta) {
-                                MaterialTheme.colorScheme.onTertiaryContainer
-                            } else {
-                                MaterialTheme.colorScheme.onPrimary
-                            }
-                        ),
-                        onClick = {},
-                    )
-
-                    AssistChip(
-                        onClick = {
-                            uriHandler.openUri(
-                                "https://github.com/DiabdataApp/diab-data-android/releases/tag/v$versionName"
-                            )
-                        },
-                        label = { Text("Github") },
-                        leadingIcon = {
-                            SvgIcon(
-                                resId = shared.drawable.github_icon_vector,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .border(
-                                        0.dp,
-                                        Color.Transparent,
-                                        shape = RoundedCornerShape(50)
-                                    ),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        },
-                        shape = RoundedCornerShape(50),
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            labelColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                    )
-
-                    AssistChip(
-                        onClick = { showChangeLogDialog = true },
-                        label = { Text(stringResource(shared.string.settings_section_changelogs_label)) },
-                        leadingIcon = {
-                            SvgIcon(
-                                resId = shared.drawable.breaking_new_filled_icon_vector,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .border(
-                                        0.dp,
-                                        Color.Transparent,
-                                        shape = RoundedCornerShape(50)
-                                    ),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        },
-                        shape = RoundedCornerShape(50),
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            labelColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                    )
-
-                    AssistChip(
-                        onClick = {
-                            uriHandler.openUri("https://app.diabdata.fr/")
-                        },
-                        label = { Text(stringResource(shared.string.settings_section_website_label)) },
-                        leadingIcon = {
-                            SvgIcon(
-                                resId = shared.drawable.arrow_outward_icon_vector,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .border(
-                                        0.dp,
-                                        Color.Transparent,
-                                        shape = RoundedCornerShape(50)
-                                    ),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        },
-                        shape = RoundedCornerShape(50),
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            labelColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                    )
-                }
-            }
+            @Suppress("KotlinConstantConditions")
+            AppInfoCard(
+                isBeta = isBeta,
+                versionName = versionName,
+                showChangeLogDialog = { showChangeLogDialog = true }
+            )
 
             val toastExpirationEnabled =
                 stringResource(shared.string.toast_expiration_reminders_enabled)
@@ -295,7 +136,7 @@ fun SettingsScreen(
 
             val notificationSection: List<CardItem> = listOf(
                 CardItem(
-                    leadingIcon = shared.drawable.medication_expiry_notification_icon_vector,
+                    leadingColoredCircleIcon = iconCircleProps,
                     content = {
                         val displayText = if (nextTreatmentExpirationDate != null) stringResource(
                             shared.string.settings_notification_next_expiration_reminder,
@@ -337,7 +178,9 @@ fun SettingsScreen(
                     trailingIcon = shared.drawable.notification_filled_icon_vector
                 ),
                 CardItem(
-                    leadingIcon = shared.drawable.event_notification_icon_vector,
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        iconRes = shared.drawable.event_notification_icon_vector
+                    ),
                     content = {
                         val displayText = if (nextAppointmentDate != null) stringResource(
                             shared.string.settings_notification_next_appointment_reminder,
@@ -388,7 +231,10 @@ fun SettingsScreen(
 
             val aboutApplicationSection: List<CardItem> = listOf(
                 CardItem(
-                    leadingIcon = shared.drawable.medication_info_icon_vector,
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        baseColor = GtinFilesIconColor,
+                        iconRes = shared.drawable.medication_info_icon_vector
+                    ),
                     content = {
                         Row {
                             Text("Medication information file version $medicationsGtinFileVersion")
@@ -410,7 +256,10 @@ fun SettingsScreen(
                     trailingIcon = shared.drawable.refresh_icon_vector
                 ),
                 CardItem(
-                    leadingIcon = shared.drawable.medical_device_info_version_icon_vector,
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        baseColor = GtinFilesIconColor,
+                        iconRes = shared.drawable.medical_device_info_version_icon_vector
+                    ),
                     content = {
                         Row {
                             Text("Medical devices information file version $medicalDeviceGtinFileVersion")
@@ -436,7 +285,10 @@ fun SettingsScreen(
             // Database section
             CardListItem(
                 CardItem(
-                    leadingIcon = shared.drawable.database_icon_vector,
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        baseColor = DataIconColor,
+                        iconRes = shared.drawable.database_icon_vector
+                    ),
                     content = {
                         Column {
                             Text(
