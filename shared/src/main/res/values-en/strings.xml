@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- ============================================= -->
     <!-- APP INFO -->
     <!-- ============================================= -->
@@ -53,17 +54,10 @@
     <string name="device_unknown">Unknown device</string>
 
     <!-- ============================================= -->
-    <!-- APPOINTMENT TYPES -->
-    <!-- ============================================= -->
-    <string name="appointment_annual_checkup">Annual Checkup</string>
-    <string name="appointment_one_time">One-time appointment</string>
-
-    <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
     <!-- ============================================= -->
     <string name="addable_weight">Weight</string>
     <string name="addable_hba1c">HbA1c</string>
-    <string name="addable_appointment">Appointment</string>
     <string name="addable_treatment">Medication</string>
     <string name="addable_treatment_scan">Scan a code</string>
     <string name="addable_important_date">Important date</string>
@@ -77,7 +71,6 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Important dates</string>
     <string name="home_section_latest_measures">Recent readings</string>
-    <string name="home_section_upcoming_appointments">Upcoming appointments</string>
     <string name="home_section_upcoming_treatment_expirations">My medication</string>
     <string name="home_section_current_consumable_devices">Active peripherals</string>
     <string name="home_section_current_non_consumable_devices">My devices</string>
@@ -85,9 +78,6 @@
     <!-- Important date card-->
     <string name="generic_diabetes_discovery_label">Diabetes discovery</string>
     <string name="specific_diabetes_discovery_label">%1s discovery</string>
-
-    <!-- Appointment card -->
-    <string name="appointment_card_notes_header">Notes</string>
 
     <!-- Device warnings -->
     <string name="device_replacement_warning">Replace today</string>
@@ -195,8 +185,6 @@
 
     <!-- Notifications -->
     <string name="settings_notification_expiration">Medication expiration</string>
-    <string name="settings_notification_appointment">Upcoming appointment</string>
-    <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
     <string name="settings_notification_next_expiration_reminder">For the medication expiring on %1$s</string>
 
     <!-- Toasts -->
@@ -205,15 +193,12 @@
 
     <!-- Channel names -->
     <string name="notification_channel_data">Data Management</string>
-    <string name="notification_channel_appointments">Appointments reminders</string>
     <string name="notification_channel_expirations">Expiration date reminders</string>
     <string name="notification_channel_scheduled_backup">Backup schedule</string>
 
     <!-- Notification content -->
     <string name="notification_scheduled_backup_in_progress_title">Backup in progress</string>
     <string name="notification_scheduled_backup_in_progress_content">Your scheduled backup is being created…</string>
-    <string name="notification_appointment_title">Appointment reminder</string>
-    <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
     <string name="notification_expiration_title">Expiry date reminder</string>
     <string name="notification_expiration_content">Your medication %1$s will expire on the %2$s!</string>
     <string name="notification_scheduled_backup_success_title">Scheduled backup success.</string>
@@ -232,7 +217,6 @@
     <string name="toast_data_import_error">Error while importing data</string>
     <string name="toast_empty_file_error">The file is empty</string>
     <string name="toast_expiration_reminders_enabled">Expiry dates reminders enabled!</string>
-    <string name="toast_appointment_reminders_enabled">Appointment reminders enabled!</string>
     <string name="toast_camera_permission_error">Camera permission denied</string>
 
     <!-- ============================================= -->
@@ -256,17 +240,6 @@
     <string name="wear_complication_expiring_devices_label">Devices expiring soon</string>
     <string name="wear_complication_expiring_devices">To replace soon</string>
     <string name="wear_complication_expiring_devices_plain_text_builder">Days left</string>
-
-    <!-- ============================================= -->
-    <!-- APPOINTMENT COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_upcoming_appointment_label">Upcoming appointments</string>
-
-    <!-- Text descriptions -->
-    <string name="wear_complication_no_upcoming_appointment_text_description">No appointments</string>
-    <string name="wear_complication_upcoming_appointment_today_text_description">Appointment today</string>
-    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Appointment tomorrow</string>
-    <string name="wear_complication_upcoming_appointment_in_days_text_description">Appointment in %1$s days</string>
 
     <!-- ============================================= -->
     <!-- TREATMENT EXPIRY RANGED VALUE COMPLICATION -->

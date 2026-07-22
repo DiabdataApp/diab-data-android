@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="addable_appointment">Rendez-vous</string>
+    <string name="home_section_upcoming_appointments">Prochains rendez-vous</string>
+
+    <!-- Appointment card -->
+    <string name="appointment_card_notes_header">Notes</string>
+
+    <!-- ============================================= -->
+    <!-- APPOINTMENT TYPES -->
+    <!-- ============================================= -->
+    <string name="appointment_annual_checkup">Bilan annuel</string>
+    <string name="appointment_one_time">RDV ponctuel</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS / REMINDERS -->
+    <!-- ============================================= -->
+    <string name="settings_notification_appointment">Rendez-vous à venir</string>
+    <string name="settings_notification_next_appointment_reminder">Pour le prochain RDV prévu le %1$s</string>
+
+    <string name="notification_channel_appointments">Rappels de rendez-vous</string>
+
+    <string name="notification_appointment_title">Rappel de rendez-vous</string>
+    <string name="notification_appointment_content">Votre rendez-vous %1$s du %2$s approche.</string>
+
+    <string name="toast_appointment_reminders_enabled">Rappels de rendez-vous activés !</string>
+
+    <!-- ============================================= -->
+    <!-- WEAR COMPLICATIONS -->
+    <!-- ============================================= -->
+
+    <!-- Complication label -->
+    <string name="wear_complication_upcoming_appointment_label">Prochains rendez-vous</string>
+
+    <string name="wear_complication_no_upcoming_appointment_text_description">Aucun rendez-vous</string>
+    <string name="wear_complication_upcoming_appointment_today_text_description">Rendez-vous aujourd\'hui</string>
+    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Rendez-vous demain</string>
+    <string name="wear_complication_upcoming_appointment_in_days_text_description">Rendez-vous dans %1$s jours</string>
+
+</resources>

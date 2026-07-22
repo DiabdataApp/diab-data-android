@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="addable_appointment">Appointment</string>
+    <string name="home_section_upcoming_appointments">Upcoming appointments</string>
+
+    <!-- Appointment card -->
+    <string name="appointment_card_notes_header">Notes</string>
+
+    <!-- ============================================= -->
+    <!-- APPOINTMENT TYPES -->
+    <!-- ============================================= -->
+    <string name="appointment_annual_checkup">Annual Checkup</string>
+    <string name="appointment_one_time">One-time appointment</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS / REMINDERS -->
+    <!-- ============================================= -->
+    <string name="settings_notification_appointment">Upcoming appointment</string>
+    <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
+
+    <string name="notification_channel_appointments">Appointments reminders</string>
+
+    <string name="notification_appointment_title">Appointment reminder</string>
+    <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
+
+    <string name="toast_appointment_reminders_enabled">Appointment reminders enabled!</string>
+
+    <!-- ============================================= -->
+    <!-- WEAR COMPLICATIONS -->
+    <!-- ============================================= -->
+
+    <!-- Complication label -->
+    <string name="wear_complication_upcoming_appointment_label">Upcoming appointments</string>
+
+    <string name="wear_complication_no_upcoming_appointment_text_description">No appointments</string>
+    <string name="wear_complication_upcoming_appointment_today_text_description">Appointment today</string>
+    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Appointment tomorrow</string>
+    <string name="wear_complication_upcoming_appointment_in_days_text_description">Appointment in %1$s days</string>
+
+</resources>
