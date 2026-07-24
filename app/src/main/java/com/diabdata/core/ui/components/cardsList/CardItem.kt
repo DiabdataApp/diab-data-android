@@ -14,5 +14,7 @@ data class CardItem(
     val onClick: (() -> Unit)? = null,
     val onTrailingIconClick: (() -> Unit)? = null,
     val switchState: Boolean? = null,
-    val onSwitchChange: ((Boolean) -> Unit)? = null
+    val onSwitchChange: ((Boolean) -> Unit)? = null,
+    val switchColor: Color? = null,
+    val uncheckedTrailingIcon: Int? = null
 )

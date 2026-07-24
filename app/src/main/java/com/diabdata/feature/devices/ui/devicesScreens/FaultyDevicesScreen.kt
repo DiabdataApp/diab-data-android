@@ -53,6 +53,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.diabdata.shared.R as shared
 
+@Suppress("unused")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun FaultyDevices(
@@ -111,7 +112,7 @@ fun FaultyDevicesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = stringResource(shared.string.device_screen_faulty_heading),
+                                text = stringResource(shared.string.devices_device_screen_faulty_heading),
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = MaterialTheme.colorScheme.surfaceTint
                             )
@@ -128,15 +129,15 @@ fun FaultyDevicesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = stringResource(shared.string.device_screen_reported_heading),
+                                text = stringResource(shared.string.devices_device_screen_reported_heading),
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = MaterialTheme.colorScheme.surfaceTint
                             )
                             DataTable(
                                 headerColor = MaterialTheme.colorScheme.primary,
                                 headers = listOf(
-                                    stringResource(shared.string.device_batch_number_text),
-                                    stringResource(shared.string.device_total_count_text)
+                                    stringResource(shared.string.devices_device_batch_number_text),
+                                    stringResource(shared.string.devices_device_total_count_text)
                                 ),
                                 data = faultyCountsByBatchNumbers,
                                 decoration = DataTableDecoration.build {

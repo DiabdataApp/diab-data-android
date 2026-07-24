@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ============================================= -->
+    <!-- SHARE VIA RELAY SERVER -->
+    <!-- ============================================= -->
+    <string name="share_dialog_title_compagnon_mode">Mode compagnon</string>
+    <string name="share_dialog_title_medical_mode">Partage médecin</string>
+    <string name="share_dialog_connecting_to_relay_message">Connexion au relai…</string>
+    <string name="share_dialog_compagnon_mode_instruction_message">Scannez le QR code ou saisissez le code sur votre ordinateur</string>
+    <string name="share_dialog_medical_mode_instruction_message">Montrez le QR code à votre médecin</string>
+    <string name="share_dialog_stop_sharing_button_label">Arrêter le partage</string>
+    
+</resources>

@@ -1,7 +1,9 @@
 package com.diabdata.core.ui.components.cardsList
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,15 +14,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.diabdata.core.ui.theme.DiabDataTheme
 import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.utils.ui.ColoredIconCircleProps
 import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.core.utils.ui.darken
 import com.diabdata.core.utils.ui.getItemShape
+import com.diabdata.shared.theme.DataIconColor
+import com.diabdata.shared.theme.NotificationIconColor
+import com.diabdata.shared.R as shared
 
 /**
  * A composable that renders a single card within a [CardsList] stack.
@@ -43,7 +56,7 @@ import com.diabdata.core.utils.ui.getItemShape
  * 1. **Colored circle icon** ([CardItem.leadingColoredCircleIcon]): an icon rendered inside
  *    a tinted circular background via [ColoredIconCircle].
  * 2. **Simple SVG icon** ([CardItem.leadingIcon]): a flat icon rendered via [SvgIcon]
- *    with [MaterialTheme.colorScheme.onSurface] tint.
+ *    with [androidx.compose.material3.ColorScheme.onSurface] tint.
  * 3. If neither is provided, no leading section is displayed.
  *
  * ## Trailing section
@@ -56,7 +69,7 @@ import com.diabdata.core.utils.ui.getItemShape
  * - Both trailing icon and switch can coexist on the same card.
  *
  * ## Styling
- * - The card uses [MaterialTheme.colorScheme.surface] as its background color.
+ * - The card uses [androidx.compose.material3.ColorScheme.surface] as its background color.
  * - The [shape] parameter controls the corner rounding, typically computed by [getItemShape]
  *   based on the card's position within the parent [CardsList] stack.
  *
@@ -99,10 +112,8 @@ fun CardListItem(
     cardItem: CardItem,
     shape: Shape,
     modifier: Modifier = Modifier,
-    alignTop: Boolean = false
+    alignTop: Boolean = false,
 ) {
-    val surfaceModifier = modifier.fillMaxWidth()
-
     val content: @Composable () -> Unit = {
         Row(
             modifier = Modifier
@@ -111,83 +122,24 @@ fun CardListItem(
             verticalAlignment = if (alignTop) Alignment.Top else Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            when {
-                cardItem.leadingColoredCircleIcon != null -> {
-                    ColoredIconCircle(
-                        baseColor = cardItem.leadingColoredCircleIcon.baseColor,
-                        iconRes = cardItem.leadingColoredCircleIcon.iconRes,
-                        size = cardItem.leadingColoredCircleIcon.size,
-                        iconSize = cardItem.leadingColoredCircleIcon.iconSize
-                    )
-                }
-                cardItem.leadingIcon != null -> {
-                    SvgIcon(
-                        resId = cardItem.leadingIcon,
-                        color = cardItem.leadingIconColor ?: MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
+            LeadingSection(cardItem)
+
             Box(modifier = Modifier.weight(1f)) {
                 cardItem.content()
             }
 
-            if (cardItem.trailingIcon != null && cardItem.switchState == null) {
-                val trailingOnClick = cardItem.onTrailingIconClick ?: cardItem.onClick
-
-                if (trailingOnClick != null) {
-                    IconButton(
-                        onClick = trailingOnClick,
-                        modifier = Modifier.size(24.dp)
-                    ) {
-                        SvgIcon(
-                            resId = cardItem.trailingIcon,
-                            color = if (cardItem.isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                } else {
-                    SvgIcon(
-                        resId = cardItem.trailingIcon,
-                        color = if (cardItem.isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            if (cardItem.switchState != null && cardItem.onSwitchChange != null) {
-                if (cardItem.trailingIcon != null) {
-                    Switch(
-                        checked = cardItem.switchState,
-                        onCheckedChange = cardItem.onSwitchChange,
-                        thumbContent = {
-                            if (cardItem.switchState) {
-                                SvgIcon(
-                                    resId = cardItem.trailingIcon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    )
-                } else {
-                    Switch(
-                        checked = cardItem.switchState,
-                        onCheckedChange = cardItem.onSwitchChange
-                    )
-                }
-            }
+            TrailingSection(cardItem)
         }
     }
 
-    if (cardItem.onClick != null) {
+    val onClick = cardItem.onClick
+    if (onClick != null) {
         Surface(
             shape = shape,
             color = MaterialTheme.colorScheme.surface,
             contentColor = if (cardItem.isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
-            modifier = surfaceModifier,
-            onClick = cardItem.onClick
+            modifier = modifier.fillMaxWidth(),
+            onClick = onClick
         ) {
             content()
         }
@@ -195,9 +147,159 @@ fun CardListItem(
         Surface(
             shape = shape,
             color = MaterialTheme.colorScheme.surface,
-            modifier = surfaceModifier
+            contentColor = if (cardItem.isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+            modifier = modifier.fillMaxWidth()
         ) {
             content()
+        }
+    }
+}
+
+@Composable
+private fun LeadingSection(cardItem: CardItem) {
+    when {
+        cardItem.leadingColoredCircleIcon != null -> {
+            ColoredIconCircle(
+                baseColor = cardItem.leadingColoredCircleIcon.baseColor,
+                iconRes = cardItem.leadingColoredCircleIcon.iconRes,
+                size = cardItem.leadingColoredCircleIcon.size,
+                iconSize = cardItem.leadingColoredCircleIcon.iconSize
+            )
+        }
+
+        cardItem.leadingIcon != null -> {
+            SvgIcon(
+                resId = cardItem.leadingIcon,
+                color = cardItem.leadingIconColor ?: MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun TrailingSection(cardItem: CardItem) {
+    if (cardItem.switchState == null) {
+        if (cardItem.trailingIcon != null) {
+            val trailingOnClick = cardItem.onTrailingIconClick ?: cardItem.onClick
+            val iconColor =
+                if (cardItem.isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+
+            if (trailingOnClick != null) {
+                IconButton(
+                    onClick = trailingOnClick,
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    SvgIcon(
+                        resId = cardItem.trailingIcon,
+                        color = iconColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            } else {
+                SvgIcon(
+                    resId = cardItem.trailingIcon,
+                    color = iconColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        return
+    }
+
+    if (cardItem.onSwitchChange != null) {
+        val switchColors = if (cardItem.switchColor != null) {
+            SwitchDefaults.colors(
+                checkedTrackColor = cardItem.switchColor.copy(alpha = 0.4f),
+                checkedThumbColor = MaterialTheme.colorScheme.surface,
+                checkedIconColor = cardItem.switchColor
+            )
+        } else {
+            SwitchDefaults.colors()
+        }
+
+        Switch(
+            checked = cardItem.switchState,
+            onCheckedChange = cardItem.onSwitchChange,
+            colors = switchColors,
+            thumbContent = {
+                val iconRes = if (cardItem.switchState) cardItem.trailingIcon else cardItem.uncheckedTrailingIcon
+                if (iconRes != null) {
+                    SvgIcon(
+                        resId = iconRes,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                        color = if (cardItem.switchState) {
+                            cardItem.switchColor ?: MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        }
+                    )
+                }
+            }
+        )
+    }
+}
+
+const val darkTheme = true
+const val locale = "fr"
+
+@Preview(name = "ON", showBackground = true, locale = locale)
+@Composable
+fun CardListItemSwitch () {
+    var enableNotifications by remember { mutableStateOf(true) }
+    DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(30.dp)
+        ) {
+            CardsList(
+                cards = listOf(
+                    CardItem(
+                        leadingColoredCircleIcon = ColoredIconCircleProps(
+                            iconRes = shared.drawable.recurring_backup_folder_icon_vector,
+                            baseColor = DataIconColor,
+                            size = null,
+                            iconSize = null
+                        ),
+                        content = {
+                            Column {
+                                Text("Backup folder", style = MaterialTheme.typography.bodyLarge)
+                                Text(
+                                    "Internal Storage > Diabdata > Backup",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        },
+                        trailingIcon = shared.drawable.arrow_right_icon,
+                        onTrailingIconClick = {}
+                    ),
+                    CardItem(
+                        leadingColoredCircleIcon = ColoredIconCircleProps(
+                            iconRes = shared.drawable.event_notification_icon_vector,
+                            baseColor = NotificationIconColor,
+                            size = null,
+                            iconSize = null
+                        ),
+                        content = {
+                            Column {
+                                Text("Glucose sensor", style = MaterialTheme.typography.bodyLarge)
+                                Text(
+                                    "Expires in 3 days",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        },
+                        switchState = enableNotifications,
+                        onSwitchChange = { enableNotifications = it },
+                        switchColor = NotificationIconColor.darken(),
+                        trailingIcon = shared.drawable.notification_active_icon_vector,
+                        uncheckedTrailingIcon = shared.drawable.notification_off_icon_vector,
+                        onTrailingIconClick = { enableNotifications = !enableNotifications }
+                    )
+                )
+            )
         }
     }
 }

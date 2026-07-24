@@ -58,7 +58,7 @@ enum class TreatmentType(
     ),
 
     BLOOD_GLUCOSE_TEST_STRIP(
-        displayNameRes = R.string.mmedications_glucose_test_strip_label,
+        displayNameRes = R.string.medications_glucose_test_strip_label,
         iconRes = R.drawable.glucose_test_icon_vector,
         iconFilledRes = R.drawable.glucose_test_filled_icon_vector
     ),

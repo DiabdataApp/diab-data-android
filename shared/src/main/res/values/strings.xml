@@ -21,23 +21,10 @@
     <string name="home_menu_title">Home</string>
     <string name="database_management_menu_title">Data</string>
     <string name="database_management_menu_title_long">Manage data</string>
-    <string name="devices_menu_title">Devices</string>
-    <string name="devices_menu_title_long">Manage devices</string>
     <string name="settings_menu_title">Settings</string>
     <string name="settings_menu_title_long">Open settings page</string>
     <string name="chart_menu_title">Graphs</string>
     <string name="chart_menu_title_long">Open graphs page</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE TYPES -->
-    <!-- ============================================= -->
-    <string name="device_type_wireless_patch">Patch pump</string>
-    <string name="device_type_wired_patch">Infusion set</string>
-    <string name="device_type_cgm_sensor">CGM Sensor</string>
-    <string name="device_type_cgm_transmitter">CGM Transmitter</string>
-    <string name="device_type_wireless_patch_remote">Patch pump remote control</string>
-    <string name="device_type_wired_pump">Wired insulin pump</string>
-    <string name="device_unknown">Unknown device</string>
 
     <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
@@ -45,7 +32,6 @@
     <string name="addable_weight">Weight</string>
     <string name="addable_hba1c">HbA1c</string>
     <string name="addable_important_date">Important date</string>
-    <string name="addable_device">Device</string>
 
     <!-- ============================================= -->
     <!-- HOME SCREEN -->
@@ -55,27 +41,10 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Important dates</string>
     <string name="home_section_latest_measures">Recent readings</string>
-    <string name="home_section_current_consumable_devices">Active peripherals</string>
-    <string name="home_section_current_non_consumable_devices">My devices</string>
 
     <!-- Important date card-->
     <string name="generic_diabetes_discovery_label">Diabetes discovery</string>
     <string name="specific_diabetes_discovery_label">%1s discovery</string>
-
-    <!-- Device warnings -->
-    <string name="device_replacement_warning">Replace today</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE SCREEN -->
-    <!-- ============================================= -->
-    <string name="device_screen_overview_tab">Overview</string>
-    <string name="device_screen_no_faulty_devices_tab">No faulty devices</string>
-    <string name="device_screen_faulty_devices_tab">Faulty devices</string>
-    <string name="device_screen_faulty_heading">Faulty</string>
-    <string name="device_screen_reported_heading">Reported</string>
-    <string name="device_screen_get_faulty_devices_button">To report list</string>
-    <string name="device_batch_number_text">Batch number</string>
-    <string name="device_total_count_text">Total</string>
 
     <!-- ============================================= -->
     <!-- DATA MANAGEMENT -->
@@ -103,21 +72,6 @@
     <!-- Titles -->
     <string name="popup_title_add">Add new %1$s</string>
     <string name="popup_title_update">Update %1$s entry</string>
-
-    <!-- Device fields -->
-    <string name="popup_device_name_label">Device\'s name</string>
-    <string name="popup_device_batch_label">Batch number</string>
-    <string name="popup_device_serial_label">Serial number</string>
-    <string name="popup_device_lifespan_label">Device\'s life span</string>
-    <string name="popup_device_manufacturer_label">Manufacturer</string>
-    <string name="popup_device_faulty_label">Defective device</string>
-    <string name="popup_device_faulty_description">Check if a problem with the device occurred</string>
-    <string name="popup_device_reported_label">Reported device</string>
-    <string name="popup_device_reported_description">Check if the problem with the device was reported</string>
-    <string name="popup_device_lifespan_over_label">Expired/Replaced device</string>
-    <string name="popup_device_lifespan_over_description">Check if the device has expired or been replaced</string>
-    <string name="popup_device_update_expired_devices_label">Update expired devices</string>
-    <string name="popup_device_update_expired_devices_description">Check if you want to set similar devices that expired today or before as expired</string>
 
     <!-- Validation messages -->
     <string name="validation_invalid_weight">Invalid weight</string>
@@ -164,13 +118,6 @@
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
 
     <!-- ============================================= -->
-    <!-- SETTINGS > NOTIFICATIONS -->
-    <!-- ============================================= -->
-
-    <!-- Toasts -->
-    <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
-
-    <!-- ============================================= -->
     <!-- NOTIFICATIONS -->
     <!-- ============================================= -->
     <!-- Channel names -->
@@ -204,30 +151,11 @@
     <!-- ============================================= -->
     <!-- GLANCE WIDGET -->
     <!-- ============================================= -->
-    <string name="widget_description">Overview of devices and upcoming appointments</string>
     <string name="widget_no_data">No data to display</string>
-
-    <!-- ============================================= -->
-    <!-- MEDICAL DEVICE EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_devices_label">Devices expiring soon</string>
-    <string name="wear_complication_expiring_devices">To replace soon</string>
-    <string name="wear_complication_expiring_devices_plain_text_builder">Days left</string>
 
     <!-- ============================================= -->
     <!-- GLANCE TILE -->
     <!-- ============================================= -->
     <string name="glance_tile_label">At a Glance Tile</string>
-    <string name="glance_tile_description">Upcoming appointments, devices expiry and treatments</string>
-
-    <!-- ============================================= -->
-    <!-- SHARE VIA RELAY SERVER -->
-    <!-- ============================================= -->
-    <string name="share_dialog_title_compagnon_mode">Compagnon mode</string>
-    <string name="share_dialog_title_medical_mode">Sharing to doctor</string>
-    <string name="share_dialog_connecting_to_relay_message">Connecting to relay…</string>
-    <string name="share_dialog_compagnon_mode_instruction_message">Scan QR code or type the token on the connection form</string>
-    <string name="share_dialog_medical_mode_instruction_message">Show this QR code to your doctor</string>
-    <string name="share_dialog_stop_sharing_button_label">Stop sharing</string>
 
 </resources>

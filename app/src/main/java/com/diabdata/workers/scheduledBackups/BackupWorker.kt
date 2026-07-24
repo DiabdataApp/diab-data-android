@@ -22,6 +22,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+import kotlin.coroutines.cancellation.CancellationException
 import com.diabdata.shared.R as shared
 
 @HiltWorker
@@ -98,6 +99,8 @@ class BackupWorker @AssistedInject constructor(
             )
 
             Result.success()
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: SecurityException) {
             Log.e("BackupWorker", "Permission denied", e)
             applicationContext.showNotification(

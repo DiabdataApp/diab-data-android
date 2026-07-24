@@ -50,7 +50,7 @@ enum class AddableType(
     ),
     DEVICE(
         tableName = "medical_devices",
-        displayNameRes = R.string.addable_device,
+        displayNameRes = R.string.devices_addable_device,
         baseColor = Color(0xFF4DB3EA),
         iconRes = R.drawable.devices_icon_vector,
         iconFilledRes = R.drawable.devices_filled_icon_vector

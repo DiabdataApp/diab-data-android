@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="devices_navigation_menu_title">Devices</string>
+    <string name="devices_navigation_menu_title_long">Manage devices</string>
+
+    <!-- ============================================= -->
+    <!-- DEVICE TYPES -->
+    <!-- ============================================= -->
+    <string name="device_type_wireless_patch">Patch pump</string>
+    <string name="devices_device_type_wired_patch">Infusion set</string>
+    <string name="devices_device_type_cgm_sensor">CGM Sensor</string>
+    <string name="devices_device_type_cgm_transmitter">CGM Transmitter</string>
+    <string name="devices_device_type_wireless_patch_remote">Patch pump remote control</string>
+    <string name="devices_device_type_wired_pump">Wired insulin pump</string>
+    <string name="devices_device_type_unknown">Unknown device</string>
+
+    <string name="devices_addable_device">Device</string>
+
+    <string name="devices_home_section_current_consumable_devices_title">Active peripherals</string>
+    <string name="devices_home_section_current_non_consumable_devices_title">My devices</string>
+
+    <!-- Device warnings -->
+    <string name="devices_device_replacement_warning">Replace today</string>
+
+    <!-- ============================================= -->
+    <!-- DEVICE SCREEN -->
+    <!-- ============================================= -->
+    <string name="devices_device_screen_overview_tab">Overview</string>
+    <string name="devices_device_screen_no_faulty_devices_tab">No faulty devices</string>
+    <string name="devices_device_screen_faulty_devices_tab">Faulty devices</string>
+    <string name="devices_device_screen_faulty_heading">Faulty</string>
+    <string name="devices_device_screen_reported_heading">Reported</string>
+    <string name="devices_device_screen_get_faulty_devices_button">To report list</string>
+    <string name="devices_device_batch_number_text">Batch number</string>
+    <string name="devices_device_total_count_text">Total</string>
+
+    <!-- Device fields -->
+    <string name="devices_device_popup_name_label">Device\'s name</string>
+    <string name="devices_device_popup_batch_label">Batch number</string>
+    <string name="devices_device_popup_serial_label">Serial number</string>
+    <string name="devices_device_popup_lifespan_label">Device\'s life span</string>
+    <string name="devices_device_popup_manufacturer_label">Manufacturer</string>
+    <string name="devices_device_popup_faulty_label">Defective device</string>
+    <string name="devices_device_popup_faulty_description">Check if a problem with the device occurred</string>
+    <string name="devices_device_popup_reported_label">Reported device</string>
+    <string name="devices_device_popup_reported_description">Check if the problem with the device was reported</string>
+    <string name="devices_device_popup_device_lifespan_over_label">Expired/Replaced device</string>
+    <string name="devices_device_popup_lifespan_over_description">Check if the device has expired or been replaced</string>
+    <string name="devices_device_popup_update_expired_devices_label">Update expired devices</string>
+    <string name="devices_device_popup_update_expired_devices_description">Check if you want to set similar devices that expired today or before as expired</string>
+
+    <!-- ============================================= -->
+    <!-- MEDICAL DEVICE EXPIRY RANGED VALUE COMPLICATION -->
+    <!-- ============================================= -->
+    <string name="devices_devices_wear_complication_expiring_devices_label">Devices expiring soon</string>
+    <string name="devices_wear_complication_expiring_devices">To replace soon</string>
+    <string name="devices_wear_complication_expiring_devices_plain_text_builder">Days left</string>
+
+    <string name="devices_glance_widget_description">Overview of devices and upcoming appointments</string>
+
+    <string name="devices_medical_devices_store_rebuilt_toast">Medical devices GTIN store rebuilt</string>
+    <string name="devices_glance_tile_description">Upcoming appointments, devices expiry and treatments</string>
+
+</resources>

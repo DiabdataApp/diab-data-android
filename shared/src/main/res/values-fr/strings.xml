@@ -20,23 +20,10 @@
     <string name="home_menu_title">Accueil</string>
     <string name="database_management_menu_title">Données</string>
     <string name="database_management_menu_title_long">Gérer les données</string>
-    <string name="devices_menu_title">Appareils</string>
-    <string name="devices_menu_title_long">Gérer les appareils</string>
     <string name="settings_menu_title">Paramètres</string>
     <string name="settings_menu_title_long">Ouvrir la page des paramètres</string>
     <string name="chart_menu_title">Graphiques</string>
     <string name="chart_menu_title_long">Ouvrir la page des graphiques</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE TYPES -->
-    <!-- ============================================= -->
-    <string name="device_type_wireless_patch">Pompe patch</string>
-    <string name="device_type_wired_patch">Cathéter</string>
-    <string name="device_type_cgm_sensor">Capteur de glycémie</string>
-    <string name="device_type_cgm_transmitter">Transmetteur capteur de glycémie</string>
-    <string name="device_type_wireless_patch_remote">Télécommande pompe patch</string>
-    <string name="device_type_wired_pump">Pompe à tubulure</string>
-    <string name="device_unknown">Appareil inconnu</string>
 
     <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
@@ -44,7 +31,6 @@
     <string name="addable_weight">Poids</string>
     <string name="addable_hba1c">HbA1c</string>
     <string name="addable_important_date">Date importante</string>
-    <string name="addable_device">Appareil</string>
 
     <!-- ============================================= -->
     <!-- HOME SCREEN -->
@@ -54,27 +40,10 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Dates importantes</string>
     <string name="home_section_latest_measures">Derniers relevés</string>
-    <string name="home_section_current_consumable_devices">Périphériques actifs</string>
-    <string name="home_section_current_non_consumable_devices">Mes appareils</string>
 
     <!-- Important date card-->
     <string name="generic_diabetes_discovery_label">Découverte du diabète</string>
     <string name="specific_diabetes_discovery_label">Découverte du %1s</string>
-
-    <!-- Device warnings -->
-    <string name="device_replacement_warning">Remplacer aujourd\'hui</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE SCREEN -->
-    <!-- ============================================= -->
-    <string name="device_screen_overview_tab">Aperçu</string>
-    <string name="device_screen_no_faulty_devices_tab">Aucun appareil défectueux</string>
-    <string name="device_screen_faulty_devices_tab">Appareils défectueux</string>
-    <string name="device_screen_faulty_heading">Défectueux</string>
-    <string name="device_screen_reported_heading">Signalés</string>
-    <string name="device_screen_get_faulty_devices_button">Liste à signaler</string>
-    <string name="device_batch_number_text">Numéro de lot</string>
-    <string name="device_total_count_text">Total</string>
 
     <!-- ============================================= -->
     <!-- DATA MANAGEMENT -->
@@ -102,21 +71,6 @@
     <!-- Titles -->
     <string name="popup_title_add">Ajouter %1$s</string>
     <string name="popup_title_update">Mise à jour de l\'entrée de %1$s</string>
-
-    <!-- Device fields -->
-    <string name="popup_device_name_label">Nom de l\'appareil</string>
-    <string name="popup_device_batch_label">Numéro de lot</string>
-    <string name="popup_device_serial_label">Numéro de série</string>
-    <string name="popup_device_lifespan_label">Durée de vie de l\'appareil</string>
-    <string name="popup_device_manufacturer_label">Fabricant</string>
-    <string name="popup_device_faulty_label">Appareil défectueux</string>
-    <string name="popup_device_faulty_description">Cocher si un problème avec l\'appareil est survenu</string>
-    <string name="popup_device_reported_label">Problème signalé</string>
-    <string name="popup_device_reported_description">Cocher si le problème avec l\'appareil a été signalé</string>
-    <string name="popup_device_lifespan_over_label">Appareil remplacé/expiré</string>
-    <string name="popup_device_lifespan_over_description">Cocher si l\'appareil a expiré ou a été remplacé</string>
-    <string name="popup_device_update_expired_devices_label">Mettre à jour les appareils expirés</string>
-    <string name="popup_device_update_expired_devices_description">Cocher si vous souhaitez mettre à jour les appareils similaires qui ont expiré aujourd\'hui ou avant</string>
 
     <!-- Validation messages -->
     <string name="validation_invalid_weight">Valeur de poids invalide</string>
@@ -165,9 +119,6 @@
     <!-- SETTINGS > NOTIFICATIONS -->
     <!-- ============================================= -->
 
-    <!-- Toasts -->
-    <string name="medical_devices_store_rebuilt_toast">La base de données des GPIN des appareils Médicaux a été reconstruite</string>
-
     <!-- Channel names -->
     <string name="notification_channel_data">Gestion de données</string>
     <string name="notification_channel_scheduled_backup">Sauvegarde programmée</string>
@@ -203,30 +154,11 @@
     <!-- ============================================= -->
     <!-- GLANCE WIDGET -->
     <!-- ============================================= -->
-    <string name="widget_description">Aperçu des périphériques et des rendez-vous à venir</string>
     <string name="widget_no_data">Aucune donnée à afficher</string>
-
-    <!-- ============================================= -->
-    <!-- MEDICAL DEVICE EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_devices_label">Périphériques à remplacer</string>
-    <string name="wear_complication_expiring_devices">À remplacer prochainement</string>
-    <string name="wear_complication_expiring_devices_plain_text_builder">Jours restants</string>
 
     <!-- ============================================= -->
     <!-- GLANCE TILE -->
     <!-- ============================================= -->
     <string name="glance_tile_label">Tuile coup d\'œil</string>
-    <string name="glance_tile_description">Prochains rdvs, peremptions</string>
-
-    <!-- ============================================= -->
-    <!-- SHARE VIA RELAY SERVER -->
-    <!-- ============================================= -->
-    <string name="share_dialog_title_compagnon_mode">Mode compagnon</string>
-    <string name="share_dialog_title_medical_mode">Partage médecin</string>
-    <string name="share_dialog_connecting_to_relay_message">Connexion au relai…</string>
-    <string name="share_dialog_compagnon_mode_instruction_message">Scannez le QR code ou saisissez le code sur votre ordinateur</string>
-    <string name="share_dialog_medical_mode_instruction_message">Montrez le QR code à votre médecin</string>
-    <string name="share_dialog_stop_sharing_button_label">Arrêter le partage</string>
 
 </resources>

@@ -45,7 +45,7 @@ fun AddDeviceFab(
             shared.drawable.data_matrix_icon_vector
         ) { onScanClick() },
         Triple(
-            stringResource(shared.string.addable_device),
+            stringResource(shared.string.devices_addable_device),
             shared.drawable.medical_device_add_icon_vector
         ) { onSelect(AddableType.APPOINTMENT) })
 

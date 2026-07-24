@@ -20,7 +20,7 @@
         <service
             android:name=".complications.expiringDevices.ExpiringMedicalDevicesComplicationService"
             android:exported="true"
-            android:label="@string/wear_complication_expiring_devices_label"
+            android:label="@string/devices_devices_wear_complication_expiring_devices_label"
             android:icon="@drawable/medical_device_info_version_icon_vector"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
@@ -125,7 +125,7 @@
             android:name=".tile.glanceTile.GlanceTileService"
             android:exported="true"
             android:label="@string/glance_tile_label"
-            android:description="@string/glance_tile_description"
+            android:description="@string/devices_glance_tile_description"
             android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
             <intent-filter>
                 <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />

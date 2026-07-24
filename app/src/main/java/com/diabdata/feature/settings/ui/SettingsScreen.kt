@@ -37,6 +37,7 @@ import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.ColoredIconCircleProps
+import com.diabdata.core.utils.ui.darken
 import com.diabdata.feature.settings.SettingsViewModel
 import com.diabdata.feature.settings.ui.components.AppInfoCard
 import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
@@ -87,7 +88,7 @@ fun SettingsScreen(
 
     val medicationStoreRebuiltText = stringResource(shared.string.medications_medication_store_rebuilt_toast_message)
     val medicalDevicesStoreRebuiltText =
-        stringResource(shared.string.medical_devices_store_rebuilt_toast)
+        stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
 
     val nextAppointmentDate by remember {
         dataViewModel.upcomingAppointment
@@ -175,7 +176,9 @@ fun SettingsScreen(
                             workManager.cancelAllWorkByTag("treatments")
                         }
                     },
-                    trailingIcon = shared.drawable.notification_filled_icon_vector
+                    switchColor = NotificationIconColor.darken(0.2f),
+                    trailingIcon = shared.drawable.notification_filled_icon_vector,
+                    uncheckedTrailingIcon = shared.drawable.notification_off_icon_vector
                 ),
                 CardItem(
                     leadingColoredCircleIcon = iconCircleProps.copy(
@@ -225,7 +228,9 @@ fun SettingsScreen(
                             workManager.cancelAllWorkByTag("appointments")
                         }
                     },
-                    trailingIcon = shared.drawable.notification_filled_icon_vector
+                    switchColor = NotificationIconColor.darken(0.2f),
+                    trailingIcon = shared.drawable.notification_filled_icon_vector,
+                    uncheckedTrailingIcon = shared.drawable.notification_off_icon_vector
                 )
             )
 
@@ -278,7 +283,7 @@ fun SettingsScreen(
                             }
                         }
                     },
-                    trailingIcon = shared.drawable.refresh_icon_vector
+                    trailingIcon = shared.drawable.refresh_icon_vector,
                 )
             )
 

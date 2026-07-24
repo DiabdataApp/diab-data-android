@@ -152,7 +152,7 @@ fun App(
         ),
         BottomNavItem(
             route = "devices",
-            label = shared.string.devices_menu_title,
+            label = shared.string.devices_navigation_menu_title,
             unselectedIcon = NavIcon.Svg(shared.drawable.devices_icon_vector),
             selectedIcon = NavIcon.Svg(shared.drawable.devices_filled_icon_vector)
         ),

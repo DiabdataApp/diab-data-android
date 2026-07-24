@@ -2,6 +2,7 @@ package com.diabdata.feature.settings.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,15 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -26,6 +34,7 @@ import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.diabdata.BuildConfig
 import com.diabdata.core.ui.theme.DiabDataTheme
 import com.diabdata.core.ui.theme.ExtendedTheme
 import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
@@ -35,18 +44,19 @@ import com.diabdata.feature.settings.dataSettingsSection.ui.components.locale
 import com.diabdata.shared.R as shared
 
 @Composable
-fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () -> Unit){
+fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.surface
         ),
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 22.dp, vertical = 22.dp),
+                .padding(start = 22.dp, top = 22.dp, end = 22.dp, bottom = 12.dp),
             horizontalArrangement = spacedBy(10.dp),
         ) {
             ColoredIconCircle(
@@ -86,13 +96,20 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
 
         FlowRow(
             modifier = Modifier
-                .padding(start = 22.dp, end = 22.dp, bottom = 22.dp),
+                .padding(start = 22.dp, end = 22.dp, bottom = 22.dp)
+                .fillMaxWidth(),
             horizontalArrangement = spacedBy(8.dp),
         ) {
             val uriHandler = LocalUriHandler.current
 
             AssistChip(
-                label = { Text("v$versionName${if (isBeta) "-beta" else "" }") },
+                label = {
+                    Text(
+                        "v$versionName${if (isBeta) "-beta" else ""}",
+                        fontFamily = GoogleSansFlexFontFamily,
+                        fontWeight = FontWeight(600),
+                    )
+                },
                 leadingIcon = {
                     SvgIcon(
                         resId = shared.drawable.app_version_filled_icon_vector,
@@ -138,7 +155,13 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
                         )
                     }
                 },
-                label = { Text("Github") },
+                label = {
+                    Text(
+                        "Github",
+                        fontFamily = GoogleSansFlexFontFamily,
+                        fontWeight = FontWeight(600),
+                    )
+                },
                 leadingIcon = {
                     SvgIcon(
                         resId = shared.drawable.github_icon_vector,
@@ -161,10 +184,16 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
 
             AssistChip(
                 onClick = { showChangeLogDialog() },
-                label = { Text(stringResource(shared.string.settings_section_changelogs_label)) },
+                label = {
+                    Text(
+                        stringResource(shared.string.settings_section_changelogs_label),
+                        fontFamily = GoogleSansFlexFontFamily,
+                        fontWeight = FontWeight(600),
+                    )
+                },
                 leadingIcon = {
                     SvgIcon(
-                        resId = shared.drawable.breaking_new_filled_icon_vector,
+                        resId = shared.drawable.breaking_new_icon_vector,
                         modifier = Modifier
                             .size(18.dp)
                             .border(
@@ -186,7 +215,13 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
                 onClick = {
                     uriHandler.openUri("https://app.diabdata.fr/")
                 },
-                label = { Text(stringResource(shared.string.settings_section_website_label)) },
+                label = {
+                    Text(
+                        stringResource(shared.string.settings_section_website_label),
+                        fontFamily = GoogleSansFlexFontFamily,
+                        fontWeight = FontWeight(600),
+                    )
+                },
                 leadingIcon = {
                     SvgIcon(
                         resId = shared.drawable.arrow_outward_icon_vector,
@@ -210,40 +245,77 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
     }
 }
 
-const val isBeta = false
-
-@Preview(name = "LIGHT", showBackground = true, locale = locale)
+@Preview(name = "Interactive", showBackground = true, locale = locale)
 @Composable
-fun AutoBackupCardPreviewLight() {
-    DiabDataTheme(dynamicColor = false, darkTheme = false) {
+fun AppInfoCardInteractivePreview() {
+    var darkTheme by remember { mutableStateOf(false) }
+    var betaMode by remember { mutableStateOf(false) }
+
+    DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(30.dp)
+                .padding(24.dp),
         ) {
-            AppInfoCard(
-                isBeta = isBeta,
-                versionName = "1.0.0",
-                showChangeLogDialog = {}
-            )
-        }
-    }
-}
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = spacedBy(16.dp)
+            ) {
+                AppInfoCard(
+                    isBeta = betaMode,
+                    versionName = BuildConfig.VERSION_NAME,
+                    showChangeLogDialog = {}
+                )
 
-@Preview(name = "DARK", showBackground = true, locale = locale)
-@Composable
-fun AutoBackupCardPreviewDark() {
-    DiabDataTheme(dynamicColor = false, darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(30.dp)
-        ) {
-            AppInfoCard(
-                isBeta = isBeta,
-                versionName = "1.0.0",
-                showChangeLogDialog = {}
-            )
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(vertical = 12.dp, horizontal = 32.dp),
+                    verticalArrangement = spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Dark Theme",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = GoogleSansFlexFontFamily,
+                            fontWeight = FontWeight(800),
+                        )
+                        Switch(
+                            checked = darkTheme,
+                            onCheckedChange = { darkTheme = it }
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Beta Mode",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = GoogleSansFlexFontFamily,
+                            fontWeight = FontWeight(800),
+                        )
+                        Switch(
+                            checked = betaMode,
+                            onCheckedChange = { betaMode = it },
+                            colors = SwitchDefaults.colors(
+                                checkedTrackColor = ExtendedTheme.colors.betaContainer
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 }

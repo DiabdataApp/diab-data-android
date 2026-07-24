@@ -40,13 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.diabdata.core.model.UserDetails
+import com.diabdata.core.ui.components.actionInput.EnumDropdown
+import com.diabdata.core.ui.components.date_components.DateSelector
+import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.shared.utils.dataTypes.BloodType
 import com.diabdata.shared.utils.dataTypes.DiabetesType
 import com.diabdata.shared.utils.dataTypes.Gender
 import com.diabdata.shared.utils.dataTypes.GlucoseUnit
-import com.diabdata.core.ui.components.actionInput.EnumDropdown
-import com.diabdata.core.ui.components.date_components.DateSelector
-import com.diabdata.feature.userProfile.UserProfileViewModel
 import java.time.LocalDate
 import com.diabdata.shared.R as shared
 

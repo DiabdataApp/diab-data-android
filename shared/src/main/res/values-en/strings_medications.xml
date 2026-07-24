@@ -9,7 +9,7 @@
     <!-- MEDICATIONS TYPES -->
     <!-- ============================================= -->
     <string name="medications_ketone_test_strip_label">Blood ketone test strips</string>
-    <string name="mmedications_glucose_test_strip_label">Blood glucose test strips</string>
+    <string name="medications_glucose_test_strip_label">Blood glucose test strips</string>
     <string name="medications_fast_acting_insulin_cartridge_label">Fast acting insulin cartridge</string>
     <string name="medications_fast_acting_insulin_syringe_label">Fast acting insulin pen</string>
     <string name="medications_fast_acting_insulin_vial_label">Fast acting insulin vial</string>
@@ -25,7 +25,7 @@
     <!-- ============================================= -->
     <string name="medications_setting_screen_reminder_label">Medication expiration</string>
     <string name="medications_setting_screen_reminder_details">For the medication expiring on %1$s</string>
-    <string name="medications_medication_store_rebuilt_toast_message">Medication GPIN store rebuilt</string>
+    <string name="medications_medication_store_rebuilt_toast_message">Medication GTIN store rebuilt</string>
 
     <string name="medications_notification_channel_name">Expiration date reminders</string>
 

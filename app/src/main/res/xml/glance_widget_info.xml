@@ -5,6 +5,6 @@
     android:resizeMode="horizontal"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"
-    android:description="@string/widget_description"
+    android:description="@string/devices_glance_widget_description"
     android:initialLayout="@layout/widget_preview_layout" />
 

@@ -193,7 +193,7 @@ fun MedicalDevicePopup(
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text(stringResource(shared.string.popup_device_name_label)) },
+            label = { Text(stringResource(shared.string.devices_device_popup_name_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )
@@ -201,7 +201,7 @@ fun MedicalDevicePopup(
         OutlinedTextField(
             value = batchNumber,
             onValueChange = { batchNumber = it },
-            label = { Text(stringResource(shared.string.popup_device_batch_label)) },
+            label = { Text(stringResource(shared.string.devices_device_popup_batch_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )
@@ -209,7 +209,7 @@ fun MedicalDevicePopup(
         OutlinedTextField(
             value = serialNumber,
             onValueChange = { serialNumber = it },
-            label = { Text(stringResource(shared.string.popup_device_serial_label)) },
+            label = { Text(stringResource(shared.string.devices_device_popup_serial_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )
@@ -217,7 +217,7 @@ fun MedicalDevicePopup(
         OutlinedTextField(
             value = manufacturer,
             onValueChange = { manufacturer = it },
-            label = { Text(stringResource(shared.string.popup_device_manufacturer_label)) },
+            label = { Text(stringResource(shared.string.devices_device_popup_manufacturer_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )
@@ -228,14 +228,14 @@ fun MedicalDevicePopup(
                 lifeSpan = it.toIntOrNull() ?: 0
                 lifeSpanEndDate = selectedDate.plusDays(lifeSpan.toLong())
             },
-            label = { Text(stringResource(shared.string.popup_device_lifespan_label)) },
+            label = { Text(stringResource(shared.string.devices_device_popup_lifespan_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )
 
         CreateToggle(
-            text = stringResource(shared.string.popup_device_faulty_label),
-            displayText = stringResource(shared.string.popup_device_faulty_description),
+            text = stringResource(shared.string.devices_device_popup_faulty_label),
+            displayText = stringResource(shared.string.devices_device_popup_faulty_description),
             checked = isFaulty,
             onCheckedChange = { isFaulty = it },
             icon = shared.drawable.faulty_medical_device_icon_vector,
@@ -243,8 +243,8 @@ fun MedicalDevicePopup(
         )
 
         CreateToggle(
-            text = stringResource(shared.string.popup_device_reported_label),
-            displayText = stringResource(shared.string.popup_device_reported_description),
+            text = stringResource(shared.string.devices_device_popup_reported_label),
+            displayText = stringResource(shared.string.devices_device_popup_reported_description),
             checked = isReported,
             onCheckedChange = { isReported = it },
             icon = shared.drawable.report_icon_vector,
@@ -252,8 +252,8 @@ fun MedicalDevicePopup(
 
         if (toUpdate != null) {
             CreateToggle(
-                text = stringResource(shared.string.popup_device_lifespan_over_label),
-                displayText = stringResource(shared.string.popup_device_lifespan_over_description),
+                text = stringResource(shared.string.devices_device_popup_device_lifespan_over_label),
+                displayText = stringResource(shared.string.devices_device_popup_lifespan_over_description),
                 checked = isLifeSpanOver,
                 onCheckedChange = { isLifeSpanOver = it },
                 icon = shared.drawable.recycle_icon_vector,
@@ -263,8 +263,8 @@ fun MedicalDevicePopup(
 
         if (toUpdate == null) {
             CreateToggle(
-                text = stringResource(shared.string.popup_device_update_expired_devices_label),
-                displayText = stringResource(shared.string.popup_device_update_expired_devices_description),
+                text = stringResource(shared.string.devices_device_popup_update_expired_devices_label),
+                displayText = stringResource(shared.string.devices_device_popup_update_expired_devices_description),
                 checked = setSimilarDevicesToExpired,
                 onCheckedChange = { setSimilarDevicesToExpired = it },
                 icon = shared.drawable.select_all_icon_vector

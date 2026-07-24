@@ -1,3 +1,5 @@
+@file:Suppress("UNNECESSARY_SAFE_CALL")
+
 package com.diabdata.feature.settings.dataSettingsSection.ui.components
 
 import android.content.Intent
@@ -5,6 +7,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
@@ -35,6 +38,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +56,7 @@ import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.theme.DiabDataTheme
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
+import com.diabdata.shared.utils.dateUtils.formatDateToLocale
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import com.diabdata.shared.R as shared
 
@@ -302,7 +309,7 @@ fun AutoBackupCard(
                                     )
 
                                     Text(
-                                        text = lastBackupDate?.takeIf { it.isNotBlank() }
+                                        text = lastBackupDate?.takeIf { it.isNotBlank() }?.formatDateToLocale()
                                             ?: stringResource(shared.string.settings_no_data_backup_file),
                                         style = MaterialTheme.typography.labelSmall
                                     )
@@ -348,26 +355,31 @@ const val locale = "fr"
 const val darkTheme = false
 const val testData = true
 const val testBackupPath = "content://com.android.externalstorage.documents/tree/primary%3ADiabdata"
-const val testLastBackupDate = "18 juil. 2026, 10:37"
+const val testLastBackupDate = "2026-07-23T02:25:24.008588"
 
 @Preview(name = "OFF", showBackground = true, locale = locale)
 @Composable
 fun AutoBackupCardPreviewOffLight() {
+    var enabled by remember { mutableStateOf(false) }
+    var frequency by remember { mutableStateOf<BackupFrequency?>(null) }
+    var backupPath by remember { mutableStateOf("") }
+
     DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(30.dp)
+                .animateContentSize()
         ) {
             AutoBackupCard(
-                enabled = false,
-                onEnabledChange = {},
-                frequency = null,
-                backupPath = "",
+                enabled = enabled,
+                onEnabledChange = { enabled = it },
+                frequency = frequency,
+                backupPath = backupPath,
                 lastBackupDate = null,
-                onFrequencyChange = {},
-                onPathChange = {},
-                onResetButtonClick = {}
+                onFrequencyChange = { frequency = it },
+                onPathChange = { backupPath = it },
+                onResetButtonClick = { backupPath = "" }
             )
         }
     }
@@ -376,22 +388,30 @@ fun AutoBackupCardPreviewOffLight() {
 @Preview(name = "ON", showBackground = true, locale = locale)
 @Composable
 fun AutoBackupCardPreviewOnLight() {
+    var enableAutoBackup by remember { mutableStateOf(true) }
+    var frequency by remember { mutableStateOf<BackupFrequency?>(BackupFrequency.DAILY) }
+    var backupPath by remember {
+        @Suppress("SimplifyBooleanWithConstants")
+        mutableStateOf(testBackupPath.takeIf { it.isNotBlank() && testData } ?: "")
+    }
+
     DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(30.dp)
+                .animateContentSize()
         ) {
-            @Suppress("UNNECESSARY_SAFE_CALL", "BOOLEAN_VARIABLE_IS_CONSTANT")
+            @Suppress("SimplifyBooleanWithConstants")
             AutoBackupCard(
-                enabled = true,
-                onEnabledChange = {},
-                frequency = BackupFrequency.DAILY,
-                backupPath = testBackupPath?.takeIf { it.isNotBlank() && testData } ?: "",
+                enabled = enableAutoBackup,
+                onEnabledChange = { enableAutoBackup = it },
+                frequency = frequency,
+                backupPath = backupPath,
                 lastBackupDate = testLastBackupDate?.takeIf { it.isNotBlank() && testData } ?: "",
-                onFrequencyChange = {},
-                onPathChange = {},
-                onResetButtonClick = {}
+                onFrequencyChange = { frequency = it },
+                onPathChange = { backupPath = it },
+                onResetButtonClick = { backupPath = "" }
             )
         }
     }
