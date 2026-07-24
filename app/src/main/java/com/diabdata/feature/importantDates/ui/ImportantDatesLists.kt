@@ -1,36 +1,47 @@
 package com.diabdata.feature.importantDates.ui
 
-import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.model.ImportantDate
+import com.diabdata.core.ui.components.cardsList.CardItem
+import com.diabdata.core.ui.components.cardsList.CardsList
+import com.diabdata.core.ui.theme.DiabDataTheme
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
+import com.diabdata.core.utils.ui.ColoredIconCircleProps
+import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.feature.settings.dataSettingsSection.ui.components.locale
+import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.shared.utils.dataTypes.AddableType
 import com.diabdata.shared.utils.dataTypes.DiabetesType
 import com.diabdata.shared.utils.dateUtils.formatLocalDate
-import com.diabdata.core.utils.ui.ColoredIconCircleProps
-import com.diabdata.core.ui.components.cardsList.CardItem
-import com.diabdata.core.ui.components.cardsList.CardsList
-import com.diabdata.core.utils.ui.SvgIcon
-import com.diabdata.feature.userProfile.UserProfileViewModel
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import com.diabdata.shared.R as shared
@@ -98,11 +109,13 @@ fun ImportantDatesListContent(
                     remainingMonths.toInt(),
                     remainingMonths
                 )
+
                 remainingMonths == 0L -> pluralStringResource(
                     shared.plurals.plurals_years,
                     years.toInt(),
                     years
                 )
+
                 else -> pluralStringResource(
                     shared.plurals.years_and_months,
                     years.toInt(),
@@ -159,35 +172,85 @@ fun ImportantDatesListContent(
     )
 }
 
-@Preview(
-    showBackground = true, locale = "en", showSystemUi = false,
-    wallpaper = Wallpapers.NONE,
-    uiMode = Configuration.UI_MODE_TYPE_NORMAL
-)
+const val locale = "fr"
+
+@Preview(name = "Interactive", showBackground = true, locale = locale)
 @Composable
 fun ImportantDatesListPreview() {
+    var darkTheme by remember { mutableStateOf(false) }
+    val today = LocalDate.now()
+
+    val firstDate = LocalDate.of(
+        today.minusYears(5).year,
+        today.minusMonths(5).month,
+        today.minusDays(23).dayOfMonth
+    )
+    val secondDate = LocalDate.of(
+        today.minusYears(4).year,
+        today.minusMonths(4).month,
+        today.minusDays(23).dayOfMonth
+    )
+
     val fakeData = listOf(
         ImportantDate(
             importantDate = "Diagnostic du diabète",
-            date = LocalDate.of(2015, 5, 12),
+            date = firstDate,
             id = 1,
-            createdAt = LocalDate.of(2015, 3, 1),
+            createdAt = firstDate,
             isArchived = false,
-            updatedAt = LocalDate.of(2015, 4, 2),
+            updatedAt = firstDate,
         ),
         ImportantDate(
             importantDate = "Pose de pompe à insuline",
-            date = LocalDate.of(2015, 5, 12),
+            date = secondDate,
             id = 2,
-            createdAt = LocalDate.of(2015, 3, 1),
+            createdAt = secondDate,
             isArchived = false,
-            updatedAt = LocalDate.of(2015, 4, 2),
+            updatedAt = secondDate,
         )
     )
 
-    MaterialTheme {
-        Column {
-            ImportantDatesListContent(fakeData)
+    DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(24.dp),
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = spacedBy(16.dp)
+            ) {
+                Column {
+                    ImportantDatesListContent(fakeData)
+                }
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(vertical = 12.dp, horizontal = 32.dp),
+                    verticalArrangement = spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Dark Theme",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = GoogleSansFlexFontFamily,
+                            fontWeight = FontWeight(800),
+                        )
+                        Switch(
+                            checked = darkTheme,
+                            onCheckedChange = { darkTheme = it }
+                        )
+                    }
+                }
+            }
         }
     }
 }

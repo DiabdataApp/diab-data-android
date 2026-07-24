@@ -15,12 +15,12 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
-val ciStoreFile = System.getenv("SIGNING_STORE_FILE")
-val ciStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
-val ciKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
-val ciKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+val ciStoreFile: String? = System.getenv("SIGNING_STORE_FILE")
+val ciStorePassword: String? = System.getenv("SIGNING_STORE_PASSWORD")
+val ciKeyAlias: String? = System.getenv("SIGNING_KEY_ALIAS")
+val ciKeyPassword: String? = System.getenv("SIGNING_KEY_PASSWORD")
 
-val storeFilePath = ciStoreFile ?: localProperties.getProperty("RELEASE_STORE_FILE", "")
+val storeFilePath: String = ciStoreFile ?: localProperties.getProperty("RELEASE_STORE_FILE", "")
 val storeF: File? = if (storeFilePath.isNotEmpty()) file(storeFilePath) else null
 val storeP: String = ciStorePassword ?: localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
 val keyA: String = ciKeyAlias ?: localProperties.getProperty("RELEASE_KEY_ALIAS", "")

@@ -297,11 +297,11 @@ fun SettingsScreen(
                     content = {
                         Column {
                             Text(
-                                text = stringResource(shared.string.settings_section_data),
+                                text = stringResource(shared.string.settings_data_section_title),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                text = stringResource(shared.string.settings_data_description),
+                                text = stringResource(shared.string.settings_data_section_description_text),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

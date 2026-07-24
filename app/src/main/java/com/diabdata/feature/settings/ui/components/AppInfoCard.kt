@@ -186,7 +186,7 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
                 onClick = { showChangeLogDialog() },
                 label = {
                     Text(
-                        stringResource(shared.string.settings_section_changelogs_label),
+                        stringResource(shared.string.settings_changelogs_chip_label),
                         fontFamily = GoogleSansFlexFontFamily,
                         fontWeight = FontWeight(600),
                     )
@@ -217,7 +217,7 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
                 },
                 label = {
                     Text(
-                        stringResource(shared.string.settings_section_website_label),
+                        stringResource(shared.string.settings_website_chip_label),
                         fontFamily = GoogleSansFlexFontFamily,
                         fontWeight = FontWeight(600),
                     )

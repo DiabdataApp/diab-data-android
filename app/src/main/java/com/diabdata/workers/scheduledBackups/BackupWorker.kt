@@ -38,9 +38,9 @@ class BackupWorker @AssistedInject constructor(
             val backupPath = prefs.backupPath ?: run {
                 Log.w("BackupWorker", "No backup path configured, skipping")
                 applicationContext.showNotification(
-                    title = applicationContext.getString(shared.string.notification_scheduled_backup_error_title),
+                    title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
                     content = "Aucun dossier de sauvegarde configuré",
-                    channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
+                    channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                     importance = NotificationImportance.DEFAULT
                 )
                 return Result.failure()
@@ -92,9 +92,9 @@ class BackupWorker @AssistedInject constructor(
             )
 
             applicationContext.showNotification(
-                title = applicationContext.getString(shared.string.notification_scheduled_backup_success_title),
-                content = applicationContext.getString(shared.string.notification_scheduled_backup_success, backupPath.uriStringToReadablePath(applicationContext), readableDate),
-                channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
+                title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_success_title),
+                content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_success, backupPath.uriStringToReadablePath(applicationContext), readableDate),
+                channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.LOW
             )
 
@@ -104,9 +104,9 @@ class BackupWorker @AssistedInject constructor(
         } catch (e: SecurityException) {
             Log.e("BackupWorker", "Permission denied", e)
             applicationContext.showNotification(
-                title = applicationContext.getString(shared.string.notification_scheduled_backup_error_title),
-                content = applicationContext.getString(shared.string.notification_scheduled_backup_error_permission_denied, e.message),
-                channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
+                title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
+                content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_permission_denied, e.message),
+                channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.DEFAULT
             )
             Result.failure()
@@ -114,9 +114,9 @@ class BackupWorker @AssistedInject constructor(
             Log.e("BackupWorker", "Backup failed", e)
             val errorDetail = "${e.javaClass.simpleName}: ${e.message}\nat ${e.stackTrace.firstOrNull()}"
             applicationContext.showNotification(
-                title = applicationContext.getString(shared.string.notification_scheduled_backup_error_title),
+                title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
                 content = errorDetail,
-                channelName = applicationContext.getString(shared.string.notification_channel_scheduled_backup),
+                channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.DEFAULT
             )
 

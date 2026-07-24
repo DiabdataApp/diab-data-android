@@ -1,6 +1,6 @@
 [versions]
 adaptive = "1.2.0"
-agp = "9.3.0"
+agp = "9.3.1"
 cameraCore = "1.6.1"
 coilCompose = "2.7.0"
 core = "1.7.0"

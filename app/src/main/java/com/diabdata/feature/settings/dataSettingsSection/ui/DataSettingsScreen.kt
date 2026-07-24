@@ -55,6 +55,7 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import com.diabdata.shared.R as shared
 
+@Suppress("Unused", "UnusedVariable")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DataSettingsScreen(
@@ -71,12 +72,12 @@ fun DataSettingsScreen(
 
     var showConfirmDialog by remember { mutableStateOf(false) }
 
-    val notifChannelName = stringResource(shared.string.notification_channel_data)
-    val dataExportSuccess = stringResource(shared.string.toast_data_export_success)
-    val dataImportSuccess = stringResource(shared.string.toast_data_import_success)
-    val dataExportError = stringResource(shared.string.toast_data_export_error)
-    val dataImportError = stringResource(shared.string.toast_data_import_error)
-    val emptyImportFileError = stringResource(shared.string.toast_empty_file_error)
+    val notifChannelName = stringResource(shared.string.settings_notifications_data_channel_name)
+    val dataExportSuccess = stringResource(shared.string.settings_toasts_data_export_success_message)
+    val dataImportSuccess = stringResource(shared.string.settings_toasts_data_import_success_message)
+    val dataExportError = stringResource(shared.string.settings_toasts_data_export_error_message)
+    val dataImportError = stringResource(shared.string.settings_toasts_data_import_error_message)
+    val emptyImportFileError = stringResource(shared.string.settings_toasts_data_empty_file_error_message)
 
     val backupViewModel: BackupViewModel = hiltViewModel()
     val backupPrefs by backupViewModel.preferences.collectAsState()
@@ -233,7 +234,7 @@ fun DataSettingsScreen(
             CardItem(
                 leadingIcon = shared.drawable.backup_db_icon_vector,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_export_data)) }
+                    Row { Text(stringResource(shared.string.settings_data_export_label)) }
                 },
                 onClick = { createFileLauncher.launch(fileName) },
                 trailingIcon = shared.drawable.arrow_right_icon
@@ -241,7 +242,7 @@ fun DataSettingsScreen(
             CardItem(
                 leadingIcon = shared.drawable.restore_db_icon_vector,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_import_data)) }
+                    Row { Text(stringResource(shared.string.settings_data_import_label)) }
                 },
                 onClick = {
                     importFileLauncher.launch(
@@ -255,7 +256,7 @@ fun DataSettingsScreen(
                 leadingIconColor = MaterialTheme.colorScheme.error,
                 isDestructive = true,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_purge_database)) }
+                    Row { Text(stringResource(shared.string.settings_data_database_purge_label)) }
                 },
                 onClick = { showConfirmDialog = true },
                 trailingIcon = shared.drawable.arrow_right_icon
@@ -286,13 +287,13 @@ fun DataSettingsScreen(
                             actionLabel = undoLabel,
                             duration = SnackbarDuration.Short
                         )
-                        Log.d("BackupReset", "5. Snackbar result: $result")
+                        Log.d("BackupReset", "5. snackbar result: $result")
                         if (result == SnackbarResult.ActionPerformed) {
                             backupViewModel.restorePreferences(backup)
                             Log.d("BackupReset", "6. Preferences restored")
                         }
                     } catch (e: Exception) {
-                        Log.e("BackupReset", "Snackbar error", e)
+                        Log.e("BackupReset", "snackbar error", e)
                     }
                 }
             }
@@ -313,8 +314,8 @@ fun DataSettingsScreen(
                     color = MaterialTheme.colorScheme.error
                 )
             },
-            title = { Text(stringResource(shared.string.dialog_purge_title)) },
-            text = { Text(stringResource(shared.string.dialog_purge_message)) },
+            title = { Text(stringResource(shared.string.settings_data_purge_dialog_title)) },
+            text = { Text(stringResource(shared.string.settings_data_purge_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {

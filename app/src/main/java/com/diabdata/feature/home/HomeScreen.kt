@@ -44,6 +44,7 @@ import com.diabdata.shared.R as shared
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
+@Suppress("unused")
 fun HomeScreen(
     dataViewModel: DataViewModel
 ) {
@@ -63,7 +64,7 @@ fun HomeScreen(
             } else {
                 Toast.makeText(
                     context,
-                    shared.string.toast_camera_permission_error,
+                    shared.string.scanner_camera_permission_error_toast,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -92,6 +93,7 @@ fun HomeScreen(
     }
 
     if (showScanner) {
+        @Suppress("KotlinConstantConditions", "UnusedExpression")
         DataMatrixScannerDialog(
             onDismiss = { showScanner = false },
             onResult = { result ->

@@ -259,7 +259,7 @@ fun App(
                                         title = {
                                             Text(
                                                 when (currentRoute) {
-                                                    "settings/data" -> stringResource(shared.string.settings_section_data)
+                                                    "settings/data" -> stringResource(shared.string.settings_data_section_title)
                                                     else -> ""
                                                 }
                                             )
@@ -299,7 +299,7 @@ fun App(
                                 title = {
                                     Text(
                                         when (currentRoute) {
-                                            "settings/data" -> stringResource(shared.string.settings_section_data)
+                                            "settings/data" -> stringResource(shared.string.settings_data_section_title)
                                             else -> ""
                                         }
                                     )
@@ -396,7 +396,7 @@ fun App(
                                         Text(
                                             text = currentRoute.let { route ->
                                                 when (route) {
-                                                    "settings/data" -> stringResource(shared.string.settings_section_data)
+                                                    "settings/data" -> stringResource(shared.string.settings_data_section_title)
 
                                                     else -> ""
                                                 }
