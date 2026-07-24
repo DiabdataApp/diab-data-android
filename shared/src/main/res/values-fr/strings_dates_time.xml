@@ -124,4 +124,13 @@
     <string name="recurrence_period_weekly">Semaine</string>
     <string name="recurrence_period_monthly">Mois</string>
 
+
+    <!-- Time ranges -->
+    <string name="database_time_range_indicator">Du %1$s au %2$s</string>
+    <string name="time_range_day">Journée</string>
+    <string name="time_range_week">Semaine</string>
+    <string name="time_range_month">Mois</string>
+    <string name="time_range_year">Année</string>
+    <string name="time_range_custom">Choisir</string>
+
 </resources>

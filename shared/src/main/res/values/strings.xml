@@ -29,8 +29,6 @@
     <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
     <!-- ============================================= -->
-    <string name="addable_weight">Weight</string>
-    <string name="addable_hba1c">HbA1c</string>
     <string name="addable_important_date">Important date</string>
 
     <!-- ============================================= -->
@@ -46,18 +44,6 @@
     <string name="generic_diabetes_discovery_label">Diabetes discovery</string>
     <string name="specific_diabetes_discovery_label">%1s discovery</string>
 
-    <!-- ============================================= -->
-    <!-- DATA MANAGEMENT -->
-    <!-- ============================================= -->
-    <string name="database_time_range_indicator">From %1$s to %2$s</string>
-
-    <!-- Time ranges -->
-    <string name="time_range_day">Day</string>
-    <string name="time_range_week">Week</string>
-    <string name="time_range_month">Month</string>
-    <string name="time_range_year">Year</string>
-    <string name="time_range_custom">Custom</string>
-
     <!-- Chart options -->
     <string name="chart_regression_line_toggle">Regression line</string>
 
@@ -72,12 +58,6 @@
     <!-- Titles -->
     <string name="popup_title_add">Add new %1$s</string>
     <string name="popup_title_update">Update %1$s entry</string>
-
-    <!-- Validation messages -->
-    <string name="validation_invalid_weight">Invalid weight</string>
-    <string name="validation_invalid_hba1c" tools:ignore="Typos">Invalid HBA1C</string>
-    <string name="validation_weight_hint">Weight must be between 0 and 600 (kg)</string>
-    <string name="validation_hba1c_hint" tools:ignore="Typos">HBA1C must be between 0 and 15 (%)</string>
 
     <!-- Error messages -->
     <string name="error_adding_date">Error while adding date</string>

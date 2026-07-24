@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="weights_weight_label">Poids</string>
+
+    <!-- Validation messages -->
+    <string name="weights_invalid_weight_error_label">Valeur de poids invalide</string>
+    <string name="weights_invalid_weight_error_hint">Le poids doit être compris entre 0 et 600 (kg)</string>
+
+</resources>

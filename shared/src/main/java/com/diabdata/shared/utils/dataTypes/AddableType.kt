@@ -15,14 +15,14 @@ enum class AddableType(
 ) {
     WEIGHT(
         tableName = "weight_entries",
-        displayNameRes = R.string.addable_weight,
+        displayNameRes = R.string.weights_weight_label,
         baseColor = Color(0xFF4CAF50),
         iconRes = R.drawable.weight_icon_vector,
         iconFilledRes = R.drawable.weight_filled_icon_vector
     ),
     HBA1C(
         tableName = "hba1c_entries",
-        displayNameRes = R.string.addable_hba1c,
+        displayNameRes = R.string.hba1c_label,
         baseColor = Color(0xFF4DB3EA),
         iconRes = R.drawable.hba1c_icon_vector,
         iconFilledRes = R.drawable.hba1c_filled_icon_vector

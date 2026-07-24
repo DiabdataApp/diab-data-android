@@ -45,9 +45,9 @@ fun AddDataFab(
             shared.drawable.data_matrix_icon_vector
         ) { onScanClick() },
         Triple(
-            stringResource(shared.string.addable_weight), shared.drawable.weight_add_icon_vector
+            stringResource(shared.string.weights_weight_label), shared.drawable.weight_add_icon_vector
         ) { onSelect(AddableType.WEIGHT) },
-        Triple(stringResource(shared.string.addable_hba1c), shared.drawable.hba1c_add_icon_vector) {
+        Triple(stringResource(shared.string.hba1c_label), shared.drawable.hba1c_add_icon_vector) {
             onSelect(
                 AddableType.HBA1C
             )
