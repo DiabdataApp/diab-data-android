@@ -139,7 +139,7 @@ fun BasePopupLayout(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            stringResource(shared.string.action_cancel),
+                            stringResource(shared.string.common_cancel),
                             color = MaterialTheme.colorScheme.error
                         )
                     }
@@ -148,7 +148,7 @@ fun BasePopupLayout(
                         onClick = onConfirm,
                         enabled = isConfirmEnabled
                     ) {
-                        Text(stringResource(shared.string.action_confirm))
+                        Text(stringResource(shared.string.common_confirm))
                     }
                 }
             }

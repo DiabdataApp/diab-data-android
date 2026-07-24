@@ -1,14 +1,5 @@
 package com.diabdata.core.database
 
-import com.diabdata.feature.appointments.data.AppointmentDao
-import com.diabdata.feature.hba1c.data.HBA1CDao
-import com.diabdata.feature.importantDates.data.ImportantDateDao
-import com.diabdata.feature.devices.data.MedicalDeviceDao
-import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
-import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
-import com.diabdata.feature.treatments.data.TreatmentDao
-import com.diabdata.feature.userProfile.data.UserDetailsDao
-import com.diabdata.feature.weight.data.WeightDao
 import com.diabdata.core.model.Appointment
 import com.diabdata.core.model.Hba1c
 import com.diabdata.core.model.ImportantDate
@@ -17,11 +8,26 @@ import com.diabdata.core.model.MedicalDeviceInfoEntity
 import com.diabdata.core.model.Medication
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
+import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.model.Weight
+import com.diabdata.core.utils.data.GsonFactory
+import com.diabdata.feature.appointments.data.AppointmentDao
+import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
 import com.diabdata.feature.devices.classes.FaultyBatchCount
+import com.diabdata.feature.devices.data.MedicalDeviceDao
+import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
 import com.diabdata.feature.graphs.classes.PlotPoint
+import com.diabdata.feature.hba1c.data.HBA1CDao
+import com.diabdata.feature.importantDates.data.ImportantDateDao
+import com.diabdata.feature.settings.data.UserPreferencesDao
+import com.diabdata.feature.treatments.data.TreatmentDao
+import com.diabdata.feature.userProfile.data.UserDetailsDao
+import com.diabdata.feature.weight.data.WeightDao
 import com.diabdata.shared.utils.dataTypes.MedicalDeviceInfoType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -35,6 +41,7 @@ class DataRepository(
     private val medicalDevicesDao: MedicalDeviceDao,
     private val medicalDeviceInfo: MedicalDevicesInfoDao,
     private val userDetailsDao: UserDetailsDao,
+    private val userPreferencesDao: UserPreferencesDao,
     val database: DiabDataDatabase,
 ) {
     // ----------------
@@ -220,9 +227,98 @@ class DataRepository(
     /** Add profile photo path */
     suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(path)
 
+    // ----------------
+    // User preferences
+    // ----------------
+    /** Flow of user preferences */
+    suspend fun insertOrUpdate(preferences: UserPreferences) = userPreferencesDao.insertOrUpdate(preferences)
+    fun getUserPreferences(): Flow<UserPreferences?> =
+        userPreferencesDao.getUserPreferences()
+
+    suspend fun setAutoBackupEnabled(enabled: Boolean) =
+        userPreferencesDao.setAutoBackupEnabled(enabled)
+
+    suspend fun setBackupFrequency(frequency: String) =
+        userPreferencesDao.setFrequency(frequency)
+
+    suspend fun setBackupPath(path: String) =
+        userPreferencesDao.setBackupPath(path)
+
+    suspend fun setLastBackupUpdate(date: String) =
+        userPreferencesDao.setLastBackupDate(date)
+
+    suspend fun restorePreferences(preferences: UserPreferences) =
+        userPreferencesDao.insertOrUpdate(preferences)
+
+    suspend fun resetBackupPreferences() =
+        userPreferencesDao.resetBackupPreferences()
 
     /** Delete a devices record by Id**/
     suspend fun deleteDevice(id: Int) = medicalDevicesDao.deleteById(id)
+
+    //-----------------
+    // ImEx utils
+    //-----------------
+    /** Export all data as a JSON string */
+    suspend fun exportDataAsJsonString(): String {
+        val gson = GsonFactory.create(prettyPrint = true)
+
+        val weights = getAllWeights().first()
+        val hba1cEntries = getAllHba1c().first()
+        val appointments = getAllAppointments().first()
+        val treatments = getAllTreatments().first()
+        val importantDates = getAllImportantDates().first()
+        val medicalDevices = getAllDevices().first()
+        val userDetails = getUserDetails().first()
+        val userPreferences = getUserPreferences().first()
+
+
+        val exportData = ExportData(
+            weights = weights,
+            hba1c = hba1cEntries,
+            appointments = appointments,
+            treatments = treatments,
+            importantDates = importantDates,
+            devices = medicalDevices,
+            userDetails = userDetails,
+            userPreferences = userPreferences
+        )
+
+        return gson.toJson(exportData)
+    }
+
+    suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) {
+        val gson = GsonFactory.create()
+
+        val importedData: ExportData = gson.fromJson(json, ExportData::class.java)
+
+        withContext(Dispatchers.IO) {
+            importedData.weights.forEach { weight ->
+                insertWeight(weight.copy()) // Reset IDs to have them auto incremented by Room to prevent app crashes
+            }
+            importedData.hba1c.forEach { hba1c ->
+                insertHba1c(hba1c.copy())
+            }
+            importedData.appointments.forEach { appointment ->
+                insertAppointment(appointment.copy())
+            }
+            importedData.treatments.forEach { treatment ->
+                insertTreatment(treatment.copy())
+            }
+            importedData.importantDates.forEach { diagnosis ->
+                insertImportantDate(diagnosis.copy())
+            }
+            importedData.devices.forEach { device ->
+                insertDevice(device.copy())
+            }
+            importedData.userDetails?.let { userDetails ->
+                updateUserDetails(userDetails.copy(profilePhotoPath = profilePhotoPath))
+            }
+            importedData.userPreferences?.let { userPreferences ->
+                insertOrUpdate(userPreferences.copy())
+            }
+        }
+    }
 
     // ----------------
     // Generic / Database Utilities

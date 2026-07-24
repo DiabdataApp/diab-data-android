@@ -12,13 +12,13 @@ enum class AppointmentType(
     @param:DrawableRes val iconFilledRes: Int
 ) {
     ANNUAL_CHECKUP(
-        displayNameRes = R.string.appointment_annual_checkup,
+        displayNameRes = R.string.appointments_annual_checkup_appointment_label,
         iconRes = R.drawable.recurring_event_icon_vector,
         iconFilledRes = R.drawable.recurring_event_filled_icon_vector
 
     ),
     APPOINTMENT(
-        displayNameRes = R.string.appointment_one_time,
+        displayNameRes = R.string.appointments_appointment_one_time_appointment_label,
         iconRes = R.drawable.stethoscope_icon_vector,
         iconFilledRes = R.drawable.stethoscope_filled_icon_vector
     );

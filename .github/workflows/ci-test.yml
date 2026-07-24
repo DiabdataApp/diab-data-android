@@ -35,7 +35,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Build debug
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Run unit tests
         run: ./gradlew test

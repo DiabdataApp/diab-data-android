@@ -97,7 +97,7 @@ fun AppointmentPopup(
         OutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            label = { Text(stringResource(shared.string.appointment_card_notes_header)) },
+            label = { Text(stringResource(shared.string.common_notes_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small
         )

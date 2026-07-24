@@ -41,13 +41,13 @@ fun AddDataFab(
 
     val fabItems = listOf(
         Triple(
-            stringResource(shared.string.addable_treatment_scan),
+            stringResource(shared.string.medications_general_label_scan),
             shared.drawable.data_matrix_icon_vector
         ) { onScanClick() },
         Triple(
-            stringResource(shared.string.addable_weight), shared.drawable.weight_add_icon_vector
+            stringResource(shared.string.weights_weight_label), shared.drawable.weight_add_icon_vector
         ) { onSelect(AddableType.WEIGHT) },
-        Triple(stringResource(shared.string.addable_hba1c), shared.drawable.hba1c_add_icon_vector) {
+        Triple(stringResource(shared.string.hba1c_label), shared.drawable.hba1c_add_icon_vector) {
             onSelect(
                 AddableType.HBA1C
             )
@@ -57,11 +57,11 @@ fun AddDataFab(
             shared.drawable.important_date_add_icon_vector
         ) { onSelect(AddableType.IMPORTANT_DATE) },
         Triple(
-            stringResource(shared.string.addable_treatment),
+            stringResource(shared.string.medications_general_label),
             shared.drawable.medication_add_icon_vector
         ) { onSelect(AddableType.TREATMENT) },
         Triple(
-            stringResource(shared.string.addable_appointment), shared.drawable.event_add_icon_vector
+            stringResource(shared.string.appointments_general_label), shared.drawable.event_add_icon_vector
         ) { onSelect(AddableType.APPOINTMENT) })
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {

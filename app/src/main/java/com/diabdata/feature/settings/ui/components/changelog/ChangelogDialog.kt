@@ -37,7 +37,7 @@ import com.diabdata.shared.R as shared
 @Composable
 fun ChangelogDialog(onDismiss: () -> Unit) {
     rememberScrollState()
-    val confirmButtonText = stringResource(shared.string.action_close)
+    val confirmButtonText = stringResource(shared.string.common_close)
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val maxHeight = with(density) { windowInfo.containerSize.height.toDp() * 0.45f }
@@ -76,7 +76,7 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Updates - 16/03/2026",
+                        text = "Updates - 22/08/2026",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -90,9 +90,24 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                         .heightIn(max = maxHeight)
                 ) {
                     changelogSection(
+                        "New features",
+                        listOf(
+                            "Added scheduled backup feature"
+                        )
+                    )
+
+                    changelogSection(
                         "GUI",
                         listOf(
                             "Improved navigation bar responsiveness",
+                            "Overhauled settings menu"
+                        )
+                    )
+
+                    changelogSection(
+                        "Bug fixes",
+                        listOf(
+                            "Fixed conditional display issue of important date card on home screen"
                         )
                     )
                 }

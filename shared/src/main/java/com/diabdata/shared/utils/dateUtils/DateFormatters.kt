@@ -21,6 +21,7 @@ fun String.toShortenedFormatLocalDate(
     return shortenedFormatLocalDate(date, locale)
 }
 
+@Suppress("unused")
 fun String.toShortenedFormatLocalDateTime(
     locale: Locale = Locale.getDefault()
 ): String {
@@ -46,9 +47,18 @@ fun formatLocalDateTime(
     return date.format(formatter)
 }
 
+@Suppress("unused")
 fun String.toFormatLocalDate(
     locale: Locale = Locale.getDefault()
 ): String {
     val date = LocalDate.parse(this)
     return formatLocalDate(date, locale = locale)
+}
+
+fun String.formatDateToLocale(locale: Locale = Locale.getDefault()): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val dateTime = LocalDateTime.parse(this, inputFormatter)
+
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yy - HH:mm", locale)
+    return dateTime.format(outputFormatter)
 }

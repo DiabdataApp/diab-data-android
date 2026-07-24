@@ -32,17 +32,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.model.MedicalDevice
-import com.diabdata.shared.utils.dataTypes.AddableType
-import com.diabdata.shared.utils.dataTypes.MedicalDeviceInfoType
-import com.diabdata.shared.utils.dateUtils.shortenedFormatLocalDate
-import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.ui.components.actionInput.FaultyToggleButton
+import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.core.utils.ui.darken
 import com.diabdata.core.utils.ui.getItemShape
 import com.diabdata.feature.devices.DevicesViewModel
+import com.diabdata.shared.utils.dataTypes.AddableType
+import com.diabdata.shared.utils.dataTypes.MedicalDeviceInfoType
+import com.diabdata.shared.utils.dateUtils.shortenedFormatLocalDate
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.diabdata.shared.R as shared
@@ -97,7 +96,7 @@ fun CurrentNonConsumableDevicesCards(
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            text = stringResource(shared.string.home_section_current_non_consumable_devices),
+            text = stringResource(shared.string.devices_home_section_current_non_consumable_devices_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.surfaceTint
         )

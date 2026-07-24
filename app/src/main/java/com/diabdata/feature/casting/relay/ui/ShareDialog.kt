@@ -147,7 +147,7 @@ fun ShareDialog(
                         Button(onClick = {
                             viewModel.startSharing(mode)
                         }) {
-                            Text(stringResource(shared.string.action_retry))
+                            Text(stringResource(shared.string.common_retry))
                         }
                     }
 

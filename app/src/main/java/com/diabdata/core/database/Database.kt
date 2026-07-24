@@ -12,6 +12,7 @@ import com.diabdata.core.model.MedicalDeviceInfoEntity
 import com.diabdata.core.model.Medication
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
+import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.model.Weight
 import com.diabdata.feature.appointments.data.AppointmentDao
 import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
@@ -19,6 +20,7 @@ import com.diabdata.feature.devices.data.MedicalDeviceDao
 import com.diabdata.feature.devices.data.MedicalDevicesInfoDao
 import com.diabdata.feature.hba1c.data.HBA1CDao
 import com.diabdata.feature.importantDates.data.ImportantDateDao
+import com.diabdata.feature.settings.data.UserPreferencesDao
 import com.diabdata.feature.treatments.data.TreatmentDao
 import com.diabdata.feature.userProfile.data.UserDetailsDao
 import com.diabdata.feature.weight.data.WeightDao
@@ -33,9 +35,10 @@ import com.diabdata.feature.weight.data.WeightDao
         MedicalDevice::class,
         Medication::class,
         MedicalDeviceInfoEntity::class,
-        UserDetails::class
+        UserDetails::class,
+        UserPreferences::class
     ],
-    version = 21,
+    version = 22,
     exportSchema = true
 )
 
@@ -51,6 +54,8 @@ abstract class DiabDataDatabase : RoomDatabase() {
     abstract fun medicalDevicesDao(): MedicalDeviceDao
     abstract fun medicalDevicesInfoDao(): MedicalDevicesInfoDao
     abstract fun userDetailsDao(): UserDetailsDao
+
+    abstract fun userPreferencesDao(): UserPreferencesDao
 
 
     fun getAllTableNames(): List<String> {
@@ -69,19 +74,13 @@ abstract class DiabDataDatabase : RoomDatabase() {
 
     fun clearAllDataAndReset() {
         runInTransaction {
-
-            val tables = getAllTableNames().filter {
-                it != "medications" && it != "medical_devices_infos"
-            }
-
+            val exclusionList = listOf("medications", "medical_devices_infos", "user_preferences")
+            val tables = getAllTableNames().filter { it !in exclusionList }
             tables.forEach { table ->
-
                 openHelper.writableDatabase.execSQL("DELETE FROM $table")
-
                 openHelper.writableDatabase.execSQL("DELETE FROM sqlite_sequence WHERE name='$table'")
             }
         }
-
         openHelper.writableDatabase.execSQL("VACUUM")
     }
 }

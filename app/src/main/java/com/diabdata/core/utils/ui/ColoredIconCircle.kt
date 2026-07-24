@@ -83,7 +83,7 @@ fun ColoredIconCircle(
         SvgIcon(
             resId = iconRes,
             modifier = Modifier.size(iconSize),
-            color = baseColor.darken(0.2f) // extension pour assombrir
+            color = baseColor.darken(0.2f)
         )
     }
 }

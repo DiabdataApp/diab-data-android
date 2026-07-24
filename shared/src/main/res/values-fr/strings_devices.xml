@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="devices_navigation_menu_title">Appareils</string>
+    <string name="devices_navigation_menu_title_long">Gérer les appareils</string>
+
+    <!-- ============================================= -->
+    <!-- DEVICE TYPES -->
+    <!-- ============================================= -->
+    <string name="device_type_wireless_patch">Pompe patch</string>
+    <string name="devices_device_type_wired_patch">Cathéter</string>
+    <string name="devices_device_type_cgm_sensor">Capteur de glycémie</string>
+    <string name="devices_device_type_cgm_transmitter">Transmetteur capteur de glycémie</string>
+    <string name="devices_device_type_wireless_patch_remote">Télécommande pompe patch</string>
+    <string name="devices_device_type_wired_pump">Pompe à tubulure</string>
+    <string name="devices_device_type_unknown">Appareil inconnu</string>
+
+    <string name="devices_addable_device">Appareil</string>
+
+    <string name="devices_home_section_current_consumable_devices_title">Périphériques actifs</string>
+    <string name="devices_home_section_current_non_consumable_devices_title">Mes appareils</string>
+
+    <!-- Device warnings -->
+    <string name="devices_device_replacement_warning">Remplacer aujourd\'hui</string>
+
+    <!-- ============================================= -->
+    <!-- ============================================= -->
+    <!-- DEVICE SCREEN -->
+    <!-- ============================================= -->
+    <string name="devices_device_screen_overview_tab">Aperçu</string>
+    <string name="devices_device_screen_no_faulty_devices_tab">Aucun appareil défectueux</string>
+    <string name="devices_device_screen_faulty_devices_tab">Appareils défectueux</string>
+    <string name="devices_device_screen_faulty_heading">Défectueux</string>
+    <string name="devices_device_screen_reported_heading">Signalés</string>
+    <string name="devices_device_screen_get_faulty_devices_button">Liste à signaler</string>
+    <string name="devices_device_batch_number_text">Numéro de lot</string>
+    <string name="devices_device_total_count_text">Total</string>
+
+    <!-- Device fields -->
+    <string name="devices_device_popup_name_label">Nom de l\'appareil</string>
+    <string name="devices_device_popup_batch_label">Numéro de lot</string>
+    <string name="devices_device_popup_serial_label">Numéro de série</string>
+    <string name="devices_device_popup_lifespan_label">Durée de vie de l\'appareil</string>
+    <string name="devices_device_popup_manufacturer_label">Fabricant</string>
+    <string name="devices_device_popup_faulty_label">Appareil défectueux</string>
+    <string name="devices_device_popup_faulty_description">Cocher si un problème avec l\'appareil est survenu</string>
+    <string name="devices_device_popup_reported_label">Problème signalé</string>
+    <string name="devices_device_popup_reported_description">Cocher si le problème avec l\'appareil a été signalé</string>
+    <string name="devices_device_popup_device_lifespan_over_label">Appareil remplacé/expiré</string>
+    <string name="devices_device_popup_lifespan_over_description">Cocher si l\'appareil a expiré ou a été remplacé</string>
+    <string name="devices_device_popup_update_expired_devices_label">Mettre à jour les appareils expirés</string>
+    <string name="devices_device_popup_update_expired_devices_description">Cocher si vous souhaitez mettre à jour les appareils similaires qui ont expiré aujourd\'hui ou avant</string>
+
+    <!-- ============================================= -->
+    <!-- MEDICAL DEVICE EXPIRY RANGED VALUE COMPLICATION -->
+    <!-- ============================================= -->
+    <string name="devices_devices_wear_complication_expiring_devices_label">Périphériques à remplacer</string>
+    <string name="devices_wear_complication_expiring_devices">À remplacer prochainement</string>
+    <string name="devices_wear_complication_expiring_devices_plain_text_builder">Jours restants</string>
+
+    <string name="devices_glance_widget_description">Aperçu des périphériques et des rendez-vous à venir</string>
+
+    <string name="devices_medical_devices_store_rebuilt_toast">La base de données des GTIN des appareils Médicaux a été reconstruite</string>
+    <string name="devices_glance_tile_description">Prochains rdvs, peremptions</string>
+
+</resources>
