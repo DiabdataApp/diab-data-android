@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +35,7 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
@@ -48,12 +50,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.theme.DiabDataTheme
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import com.diabdata.shared.utils.dateUtils.formatDateToLocale
@@ -149,7 +153,7 @@ fun AutoBackupCard(
                     topEnd = 20.dp,
                     bottomStart = safeRadius,
                     bottomEnd = safeRadius
-                )
+                ),
             )
 
             transition.AnimatedVisibility(
@@ -357,35 +361,13 @@ const val testData = true
 const val testBackupPath = "content://com.android.externalstorage.documents/tree/primary%3ADiabdata"
 const val testLastBackupDate = "2026-07-23T02:25:24.008588"
 
-@Preview(name = "OFF", showBackground = true, locale = locale)
-@Composable
-fun AutoBackupCardPreviewOffLight() {
-    var enabled by remember { mutableStateOf(false) }
-    var frequency by remember { mutableStateOf<BackupFrequency?>(null) }
-    var backupPath by remember { mutableStateOf("") }
-
-    DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(30.dp)
-                .animateContentSize()
-        ) {
-            AutoBackupCard(
-                enabled = enabled,
-                onEnabledChange = { enabled = it },
-                frequency = frequency,
-                backupPath = backupPath,
-                lastBackupDate = null,
-                onFrequencyChange = { frequency = it },
-                onPathChange = { backupPath = it },
-                onResetButtonClick = { backupPath = "" }
-            )
-        }
-    }
-}
-
-@Preview(name = "ON", showBackground = true, locale = locale)
+@Preview(
+    name = "ON",
+    showBackground = true,
+    locale = locale,
+    device = "id:pixel_8_pro",
+    showSystemUi = true
+)
 @Composable
 fun AutoBackupCardPreviewOnLight() {
     var enableAutoBackup by remember { mutableStateOf(true) }
@@ -394,25 +376,77 @@ fun AutoBackupCardPreviewOnLight() {
         @Suppress("SimplifyBooleanWithConstants")
         mutableStateOf(testBackupPath.takeIf { it.isNotBlank() && testData } ?: "")
     }
+    var darkTheme by remember { mutableStateOf(false) }
 
     DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
-        Box(
+        Column (
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(30.dp)
-                .animateContentSize()
-        ) {
-            @Suppress("SimplifyBooleanWithConstants")
-            AutoBackupCard(
-                enabled = enableAutoBackup,
-                onEnabledChange = { enableAutoBackup = it },
-                frequency = frequency,
-                backupPath = backupPath,
-                lastBackupDate = testLastBackupDate?.takeIf { it.isNotBlank() && testData } ?: "",
-                onFrequencyChange = { frequency = it },
-                onPathChange = { backupPath = it },
-                onResetButtonClick = { backupPath = "" }
-            )
+                .fillMaxSize()
+                .padding(top=30.dp)
+        ){
+            Column (
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(30.dp)
+                    .fillMaxSize()
+                    .animateContentSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                @Suppress("SimplifyBooleanWithConstants")
+                AutoBackupCard(
+                    enabled = enableAutoBackup,
+                    onEnabledChange = { enableAutoBackup = it },
+                    frequency = frequency,
+                    backupPath = backupPath,
+                    lastBackupDate = testLastBackupDate?.takeIf { it.isNotBlank() && testData } ?: "",
+                    onFrequencyChange = { frequency = it },
+                    onPathChange = { backupPath = it },
+                    onResetButtonClick = { backupPath = "" }
+                )
+
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(vertical = 12.dp, horizontal = 32.dp),
+                    verticalArrangement = spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Dark Theme",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = GoogleSansFlexFontFamily,
+                            fontWeight = FontWeight(800),
+                        )
+                        Switch(
+                            checked = darkTheme,
+                            onCheckedChange = { darkTheme = it },
+                            thumbContent = {
+                                if (darkTheme) {
+                                    SvgIcon(
+                                        resId = shared.drawable.tick_icon_vector,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                } else {
+                                    SvgIcon(
+                                        resId = shared.drawable.close_icon_vector,
+                                        color = MaterialTheme.colorScheme.surface,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 }

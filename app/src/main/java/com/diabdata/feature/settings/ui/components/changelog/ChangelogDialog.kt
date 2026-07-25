@@ -76,7 +76,7 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Updates - 22/08/2026",
+                        text = "Updates - 25/08/2026",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -92,7 +92,8 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     changelogSection(
                         "New features",
                         listOf(
-                            "Added scheduled backup feature"
+                            "Added scheduled backup feature",
+                            "Added database encryption. if data was already stored it will be migrated"
                         )
                     )
 

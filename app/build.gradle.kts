@@ -182,6 +182,9 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.work.runtime.ktx)
 
+    // Encryption
+    implementation(libs.sqlcipher.android)
+
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.common)

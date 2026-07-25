@@ -1,10 +1,12 @@
 package com.diabdata.core.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase.Callback
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.diabdata.core.database.migrations.ALL_MIGRATIONS
+import com.diabdata.core.database.utils.SqlCipherKeyManager
 import com.diabdata.feature.appointments.data.AppointmentDao
 import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
 import com.diabdata.feature.dataMatrixScanner.utils.MedicalDevicesInitializer
@@ -37,11 +39,28 @@ object DatabaseModule {
         @ApplicationContext context: Context,
         databaseProvider: Provider<DiabDataDatabase>
     ): DiabDataDatabase {
+        System.loadLibrary("sqlcipher")
+        Log.d("SQLCipher", "SQLCipher library loaded successfully")
+
+        val keyManager = SqlCipherKeyManager(context)
+        Log.d("SQLCipher", "KeyManager created, checking encryption state...")
+
+        val encrypted = keyManager.isEncrypted()
+        Log.d("SQLCipher", "Database encrypted: $encrypted")
+
+        if (!encrypted) {
+            Log.d("SQLCipher", "Starting migration to encrypted database...")
+            keyManager.migrateToEncrypted()
+            Log.d("SQLCipher", "Migration completed")
+        }
+
+        Log.d("SQLCipher", "Building Room database with SupportFactory...")
         return Room.databaseBuilder(
             context.applicationContext,
             DiabDataDatabase::class.java,
             "diabdata_database"
         )
+            .openHelperFactory(keyManager.getSupportFactory())
             .fallbackToDestructiveMigration(false)
             .addMigrations(*ALL_MIGRATIONS)
             .addCallback(object : Callback() {
@@ -64,6 +83,7 @@ object DatabaseModule {
                 }
             })
             .build()
+            .also { Log.d("SQLCipher", "=== Database ready ===") }
     }
 
     @Provides
