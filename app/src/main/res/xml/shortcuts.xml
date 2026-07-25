@@ -37,8 +37,8 @@
         android:shortcutId="shortcut_devices"
         android:enabled="true"
         android:icon="@drawable/devices_filled_icon_vector"
-        android:shortcutShortLabel="@string/devices_menu_title"
-        android:shortcutLongLabel="@string/devices_menu_title_long">
+        android:shortcutShortLabel="@string/devices_navigation_menu_title"
+        android:shortcutLongLabel="@string/devices_navigation_menu_title_long">
         <intent
             android:action="com.diabdata.ACTION_SHORTCUT"
             android:targetPackage="com.diabdata"

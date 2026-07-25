@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!-- ============================================= -->
+    <!-- SCANNER -->
+    <!-- ============================================= -->
+    <string name="scanner_camera_permission_error_toast">Permission d\'accès à la caméra refusée</string>
+    <string name="scanner_viewfinder_hint_text">Scannez la DataMatrix de votre traitement (petit QR Code)</string>
+
+</resources>

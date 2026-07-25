@@ -20,12 +20,12 @@ class TokenGeneratorTest {
     }
 
     @Test
-    fun generateToken_companionMode_returnsTwelveChars() {
+    fun generateToken_companionMode_returnsEightChars() {
         assertEquals(8, TokenGenerator.generateToken(ShareMode.COMPANION).length)
     }
 
     @Test
-    fun generateToken_medicalMode_returnsTwelveChars() {
+    fun generateToken_medicalMode_returnsEightChars() {
         assertEquals(8, TokenGenerator.generateToken(ShareMode.MEDICAL).length)
     }
 

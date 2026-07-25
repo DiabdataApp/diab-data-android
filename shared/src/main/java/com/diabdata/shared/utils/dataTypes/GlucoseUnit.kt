@@ -9,10 +9,10 @@ enum class GlucoseUnit (
     val displayNameRes: Int,
 ) {
     MG_DL (
-        displayNameRes = R.string.glucose_unit_mg_dl
+        displayNameRes = R.string.profile_user_glucose_unit_label_mg_dl
     ),
     MMOL_L (
-        displayNameRes = R.string.glucose_unit_mmol_l
+        displayNameRes = R.string.profile_user_glucose_unit_label_mmol_l
     );
 
     fun displayName(context: Context): String = context.getString(displayNameRes)

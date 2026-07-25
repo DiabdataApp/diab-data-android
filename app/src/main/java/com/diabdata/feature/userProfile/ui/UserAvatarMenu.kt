@@ -1,11 +1,16 @@
 package com.diabdata.feature.userProfile.ui
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.DropdownMenuPopup
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,14 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.casting.relay.ShareMode
 import com.diabdata.feature.casting.relay.ui.ShareDialog
 import com.diabdata.shared.R
 
-// ui/UserAvatarMenu.kt
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun UserAvatarMenu(
     expanded: Boolean,
@@ -29,6 +33,7 @@ fun UserAvatarMenu(
     onEditProfile: () -> Unit
 ) {
     var showShareDialog by remember { mutableStateOf<ShareMode?>(null) }
+    val groupInteractionSource = remember { MutableInteractionSource() }
 
     showShareDialog?.let { mode ->
         ShareDialog(
@@ -37,62 +42,81 @@ fun UserAvatarMenu(
         )
     }
 
-    DropdownMenu(
+    DropdownMenuPopup(
         expanded = expanded,
         onDismissRequest = onDismiss,
-        offset = DpOffset(x = 0.dp, y = 8.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp,
-        modifier = Modifier.widthIn(min = 250.dp)
+        modifier = Modifier
+            .padding(top = 4.dp)
     ) {
-        // --- Edit profile ---
-        DropdownMenuItem(
-            leadingIcon = {
-                SvgIcon(
-                    resId = R.drawable.edit_user_icon_vector,
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
-            text = { Text(stringResource(R.string.edit_profile)) },
-            onClick = {
-                onDismiss()
-                onEditProfile()
-            }
-        )
+        // --- Group 1 : Edit profile (standalone) ---
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShape(index = 0, count = 2),
+            interactionSource = groupInteractionSource,
+            containerColor = MenuDefaults.groupStandardContainerColor
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.edit_profile)) },
+                leadingIcon = {
+                    SvgIcon(
+                        resId = R.drawable.edit_user_icon_vector,
+                        modifier = Modifier.size(MenuDefaults.LeadingIconSize),
+                        color = MenuDefaults.selectableItemColors().leadingIconColor
+                    )
+                },
+                shapes = MenuDefaults.itemShape(index = 0, count = 1),
+                colors = MenuDefaults.selectableItemColors(),
+                onClick = {
+                    onDismiss()
+                    onEditProfile()
+                },
+                selected = false
+            )
+        }
 
-        HorizontalDivider()
+        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
 
-        // --- Cast to doctor ---
-        DropdownMenuItem(
-            leadingIcon = {
-                SvgIcon(
-                    resId = R.drawable.computer_arrow_up_icon_vector,
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
-            text = { Text(stringResource(R.string.cast_to_user_computer)) },
-            onClick = {
-                onDismiss()
-                showShareDialog = ShareMode.COMPANION
-            }
-        )
-
-        // --- Cast to doctor ---
-        DropdownMenuItem(
-            leadingIcon = {
-                SvgIcon(
-                    resId = R.drawable.secure_cast_to_desktop_icon_vector,
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
-            text = { Text(stringResource(R.string.cast_to_doctors_computer)) },
-            onClick = {
-                onDismiss()
-                showShareDialog = ShareMode.MEDICAL
-            }
-        )
+        // --- Group 2 : Sharing modes ---
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShape(index = 1, count = 2),
+            interactionSource = groupInteractionSource,
+            containerColor = MenuDefaults.groupStandardContainerColor
+        ) {
+            // Companion mode
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.cast_to_user_computer)) },
+                leadingIcon = {
+                    SvgIcon(
+                        resId = R.drawable.computer_arrow_up_icon_vector,
+                        modifier = Modifier.size(MenuDefaults.LeadingIconSize),
+                        color = MenuDefaults.selectableItemColors().leadingIconColor
+                    )
+                },
+                shapes = MenuDefaults.itemShape(index = 0, count = 2),
+                colors = MenuDefaults.selectableItemColors(),
+                onClick = {
+                    onDismiss()
+                    showShareDialog = ShareMode.COMPANION
+                },
+                selected = false
+            )
+            // Doctor mode
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.cast_to_doctors_computer)) },
+                leadingIcon = {
+                    SvgIcon(
+                        resId = R.drawable.secure_cast_to_desktop_icon_vector,
+                        modifier = Modifier.size(MenuDefaults.LeadingIconSize),
+                        color = MenuDefaults.selectableItemColors().leadingIconColor
+                    )
+                },
+                shapes = MenuDefaults.itemShape(index = 1, count = 2),
+                colors = MenuDefaults.selectableItemColors(),
+                onClick = {
+                    onDismiss()
+                    showShareDialog = ShareMode.MEDICAL
+                },
+                selected = false
+            )
+        }
     }
 }

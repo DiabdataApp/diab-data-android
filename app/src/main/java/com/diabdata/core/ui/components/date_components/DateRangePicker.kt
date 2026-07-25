@@ -49,12 +49,12 @@ fun DateRangeModal(
                     onDismiss()
                 }
             ) {
-                Text(stringResource(shared.string.action_confirm))
+                Text(stringResource(shared.string.common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(shared.string.action_cancel))
+                Text(stringResource(shared.string.common_cancel))
             }
         }
     ) {

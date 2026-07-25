@@ -25,9 +25,7 @@ class ExpiringMedicalDevicesComplicationService :
 
         val latestIconRes = deviceTypeStr.toDeviceIcon(filled = true)
 
-        var daysCountText = ""
-
-        daysCountText = if (daysBeforeExpiry > 0) {
+        val daysCountText = if (daysBeforeExpiry > 0) {
             resources.getQuantityString(
                 shared.plurals.date_abbr_days,
                 daysBeforeExpiry,
@@ -44,7 +42,7 @@ class ExpiringMedicalDevicesComplicationService :
             value = rangeValue.coerceAtLeast(0f),
             min = 0f,
             max = if (deviceLifespanValue.toFloat() > 0f) deviceLifespanValue.toFloat() else 1f,
-            contentDescription = PlainComplicationText.Builder(getString(shared.string.wear_complication_expiring_devices_plain_text_builder))
+            contentDescription = PlainComplicationText.Builder(getString(shared.string.devices_wear_complication_expiring_devices_plain_text_builder))
                 .build()
         )
             .setTitle(PlainComplicationText.Builder(daysCountText).build())
@@ -62,7 +60,7 @@ class ExpiringMedicalDevicesComplicationService :
             value = 2f,
             min = 0f,
             max = 3f,
-            contentDescription = PlainComplicationText.Builder(getString(shared.string.wear_complication_expiring_devices_plain_text_builder))
+            contentDescription = PlainComplicationText.Builder(getString(shared.string.devices_wear_complication_expiring_devices_plain_text_builder))
                 .build()
         )
             .setTitle(PlainComplicationText.Builder("2D").build())

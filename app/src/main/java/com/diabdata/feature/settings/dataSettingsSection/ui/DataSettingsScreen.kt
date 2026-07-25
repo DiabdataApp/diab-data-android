@@ -1,4 +1,4 @@
-package com.diabdata.feature.settings.dataSettingsSection
+package com.diabdata.feature.settings.dataSettingsSection.ui
 
 import android.net.Uri
 import android.util.Log
@@ -16,9 +16,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +35,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.notifications.showNotification
+import com.diabdata.core.ui.LocalSnackbarHostState
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.ImExViewModel
+import com.diabdata.feature.settings.dataSettingsSection.BackupViewModel
+import com.diabdata.feature.settings.dataSettingsSection.ui.components.AutoBackupCard
 import com.diabdata.feature.userProfile.UserProfileViewModel
+import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +55,7 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import com.diabdata.shared.R as shared
 
+@Suppress("Unused", "UnusedVariable")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DataSettingsScreen(
@@ -64,12 +72,20 @@ fun DataSettingsScreen(
 
     var showConfirmDialog by remember { mutableStateOf(false) }
 
-    val notifChannelName = stringResource(shared.string.notification_channel_data)
-    val dataExportSuccess = stringResource(shared.string.toast_data_export_success)
-    val dataImportSuccess = stringResource(shared.string.toast_data_import_success)
-    val dataExportError = stringResource(shared.string.toast_data_export_error)
-    val dataImportError = stringResource(shared.string.toast_data_import_error)
-    val emptyImportFileError = stringResource(shared.string.toast_empty_file_error)
+    val notifChannelName = stringResource(shared.string.settings_notifications_data_channel_name)
+    val dataExportSuccess = stringResource(shared.string.settings_toasts_data_export_success_message)
+    val dataImportSuccess = stringResource(shared.string.settings_toasts_data_import_success_message)
+    val dataExportError = stringResource(shared.string.settings_toasts_data_export_error_message)
+    val dataImportError = stringResource(shared.string.settings_toasts_data_import_error_message)
+    val emptyImportFileError = stringResource(shared.string.settings_toasts_data_empty_file_error_message)
+
+    val backupViewModel: BackupViewModel = hiltViewModel()
+    val backupPrefs by backupViewModel.preferences.collectAsState()
+
+    val resetMessage = stringResource(shared.string.settings_backup_policy_reset_snackbar)
+    val undoLabel = stringResource(shared.string.common_undo)
+
+    val snackbarHostState = LocalSnackbarHostState.current
 
     // ── Export launcher ──
     val createFileLauncher = rememberLauncherForActivityResult(
@@ -218,7 +234,7 @@ fun DataSettingsScreen(
             CardItem(
                 leadingIcon = shared.drawable.backup_db_icon_vector,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_export_data)) }
+                    Row { Text(stringResource(shared.string.settings_data_export_label)) }
                 },
                 onClick = { createFileLauncher.launch(fileName) },
                 trailingIcon = shared.drawable.arrow_right_icon
@@ -226,7 +242,7 @@ fun DataSettingsScreen(
             CardItem(
                 leadingIcon = shared.drawable.restore_db_icon_vector,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_import_data)) }
+                    Row { Text(stringResource(shared.string.settings_data_import_label)) }
                 },
                 onClick = {
                     importFileLauncher.launch(
@@ -240,11 +256,47 @@ fun DataSettingsScreen(
                 leadingIconColor = MaterialTheme.colorScheme.error,
                 isDestructive = true,
                 content = {
-                    Row { Text(stringResource(shared.string.settings_purge_database)) }
+                    Row { Text(stringResource(shared.string.settings_data_database_purge_label)) }
                 },
                 onClick = { showConfirmDialog = true },
                 trailingIcon = shared.drawable.arrow_right_icon
             )
+        )
+
+        AutoBackupCard(
+            enabled = backupPrefs?.automaticBackupEnabled ?: false,
+            onEnabledChange = { backupViewModel.setAutoBackupEnabled(it) },
+            frequency = BackupFrequency.fromKey(backupPrefs?.frequency ?: "weekly"),
+            onFrequencyChange = { backupViewModel.setFrequency(it) },
+            backupPath = backupPrefs?.backupPath,
+            onPathChange = { backupViewModel.setBackupPath(it) },
+            lastBackupDate = backupPrefs?.lastBackupDate,
+            onResetButtonClick = {
+                Log.d("BackupReset", "1. Click - backupPrefs: $backupPrefs")
+                scope.launch {
+                    val backup = backupPrefs ?: run {
+                        Log.d("BackupReset", "2. backupPrefs is NULL, aborting")
+                        return@launch
+                    }
+                    Log.d("BackupReset", "3. Backup saved: $backup")
+                    backupViewModel.resetBackupPreferences()
+                    Log.d("BackupReset", "4. Reset called, showing snackbar...")
+                    try {
+                        val result = snackbarHostState.showSnackbar(
+                            message = resetMessage,
+                            actionLabel = undoLabel,
+                            duration = SnackbarDuration.Short
+                        )
+                        Log.d("BackupReset", "5. snackbar result: $result")
+                        if (result == SnackbarResult.ActionPerformed) {
+                            backupViewModel.restorePreferences(backup)
+                            Log.d("BackupReset", "6. Preferences restored")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("BackupReset", "snackbar error", e)
+                    }
+                }
+            }
         )
 
         CardsList(
@@ -262,8 +314,8 @@ fun DataSettingsScreen(
                     color = MaterialTheme.colorScheme.error
                 )
             },
-            title = { Text(stringResource(shared.string.dialog_purge_title)) },
-            text = { Text(stringResource(shared.string.dialog_purge_message)) },
+            title = { Text(stringResource(shared.string.settings_data_purge_dialog_title)) },
+            text = { Text(stringResource(shared.string.settings_data_purge_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -272,14 +324,14 @@ fun DataSettingsScreen(
                     }
                 ) {
                     Text(
-                        stringResource(shared.string.action_confirm),
+                        stringResource(shared.string.common_confirm),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showConfirmDialog = false }) {
-                    Text(stringResource(shared.string.action_cancel))
+                    Text(stringResource(shared.string.common_cancel))
                 }
             }
         )

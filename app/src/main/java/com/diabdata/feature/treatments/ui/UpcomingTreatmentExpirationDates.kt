@@ -77,7 +77,7 @@ fun UpcomingTreatmentExpirationDatesContent(
     }
 
     CardsList(
-        header = stringResource(shared.string.home_section_upcoming_treatment_expirations),
+        header = stringResource(shared.string.medications_homscreen_upcoming_treatment_expirations),
         pageSize = 4,
         cards = treatmentCards.map { card ->
             CardItem(

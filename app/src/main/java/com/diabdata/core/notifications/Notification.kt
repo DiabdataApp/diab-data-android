@@ -15,6 +15,30 @@ fun Context.showNotification(
     iconId: Int? = null,
     importance: NotificationImportance = NotificationImportance.DEFAULT
 ) {
+    val notification = createNotification(
+        title = title,
+        channelId = channelId,
+        channelName = channelName,
+        content = content,
+        channelDescription = channelDescription,
+        iconId = iconId,
+        importance = importance
+    )
+
+    val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    // ID unique basé sur le temps
+    manager.notify(System.currentTimeMillis().toInt(), notification)
+}
+
+fun Context.createNotification(
+    title: String,
+    channelId: String = "diabdata_channel",
+    channelName: String? = null,
+    content: String,
+    channelDescription: String? = null,
+    iconId: Int? = null,
+    importance: NotificationImportance = NotificationImportance.DEFAULT
+): android.app.Notification {
     val safeChannelName = channelName ?: "DiabData Notifications"
     val safeChannelDescription = channelDescription ?: ""
 
@@ -34,15 +58,13 @@ fun Context.showNotification(
 
     val iconResId = iconId ?: shared.drawable.ic_logo_outlined
 
-    val builder = NotificationCompat.Builder(this, channelId)
+    return NotificationCompat.Builder(this, channelId)
         .setSmallIcon(iconResId)
         .setContentTitle(title)
         .setContentText(content)
         .setStyle(NotificationCompat.BigTextStyle().bigText(content))
         .setPriority(notifPriority)
-
-    // ID unique basé sur le temps
-    manager.notify(System.currentTimeMillis().toInt(), builder.build())
+        .build()
 }
 
 enum class NotificationImportance {

@@ -15,12 +15,12 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
-val ciStoreFile = System.getenv("SIGNING_STORE_FILE")
-val ciStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
-val ciKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
-val ciKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+val ciStoreFile: String? = System.getenv("SIGNING_STORE_FILE")
+val ciStorePassword: String? = System.getenv("SIGNING_STORE_PASSWORD")
+val ciKeyAlias: String? = System.getenv("SIGNING_KEY_ALIAS")
+val ciKeyPassword: String? = System.getenv("SIGNING_KEY_PASSWORD")
 
-val storeFilePath = ciStoreFile ?: localProperties.getProperty("RELEASE_STORE_FILE", "")
+val storeFilePath: String = ciStoreFile ?: localProperties.getProperty("RELEASE_STORE_FILE", "")
 val storeF: File? = if (storeFilePath.isNotEmpty()) file(storeFilePath) else null
 val storeP: String = ciStorePassword ?: localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
 val keyA: String = ciKeyAlias ?: localProperties.getProperty("RELEASE_KEY_ALIAS", "")
@@ -36,7 +36,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: getLocalVersionCode()
-        versionName = "4.9.7"
+        versionName = "4.9.76"
         buildConfigField("String", "RELAY_SERVER_URL","\"${localProperties.getProperty("RELAY_SERVER_URL", "")}\"")
         buildConfigField("String", "MEDICATION_GTIN_FILE_VERSION", "\"1.2.0\"")
         buildConfigField("String", "MEDICAL_DEVICES_GTIN_FILE_VERSION", "\"1.0.4\"")
@@ -127,6 +127,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.animation.core)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -202,7 +203,6 @@ dependencies {
     implementation(libs.play.services.wearable)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
-
 
     // Annotation processing
     ksp(libs.androidx.room.compiler)

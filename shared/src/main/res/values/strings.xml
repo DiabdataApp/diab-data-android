@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- ============================================= -->
     <!-- APP INFO -->
     <!-- ============================================= -->
@@ -15,244 +16,20 @@
     <string name="stop_casting">Stop casting</string>
 
     <!-- ============================================= -->
-    <!-- USER PROFILE -->
-    <!-- ============================================= -->
-    <string name="save">Save</string>
-    <string name="change_photo">Change photo</string>
-    <string name="section_identity">Identity</string>
-    <string name="section_diabetes">Diabetes</string>
-    <string name="section_medical_team">Medical team</string>
-    <string name="section_treatments">Treatments</string>
-    <string name="section_glucose_goals">Blood sugar goals</string>
-    <string name="section_emergency_contact">Emergency contact</string>
-    <string name="first_name">First name</string>
-    <string name="last_name">Last name</string>
-    <string name="endocrinologist">Endocrinologist</string>
-    <string name="general_practitioner">General practitioner</string>
-    <string name="ophthalmologist">Ophthalmologist</string>
-    <string name="cardiologist">Cardiologist</string>
-    <string name="nephrologist">Nephrologist</string>
-    <string name="insulin_pump_model">Insulin pump model</string>
-    <string name="cgm_model">CGM model</string>
-    <string name="insulin_type">Insulin type</string>
-    <string name="basal_insulin_type">Basal insulin type</string>
-    <string name="target_glucose_min">Min</string>
-    <string name="target_glucose_max">Max</string>
-    <string name="emergency_contact_name">Contact name</string>
-    <string name="emergency_contact_phone">Contact phone</string>
-    <string name="diagnosis_date">Diagnosis date</string>
-    <string name="birth_date">Birth date</string>
-
-    <!-- ============================================= -->
     <!-- NAVIGATION -->
     <!-- ============================================= -->
     <string name="home_menu_title">Home</string>
     <string name="database_management_menu_title">Data</string>
     <string name="database_management_menu_title_long">Manage data</string>
-    <string name="devices_menu_title">Devices</string>
-    <string name="devices_menu_title_long">Manage devices</string>
     <string name="settings_menu_title">Settings</string>
     <string name="settings_menu_title_long">Open settings page</string>
     <string name="chart_menu_title">Graphs</string>
     <string name="chart_menu_title_long">Open graphs page</string>
 
     <!-- ============================================= -->
-    <!-- COMMON ACTIONS -->
-    <!-- ============================================= -->
-    <string name="action_confirm">Confirm</string>
-    <string name="action_back">Back</string>
-    <string name="action_close">Close</string>
-    <string name="action_open">Open</string>
-    <string name="action_update">Update</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_archive">Archive</string>
-    <string name="action_add">Add</string>
-    <string name="action_set_lifespan">Discarded</string>
-    <string name="action_retry">Retry</string>
-
-    <!-- ============================================= -->
-    <!-- DATE & TIME -->
-    <!-- ============================================= -->
-    <!-- Single strings for special cases -->
-    <!-- Abbreviations -->
-    <string name="date_abbr_today">tdy</string>
-    <string name="date_abbr_tomorrow">tmw</string>
-    <plurals name="date_abbr_days">
-        <item quantity="one">tmw</item>
-        <item quantity="other">%dd</item>
-    </plurals>
-
-    <!-- For current date -->
-    <string name="date_today">Today</string>
-    <string name="date_this_month">This month</string>
-    <string name="date_this_year">This year</string>
-
-    <!-- For null quantities-->
-    <string name="date_zero_days">0 days</string>
-    <string name="date_zero_months">0 months</string>
-    <string name="date_zero_years">0 years</string>
-
-    <!-- For upcoming date -->
-    <string name="date_tomorrow">Tomorrow</string>
-    <string name="date_in_days">In %d days</string>
-
-    <string name="date_next_month">Next month</string>
-    <string name="date_in_months">In %d months</string>
-
-    <string name="date_next_year">Next year</string>
-    <string name="date_in_years">In %d years</string>
-
-    <!-- For anterior dates -->
-    <string name="date_yesterday">Yesterday</string>
-    <string name="date_days_ago">%d days ago</string>
-
-    <string name="date_last_month">Last month</string>
-    <string name="date_months_ago">%d months ago</string>
-
-    <string name="date_last_year">Last year</string>
-    <string name="date_years_ago">%d years ago</string>
-
-    <!-- Date formats -->
-    <string name="important_date_on_text">On %1$s</string>
-    <string name="expires_on_text">Expires on %1$s</string>
-    <string name="scheduled_on_date_text">Scheduled on %1$s</string>
-    <string name="hba1c_on_date_text" tools:ignore="Typos">HBA1C measured on %1$s</string>
-    <string name="weight_on_date_text">Weighing performed on %1$s</string>
-
-    <!-- Plurals for time periods -->
-    <plurals name="plurals_days">
-        <item quantity="one">%d day</item>
-        <item quantity="other">%d days</item>
-    </plurals>
-
-    <plurals name="plurals_months">
-        <item quantity="one">%d month</item>
-        <item quantity="other">%d months</item>
-    </plurals>
-
-    <plurals name="plurals_years">
-        <item quantity="one">%d year</item>
-        <item quantity="other">%d years</item>
-    </plurals>
-
-    <plurals name="in_days">
-        <item quantity="one">In %d day</item>
-        <item quantity="other">In %d days</item>
-    </plurals>
-
-    <plurals name="in_months">
-        <item quantity="one">In %d month</item>
-        <item quantity="other">In %d months</item>
-    </plurals>
-
-    <plurals name="in_years">
-        <item quantity="one">In %d year</item>
-        <item quantity="other">In %d years</item>
-    </plurals>
-
-    <!-- Complex date formats (consider using code for these) -->
-    <plurals name="in_years_and_months">
-        <item quantity="one">In %d year and %d months</item>
-        <item quantity="other">In %d years and %d months</item>
-    </plurals>
-
-    <plurals name="years_and_months">
-        <item quantity="one">%d year and %d months</item>
-        <item quantity="other">%d years and %d months</item>
-    </plurals>
-
-    <plurals name="years_and_months_ago">
-        <item quantity="one">%d year and %d months ago</item>
-        <item quantity="other">%d years and %d months ago</item>
-    </plurals>
-
-    <!-- ============================================= -->
-    <!-- MEDICATIONS -->
-    <!-- ============================================= -->
-    <string name="medication_ketone_test_strip">Blood ketone test strips</string>
-    <string name="medication_glucose_test_strip">Blood glucose test strips</string>
-    <string name="medication_fast_acting_insulin_cartridge">Fast acting insulin cartridge</string>
-    <string name="medication_fast_acting_insulin_syringe">Fast acting insulin pen</string>
-    <string name="medication_fast_acting_insulin_vial">Fast acting insulin vial</string>
-    <string name="medication_slow_acting_insulin_syringe">Slow acting insulin pen</string>
-    <string name="medication_slow_acting_insulin_cartridge">Slow acting insulin cartridge</string>
-    <string name="medication_slow_acting_insulin_vial">Slow acting insulin vial</string>
-    <string name="medication_glucagon_syringe">Glucagon syringe</string>
-    <string name="medication_glucagon_spray">Glucagon nasal spray (Baqsimi)</string>
-    <string name="medication_unknown">Unknown medication</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE TYPES -->
-    <!-- ============================================= -->
-    <string name="device_type_wireless_patch">Patch pump</string>
-    <string name="device_type_wired_patch">Infusion set</string>
-    <string name="device_type_cgm_sensor">CGM Sensor</string>
-    <string name="device_type_cgm_transmitter">CGM Transmitter</string>
-    <string name="device_type_wireless_patch_remote">Patch pump remote control</string>
-    <string name="device_type_wired_pump">Wired insulin pump</string>
-    <string name="device_unknown">Unknown device</string>
-
-    <!-- ============================================= -->
-    <!-- APPOINTMENT TYPES -->
-    <!-- ============================================= -->
-    <string name="appointment_annual_checkup">Annual Checkup</string>
-    <string name="appointment_one_time">One-time appointment</string>
-
-    <!-- ============================================= -->
-    <!-- DIABETES TYPES -->
-    <!-- ============================================= -->
-    <string name="diabetes_type">Diabetes type</string>
-    <string name="diabetes_type_1">Type 1 Diabetes</string>
-    <string name="diabetes_type_2">Type 2 Diabetes</string>
-    <string name="diabetes_type_gestational">Gestational diabetes</string>
-    <string name="diabetes_type_mody">MODY</string>
-    <string name="diabetes_type_neonatal">Neonatal diabetes</string>
-    <string name="diabetes_type_wolfram">Wolfram Syndrome</string>
-    <string name="diabetes_type_lada">Latent Autoimmune Diabetes in Adults (LADA)</string>
-    <string name="diabetes_type_3c">Type 3c Diabetes</string>
-    <string name="diabetes_type_steroid_induced">Steroid-induced Diabetes</string>
-    <string name="diabetes_type_cystic_fibrosis">Cystic Fibrosis Diabetes</string>
-
-    <!-- ============================================= -->
-    <!-- GLUCOSE UNITS -->
-    <!-- ============================================= -->
-    <string name="glucose_unit">Glucose unit</string>
-    <string name="glucose_unit_mg_dl" translatable="false">mg/dL</string>
-    <string name="glucose_unit_mmol_l" translatable="false">mmol/L</string>
-
-    <!-- ============================================= -->
-    <!-- BLOOD TYPES -->
-    <!-- ============================================= -->
-    <string name="blood_type">Blood type</string>
-    <string name="blood_type_a_positive" translatable="false">A+</string>
-    <string name="blood_type_a_negative" translatable="false">A-</string>
-    <string name="blood_type_b_positive" translatable="false">B+</string>
-    <string name="blood_type_b_negative" translatable="false">B-</string>
-    <string name="blood_type_ab_positive" translatable="false">AB+</string>
-    <string name="blood_type_ab_negative" translatable="false">AB-</string>
-    <string name="blood_type_o_positive" translatable="false">O+</string>
-    <string name="blood_type_o_negative" translatable="false">O-</string>
-
-    <!-- ============================================= -->
-    <!-- GENDERS -->
-    <!-- ============================================= -->
-    <string name="gender">Gender</string>
-    <string name="gender_male">Male</string>
-    <string name="gender_female">Female</string>
-    <string name="gender_other">Other</string>
-    <string name="gender_prefer_not_to_say">Prefer not to say</string>
-
-    <!-- ============================================= -->
     <!-- ADDABLE ITEMS -->
     <!-- ============================================= -->
-    <string name="addable_weight">Weight</string>
-    <string name="addable_hba1c">HbA1c</string>
-    <string name="addable_appointment">Appointment</string>
-    <string name="addable_treatment">Medication</string>
-    <string name="addable_treatment_scan">Scan a code</string>
     <string name="addable_important_date">Important date</string>
-    <string name="addable_device">Device</string>
 
     <!-- ============================================= -->
     <!-- HOME SCREEN -->
@@ -262,44 +39,10 @@
     <!-- Section headings -->
     <string name="home_section_important_dates">Important dates</string>
     <string name="home_section_latest_measures">Recent readings</string>
-    <string name="home_section_upcoming_appointments">Upcoming appointments</string>
-    <string name="home_section_upcoming_treatment_expirations">My medication</string>
-    <string name="home_section_current_consumable_devices">Active peripherals</string>
-    <string name="home_section_current_non_consumable_devices">My devices</string>
 
     <!-- Important date card-->
     <string name="generic_diabetes_discovery_label">Diabetes discovery</string>
     <string name="specific_diabetes_discovery_label">%1s discovery</string>
-
-    <!-- Appointment card -->
-    <string name="appointment_card_notes_header">Notes</string>
-
-    <!-- Device warnings -->
-    <string name="device_replacement_warning">Replace today</string>
-
-    <!-- ============================================= -->
-    <!-- DEVICE SCREEN -->
-    <!-- ============================================= -->
-    <string name="device_screen_overview_tab">Overview</string>
-    <string name="device_screen_no_faulty_devices_tab">No faulty devices</string>
-    <string name="device_screen_faulty_devices_tab">Faulty devices</string>
-    <string name="device_screen_faulty_heading">Faulty</string>
-    <string name="device_screen_reported_heading">Reported</string>
-    <string name="device_screen_get_faulty_devices_button">To report list</string>
-    <string name="device_batch_number_text">Batch number</string>
-    <string name="device_total_count_text">Total</string>
-
-    <!-- ============================================= -->
-    <!-- DATA MANAGEMENT -->
-    <!-- ============================================= -->
-    <string name="database_time_range_indicator">From %1$s to %2$s</string>
-
-    <!-- Time ranges -->
-    <string name="time_range_day">Day</string>
-    <string name="time_range_week">Week</string>
-    <string name="time_range_month">Month</string>
-    <string name="time_range_year">Year</string>
-    <string name="time_range_custom">Custom</string>
 
     <!-- Chart options -->
     <string name="chart_regression_line_toggle">Regression line</string>
@@ -316,155 +59,17 @@
     <string name="popup_title_add">Add new %1$s</string>
     <string name="popup_title_update">Update %1$s entry</string>
 
-    <!-- Field placeholders -->
-    <string name="popup_placeholder_weight">Weight</string>
-    <string name="popup_placeholder_hba1c" tools:ignore="Typos">HBA1C (%)</string>
-    <string name="popup_placeholder_medication_name">Medication name</string>
-    <string name="popup_placeholder_date">Select a date</string>
-    <string name="popup_placeholder_expiration_date">Select expiration date</string>
-    <string name="popup_placeholder_start_date">Installation date</string>
-    <string name="popup_placeholder_end_date">Expected removal date</string>
-    <string name="popup_placeholder_date_range">Select date range</string>
-    <string name="popup_placeholder_doctor">Doctor\'s name</string>
-    <string name="popup_placeholder_event">Event</string>
-    <string name="popup_placeholder_appointment_type">Appointment type</string>
-    <string name="popup_placeholder_medication_type">Medication type</string>
-    <string name="popup_placeholder_device_type">Device type</string>
-    <string name="popup_placeholder_search">Search…</string>
-
-    <!-- Device fields -->
-    <string name="popup_device_name_label">Device\'s name</string>
-    <string name="popup_device_batch_label">Batch number</string>
-    <string name="popup_device_serial_label">Serial number</string>
-    <string name="popup_device_lifespan_label">Device\'s life span</string>
-    <string name="popup_device_manufacturer_label">Manufacturer</string>
-    <string name="popup_device_faulty_label">Defective device</string>
-    <string name="popup_device_faulty_description">Check if a problem with the device occurred</string>
-    <string name="popup_device_reported_label">Reported device</string>
-    <string name="popup_device_reported_description">Check if the problem with the device was reported</string>
-    <string name="popup_device_lifespan_over_label">Expired/Replaced device</string>
-    <string name="popup_device_lifespan_over_description">Check if the device has expired or been replaced</string>
-    <string name="popup_device_update_expired_devices_label">Update expired devices</string>
-    <string name="popup_device_update_expired_devices_description">Check if you want to set similar devices that expired today or before as expired</string>
-
-    <!-- Validation messages -->
-    <string name="validation_invalid_weight">Invalid weight</string>
-    <string name="validation_invalid_hba1c" tools:ignore="Typos">Invalid HBA1C</string>
-    <string name="validation_weight_hint">Weight must be between 0 and 600 (kg)</string>
-    <string name="validation_hba1c_hint" tools:ignore="Typos">HBA1C must be between 0 and 15 (%)</string>
-
     <!-- Error messages -->
     <string name="error_adding_date">Error while adding date</string>
 
     <!-- ============================================= -->
-    <!-- SETTINGS -->
-    <!-- ============================================= -->
-    <!-- Section headings -->
-    <string name="settings_section_data">Data</string>
-    <string name="settings_section_application">Application</string>
-    <string name="settings_section_notifications">Reminder notifications</string>
-    <string name="settings_section_changelogs_label" translatable="false">Changelog</string>
-    <string name="settings_section_website_label">Website</string>
-
-    <!-- Data management -->
-    <string name="settings_data_description">Import, export, clear data</string>
-    <string name="settings_export_data">Export data</string>
-    <string name="settings_import_data">Import data</string>
-    <string name="settings_purge_database">Empty database</string>
-
-    <!-- Purge confirmation dialog -->
-    <string name="dialog_purge_title">Confirm delete</string>
-    <string name="dialog_purge_message">Are you sure you want to completely empty the database? This action cannot be undone. You can save your current data using the \"Export data\" button before confirming.</string>
-
-    <!-- Notifications -->
-    <string name="settings_notification_expiration">Medication expiration</string>
-    <string name="settings_notification_appointment">Upcoming appointment</string>
-    <string name="settings_notification_next_appointment_reminder">For the next appointment scheduled on %1$s</string>
-    <string name="settings_notification_next_expiration_reminder">For the medication expiring on %1$s</string>
-
-    <!-- Toasts -->
-    <string name="medication_store_rebuilt_toast">Medication GPIN store rebuilt</string>
-    <string name="medical_devices_store_rebuilt_toast">Medical devices GPIN store rebuilt</string>
-
-    <!-- ============================================= -->
-    <!-- NOTIFICATIONS -->
-    <!-- ============================================= -->
-    <!-- Channel names -->
-    <string name="notification_channel_data">Data Management</string>
-    <string name="notification_channel_appointments">Appointments reminders</string>
-    <string name="notification_channel_expirations">Expiration date reminders</string>
-
-    <!-- Notification content -->
-    <string name="notification_appointment_title">Appointment reminder</string>
-    <string name="notification_appointment_content">Your appointment %1$s on the %2$s is coming soon.</string>
-    <string name="notification_expiration_title">Expiry date reminder</string>
-    <string name="notification_expiration_content">Your medication %1$s will expire on the %2$s!</string>
-
-    <!-- ============================================= -->
-    <!-- TOASTS & FEEDBACK MESSAGES -->
-    <!-- ============================================= -->
-    <string name="toast_data_unknown_medication_code">Unknown medication with GTIN: %1$s</string>
-    <string name="toast_data_export_success">Data exported successfully</string>
-    <string name="toast_data_export_error">Error while exporting data</string>
-    <string name="toast_data_import_success">Data imported successfully</string>
-    <string name="toast_data_import_error">Error while importing data</string>
-    <string name="toast_empty_file_error">The file is empty</string>
-    <string name="toast_expiration_reminders_enabled">Expiry dates reminders enabled!</string>
-    <string name="toast_appointment_reminders_enabled">Appointment reminders enabled!</string>
-    <string name="toast_camera_permission_error">Camera permission denied</string>
-
-    <!-- ============================================= -->
-    <!-- SCANNER -->
-    <!-- ============================================= -->
-    <string name="scanner_hint_datamatrix">Scan your medication DataMatrix (small QR Code)</string>
-
-    <!-- ============================================= -->
-    <!-- WEAR OS -->
-    <!-- ============================================= -->
-
-    <!-- ============================================= -->
     <!-- GLANCE WIDGET -->
     <!-- ============================================= -->
-    <string name="widget_description">Overview of devices and upcoming appointments</string>
     <string name="widget_no_data">No data to display</string>
-
-    <!-- ============================================= -->
-    <!-- MEDICAL DEVICE EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_devices_label">Devices expiring soon</string>
-    <string name="wear_complication_expiring_devices">To replace soon</string>
-    <string name="wear_complication_expiring_devices_plain_text_builder">Days left</string>
-
-    <!-- ============================================= -->
-    <!-- APPOINTMENT VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_upcoming_appointment_label">Upcoming appointments</string>
-
-    <!-- Text descriptions -->
-    <string name="wear_complication_no_upcoming_appointment_text_description">No appointments</string>
-    <string name="wear_complication_upcoming_appointment_today_text_description">Appointment today</string>
-    <string name="wear_complication_upcoming_appointment_tomorrow_text_description">Appointment tomorrow</string>
-    <string name="wear_complication_upcoming_appointment_in_days_text_description">Appointment in %1$s days</string>
-
-    <!-- ============================================= -->
-    <!-- TREATMENT EXPIRY RANGED VALUE COMPLICATION -->
-    <!-- ============================================= -->
-    <string name="wear_complication_expiring_treatments_label">Treatments expiring soon</string>
-    <string name="wear_complication_expiring_treatments_plain_text_builder">Days left</string>
 
     <!-- ============================================= -->
     <!-- GLANCE TILE -->
     <!-- ============================================= -->
     <string name="glance_tile_label">At a Glance Tile</string>
-    <string name="glance_tile_description">Upcoming appointments, devices expiry and treatments</string>
 
-    <!-- ============================================= -->
-    <!-- SHARE VIA RELAY SERVER -->
-    <!-- ============================================= -->
-    <string name="share_dialog_title_compagnon_mode">Compagnon mode</string>
-    <string name="share_dialog_title_medical_mode">Sharing to doctor</string>
-    <string name="share_dialog_connecting_to_relay_message">Connecting to relay…</string>
-    <string name="share_dialog_compagnon_mode_instruction_message">Scan QR code or type the token on the connection form</string>
-    <string name="share_dialog_medical_mode_instruction_message">Show this QR code to your doctor</string>
-    <string name="share_dialog_stop_sharing_button_label">Stop sharing</string>
 </resources>

@@ -2,6 +2,7 @@ package com.diabdata.feature.home
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,23 +28,23 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.model.Medication
 import com.diabdata.core.model.Treatment
-import com.diabdata.shared.utils.dataTypes.AddableType
 import com.diabdata.core.ui.components.actionInput.AddDataFab
+import com.diabdata.core.ui.components.addDataPopup.AddDataPopup
+import com.diabdata.core.ui.components.noDataView.NoDataView
+import com.diabdata.feature.dataMatrixScanner.ScannerViewModel
 import com.diabdata.feature.dataMatrixScanner.ui.DataMatrixScannerDialog
 import com.diabdata.feature.dataMatrixScanner.ui.ScanResult
 import com.diabdata.feature.dataMatrixScanner.ui.ScannableTypes
-import com.diabdata.core.ui.components.addDataPopup.AddDataPopup
-import com.diabdata.feature.home.components.LatestMeasurements
-import com.diabdata.core.ui.components.noDataView.NoDataView
-import com.diabdata.feature.dataMatrixScanner.ScannerViewModel
 import com.diabdata.feature.dataMatrixScanner.utils.MedicationInfo
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.diabdata.feature.home.components.LatestMeasurements
+import com.diabdata.shared.utils.dataTypes.AddableType
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.diabdata.shared.R as shared
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
+@Suppress("unused")
 fun HomeScreen(
     dataViewModel: DataViewModel
 ) {
@@ -54,7 +55,7 @@ fun HomeScreen(
     val hasData = availability.hasAnyData
     val (selectedType, setSelectedType) = remember { mutableStateOf<AddableType?>(null) }
     var showScanner by remember { mutableStateOf(false) }
-    val unknownGtin = stringResource(shared.string.toast_data_unknown_medication_code)
+    val unknownGtin = stringResource(shared.string.medications_unknown_medication_code_error_message)
     val scrollState = rememberScrollState()
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(), onResult = { isGranted ->
@@ -63,7 +64,7 @@ fun HomeScreen(
             } else {
                 Toast.makeText(
                     context,
-                    shared.string.toast_camera_permission_error,
+                    shared.string.scanner_camera_permission_error_toast,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -92,6 +93,7 @@ fun HomeScreen(
     }
 
     if (showScanner) {
+        @Suppress("KotlinConstantConditions", "UnusedExpression")
         DataMatrixScannerDialog(
             onDismiss = { showScanner = false },
             onResult = { result ->
@@ -107,7 +109,8 @@ fun HomeScreen(
                                 scannerViewModel.updatePrefilledTreatment(treatment)
                                 setSelectedType(AddableType.TREATMENT)
                             } else {
-                                Toast.makeText(context, unknownGtin, Toast.LENGTH_SHORT).show()
+                                Log.d("HomeScreen", "Unknown Gtin: ${info.gtin}")
+                                Toast.makeText(context, "$unknownGtin ${info.gtin}", Toast.LENGTH_SHORT).show()
                             }
                         }
 
