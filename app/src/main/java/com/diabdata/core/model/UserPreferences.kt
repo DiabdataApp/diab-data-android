@@ -12,4 +12,6 @@ data class UserPreferences(
     val frequency: String = BackupFrequency.WEEKLY.key,
     val lastBackupDate: String? = null,
     val backupPath: String? = null,
+    val expirationReminder: Boolean = false,
+    val appointmentReminder: Boolean = false,
 )

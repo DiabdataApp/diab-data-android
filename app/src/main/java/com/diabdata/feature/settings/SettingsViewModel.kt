@@ -29,4 +29,14 @@ class SettingsViewModel @Inject constructor(
             MedicationInitializer(context, db).initialize()
         }
     }
+
+    fun enableAppointmentReminder(enabled: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            db.userPreferencesDao().enableAppointmentReminder(enabled)
+        }
+
+    fun enableExpirationReminder(enabled: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            db.userPreferencesDao().enableExpirationReminder(enabled)
+        }
 }

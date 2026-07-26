@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.database.migrations.ALL_MIGRATIONS
 import com.diabdata.core.database.migrations.MIGRATION_20_21
+import com.diabdata.core.database.migrations.MIGRATION_22_23
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -56,15 +57,55 @@ class MigrationTest {
             )
         }
 
-        helper.runMigrationsAndValidate(diabDataTestDb, 21, true, MIGRATION_20_21).use { updatedDb ->
-            updatedDb.query("""
-                SELECT date FROM appointments
-            """.trimIndent()).use { updatedAppointment ->
-                updatedAppointment.moveToFirst()
+        helper.runMigrationsAndValidate(diabDataTestDb, 21, true, MIGRATION_20_21)
+            .use { updatedDb ->
+                updatedDb.query(
+                    """
+                    SELECT date FROM appointments
+                    """.trimIndent()
+                ).use { updatedAppointment ->
+                    updatedAppointment.moveToFirst()
 
-                assertEquals(1, updatedAppointment.count)
-                assertEquals("2026-01-15T00:00", updatedAppointment.getString(0))
+                    assertEquals(1, updatedAppointment.count)
+                    assertEquals("2026-01-15T00:00", updatedAppointment.getString(0))
+                }
             }
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate22To23Test() {
+        helper.createDatabase(diabDataTestDb, 22).use { db ->
+            db.execSQL(
+                """
+                INSERT INTO user_preferences 
+                (id, automaticBackupEnabled, frequency, lastBackupDate, backupPath)
+                VALUES (1, 0, 'WEEKLY', NULL, NULL)
+                """.trimIndent()
+            )
         }
+
+        helper.runMigrationsAndValidate(diabDataTestDb, 23, true, MIGRATION_22_23)
+            .use { updatedDb ->
+                updatedDb.execSQL(
+                    """
+                    UPDATE user_preferences 
+                    SET expirationReminder = 1, appointmentReminder = 0 
+                    WHERE id = 1
+                    """.trimIndent()
+                )
+                updatedDb.query(
+                    """
+                    SELECT expirationReminder, appointmentReminder 
+                    FROM user_preferences 
+                    WHERE id = 1
+                    """.trimIndent()
+                ).use { cursor ->
+                    cursor.moveToFirst()
+                    assertEquals(1, cursor.count)
+                    assertEquals(1, cursor.getInt(0))
+                    assertEquals(0, cursor.getInt(1))
+                }
+            }
     }
 }

@@ -40,21 +40,15 @@ object DatabaseModule {
         databaseProvider: Provider<DiabDataDatabase>
     ): DiabDataDatabase {
         System.loadLibrary("sqlcipher")
-        Log.d("SQLCipher", "SQLCipher library loaded successfully")
 
         val keyManager = SqlCipherKeyManager(context)
-        Log.d("SQLCipher", "KeyManager created, checking encryption state...")
 
         val encrypted = keyManager.isEncrypted()
-        Log.d("SQLCipher", "Database encrypted: $encrypted")
 
         if (!encrypted) {
-            Log.d("SQLCipher", "Starting migration to encrypted database...")
             keyManager.migrateToEncrypted()
-            Log.d("SQLCipher", "Migration completed")
         }
 
-        Log.d("SQLCipher", "Building Room database with SupportFactory...")
         return Room.databaseBuilder(
             context.applicationContext,
             DiabDataDatabase::class.java,

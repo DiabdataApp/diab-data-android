@@ -230,13 +230,18 @@ class DataRepository(
     // ----------------
     // User preferences
     // ----------------
-    /** Flow of user preferences */
     suspend fun insertOrUpdate(preferences: UserPreferences) = userPreferencesDao.insertOrUpdate(preferences)
     fun getUserPreferences(): Flow<UserPreferences?> =
         userPreferencesDao.getUserPreferences()
 
     suspend fun setAutoBackupEnabled(enabled: Boolean) =
         userPreferencesDao.setAutoBackupEnabled(enabled)
+
+    suspend fun enableExpirationReminder(enabled: Boolean) =
+        userPreferencesDao.enableExpirationReminder(enabled)
+
+    suspend fun enableAppointmentReminder(enabled: Boolean) =
+        userPreferencesDao.enableAppointmentReminder(enabled)
 
     suspend fun setBackupFrequency(frequency: String) =
         userPreferencesDao.setFrequency(frequency)
