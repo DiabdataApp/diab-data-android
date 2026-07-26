@@ -1,4 +1,4 @@
-package com.diabdata.feature.settings.dataSettingsSection;
+package com.diabdata.feature.settings.sections.dataSettings
 
 import android.app.Application
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.diabdata.core.database.DataRepository
 import com.diabdata.core.model.UserPreferences
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
-import com.diabdata.feature.settings.dataSettingsSection.workers.BackupScheduler
+import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

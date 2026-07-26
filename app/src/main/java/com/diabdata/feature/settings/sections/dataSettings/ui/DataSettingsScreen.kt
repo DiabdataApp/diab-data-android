@@ -1,4 +1,4 @@
-package com.diabdata.feature.settings.dataSettingsSection.ui
+package com.diabdata.feature.settings.sections.dataSettings.ui
 
 import android.net.Uri
 import android.util.Log
@@ -40,8 +40,8 @@ import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.ImExViewModel
-import com.diabdata.feature.settings.dataSettingsSection.BackupViewModel
-import com.diabdata.feature.settings.dataSettingsSection.ui.components.AutoBackupCard
+import com.diabdata.feature.settings.sections.dataSettings.BackupViewModel
+import com.diabdata.feature.settings.sections.dataSettings.ui.components.AutoBackupCard
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import kotlinx.coroutines.Dispatchers

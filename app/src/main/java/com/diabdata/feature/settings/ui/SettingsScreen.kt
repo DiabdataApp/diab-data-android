@@ -41,6 +41,7 @@ import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
 import com.diabdata.shared.theme.DataIconColor
 import com.diabdata.shared.theme.GtinFilesIconColor
 import com.diabdata.shared.theme.NotificationIconColor
+import com.diabdata.shared.theme.SecurityIconColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -278,6 +279,32 @@ fun SettingsScreen(
                         }
                     },
                     onClick = onNavigateToDataSettings,
+                    trailingIcon = shared.drawable.arrow_right_icon
+                ),
+                shape = RoundedCornerShape(20.dp)
+            )
+
+            // Security section
+            CardListItem(
+                CardItem(
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        baseColor = SecurityIconColor,
+                        iconRes = shared.drawable.shield_toggle_icon_vector
+                    ),
+                    content = {
+                        Column {
+                            Text(
+                                text = "SECURITY",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "SECURITY",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    },
+                    onClick = {},
                     trailingIcon = shared.drawable.arrow_right_icon
                 ),
                 shape = RoundedCornerShape(20.dp)

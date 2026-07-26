@@ -1,4 +1,4 @@
-package com.diabdata.feature.settings.dataSettingsSection.workers
+package com.diabdata.feature.settings.sections.dataSettings.workers
 
 import android.content.Context
 import androidx.work.Constraints

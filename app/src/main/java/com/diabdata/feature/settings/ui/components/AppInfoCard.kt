@@ -40,7 +40,7 @@ import com.diabdata.core.ui.theme.ExtendedTheme
 import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.core.utils.ui.SvgIcon
-import com.diabdata.feature.settings.dataSettingsSection.ui.components.locale
+import com.diabdata.feature.settings.sections.dataSettings.ui.components.locale
 import com.diabdata.shared.R as shared
 
 @Composable

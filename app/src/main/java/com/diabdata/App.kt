@@ -70,7 +70,7 @@ import com.diabdata.feature.databaseView.DatabaseEditionView
 import com.diabdata.feature.devices.ui.DevicesScreen
 import com.diabdata.feature.graphs.GraphViewer
 import com.diabdata.feature.home.HomeScreen
-import com.diabdata.feature.settings.dataSettingsSection.ui.DataSettingsScreen
+import com.diabdata.feature.settings.sections.dataSettings.ui.DataSettingsScreen
 import com.diabdata.feature.settings.ui.SettingsScreen
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.feature.userProfile.ui.UserAvatarWithMenu

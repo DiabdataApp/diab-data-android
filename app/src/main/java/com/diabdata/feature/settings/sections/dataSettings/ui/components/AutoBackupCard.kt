@@ -1,6 +1,6 @@
 @file:Suppress("UNNECESSARY_SAFE_CALL")
 
-package com.diabdata.feature.settings.dataSettingsSection.ui.components
+package com.diabdata.feature.settings.sections.dataSettings.ui.components
 
 import android.content.Intent
 import android.net.Uri
@@ -20,7 +20,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
