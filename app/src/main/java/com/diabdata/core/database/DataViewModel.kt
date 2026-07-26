@@ -2,7 +2,6 @@ package com.diabdata.core.database
 
 import android.app.Application
 import android.content.Context
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,19 +39,19 @@ class DataViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     // Load all data
     val weights: StateFlow<List<Weight>> = repository.getAllWeights()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val hba1cEntries: StateFlow<List<Hba1c>> = repository.getAllHba1c()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val appointments: StateFlow<List<Appointment>> = repository.getAllAppointments()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val treatments: StateFlow<List<Treatment>> = repository.getAllTreatments()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val importantDates: StateFlow<List<ImportantDate>> = repository.getAllImportantDates()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val medicalDevices: StateFlow<List<MedicalDevice>> = repository.getAllDevices()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val userProfile: StateFlow<UserDetails?> = repository.getUserDetails()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     // Helpers to check if we have Data
     data class DataAvailability(
@@ -105,13 +103,13 @@ class DataViewModel @Inject constructor(
                 hasDevices = md.isNotEmpty(),
                 hasDiabetesDiagnosisDate = hasDiagnosisDate
             )
-        }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), DataAvailability.EMPTY)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DataAvailability.EMPTY)
 
     // Get recent and upcoming data or plot data
     // HBA1C
     val recentHba1c: StateFlow<List<Hba1c>> =
         repository.getRecentHba1c()
-            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun getHba1cPlotData(minDate: LocalDate, maxDate: LocalDate): Flow<List<PlotPoint>> =
         repository.getHba1cPlotData(minDate, maxDate)
@@ -119,7 +117,7 @@ class DataViewModel @Inject constructor(
     // Weights
     val recentWeights: StateFlow<List<Weight>> =
         repository.getRecentWeights()
-            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun getWeightPlotData(minDate: LocalDate, maxDate: LocalDate): Flow<List<PlotPoint>> =
         repository.getWeightPlotData(minDate, maxDate)
@@ -127,12 +125,12 @@ class DataViewModel @Inject constructor(
     // Appointments
     val upcomingAppointment: StateFlow<List<Appointment>> =
         repository.getUpcomingAppointments()
-            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Expiration dates
     val upcomingExpiringTreatmentDates: StateFlow<List<Treatment>> =
         repository.getUpcomingExpDates()
-            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // Insertion functions
     fun addWeight(weight: Weight) {
@@ -247,7 +245,6 @@ class DataViewModel @Inject constructor(
 
     fun clearDatabase(context: Context) = viewModelScope.launch {
         val workManager = WorkManager.getInstance(context)
-        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
         withContext(Dispatchers.IO) {
             repository.clearAllDataAndReset()
@@ -257,10 +254,8 @@ class DataViewModel @Inject constructor(
             workManager.cancelAllWorkByTag("appointments")
 
             // Reset user's reminders preferences
-            prefs.edit {
-                putBoolean("appointment_reminder", false)
-                putBoolean("expiration_reminder", false)
-            }
+            repository.enableAppointmentReminder(false)
+            repository.enableExpirationReminder(false)
         }
     }
 

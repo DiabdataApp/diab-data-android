@@ -1,9 +1,8 @@
 package com.diabdata.feature.settings
 
 import android.content.Context
-import android.widget.Toast
-import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
+import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.diabdata.shared.R as shared
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -30,12 +28,6 @@ class SettingsViewModel @Inject constructor(
     private val repository: DataRepository,
     private val db: DiabDataDatabase,
 ) : ViewModel() {
-    val isExpirationReminderEnabled = {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.isExpirationReminderEnabled()
-        }
-    }
-
     val preferences: StateFlow<UserPreferences?> = repository
         .getUserPreferences()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
@@ -53,15 +45,12 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onExpirationReminderSwitch(enabled: Boolean) {
-        val toastExpirationEnabled = context.getString(shared.string.medications_reminders_enabled_success_toast)
         val workManager = WorkManager.getInstance(context)
 
         viewModelScope.launch {
             repository.enableExpirationReminder(enabled)
             if (enabled) {
                 scheduleMedicationExpirationReminders(context, repository)
-                Toast.makeText(context, toastExpirationEnabled, Toast.LENGTH_SHORT)
-                    .show()
             } else {
                 workManager.cancelAllWorkByTag("treatments")
             }
@@ -69,28 +58,39 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onAppointmentSwitch(enabled: Boolean) {
-        val toastAppointmentReminderEnabled = context.getString(shared.string.appointments_reminders_enabled_success_toast)
         val workManager = WorkManager.getInstance(context)
 
         viewModelScope.launch {
             repository.enableAppointmentReminder(enabled)
             if (enabled) {
                 scheduleAppointmentReminders(context, repository)
-                Toast.makeText(context, toastAppointmentReminderEnabled, Toast.LENGTH_SHORT)
-                    .show()
             } else {
                 workManager.cancelAllWorkByTag("appointments")
             }
         }
     }
 
-    fun enableAppointmentReminder(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.enableAppointmentReminder(enabled)
-        }
+    init {
+        migrateSharedPrefsToRoom()
+    }
 
-    fun enableExpirationReminder(enabled: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.enableExpirationReminder(enabled)
+    private fun migrateSharedPrefsToRoom() {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        if (prefs.contains("expiration_reminder") || prefs.contains("appointment_reminder")) {
+            viewModelScope.launch {
+                val expirationEnabled = prefs.getBoolean("expiration_reminder", false)
+                val appointmentEnabled = prefs.getBoolean("appointment_reminder", false)
+
+                repository.enableExpirationReminder(expirationEnabled)
+                repository.enableAppointmentReminder(appointmentEnabled)
+
+                prefs.edit {
+                    remove("expiration_reminder")
+                    remove("appointment_reminder")
+                }
+
+                Log.d("Settings", "Migrated SharedPrefs to Room: expiration=$expirationEnabled, appointment=$appointmentEnabled")
+            }
         }
+    }
 }

@@ -1,7 +1,6 @@
 package com.diabdata.feature.settings.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -28,9 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.work.WorkManager
 import com.diabdata.BuildConfig
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.ui.components.cardsList.CardItem
@@ -44,8 +41,6 @@ import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
 import com.diabdata.shared.theme.DataIconColor
 import com.diabdata.shared.theme.GtinFilesIconColor
 import com.diabdata.shared.theme.NotificationIconColor
-import com.diabdata.workers.reminders.scheduleAppointmentReminders
-import com.diabdata.workers.reminders.scheduleMedicationExpirationReminders
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -80,6 +75,9 @@ fun SettingsScreen(
     val userPreferences by settingsViewModel.preferences.collectAsState()
     val isExpirationEnabled = userPreferences?.expirationReminder ?: false
     val isAppointmentEnabled = userPreferences?.appointmentReminder ?: false
+
+    val toastAppointmentReminderEnabled = stringResource(shared.string.appointments_reminders_enabled_success_toast)
+    val toastMedicationReminderEnabled = stringResource(shared.string.medications_reminders_enabled_success_toast)
 
     val medicationStoreRebuiltText = stringResource(shared.string.medications_medication_store_rebuilt_toast_message)
     val medicalDevicesStoreRebuiltText = stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
@@ -150,6 +148,13 @@ fun SettingsScreen(
                     switchState = isExpirationEnabled,
                     onSwitchChange = { isChecked ->
                         settingsViewModel.onExpirationReminderSwitch(isChecked)
+                        if (isChecked) {
+                            Toast.makeText(
+                                context,
+                                toastMedicationReminderEnabled,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
                     trailingIcon = shared.drawable.notification_filled_icon_vector,
@@ -185,6 +190,13 @@ fun SettingsScreen(
                     switchState = isAppointmentEnabled,
                     onSwitchChange = { isChecked ->
                         settingsViewModel.onAppointmentSwitch(isChecked)
+                        if (isChecked) {
+                            Toast.makeText(
+                                context,
+                                toastAppointmentReminderEnabled,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
                     trailingIcon = shared.drawable.notification_filled_icon_vector,
