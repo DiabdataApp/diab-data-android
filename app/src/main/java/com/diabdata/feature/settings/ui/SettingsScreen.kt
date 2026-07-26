@@ -77,18 +77,12 @@ fun SettingsScreen(
 
     var showChangeLogDialog by remember { mutableStateOf(false) }
 
-    val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-
-    var enableExpirationDateReminder by remember {
-        mutableStateOf(prefs.getBoolean("expiration_reminder", false))
-    }
-    var enableAppointmentReminder by remember {
-        mutableStateOf(prefs.getBoolean("appointment_reminder", false))
-    }
+    val userPreferences by settingsViewModel.preferences.collectAsState()
+    val isExpirationEnabled = userPreferences?.expirationReminder ?: false
+    val isAppointmentEnabled = userPreferences?.appointmentReminder ?: false
 
     val medicationStoreRebuiltText = stringResource(shared.string.medications_medication_store_rebuilt_toast_message)
-    val medicalDevicesStoreRebuiltText =
-        stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
+    val medicalDevicesStoreRebuiltText = stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
 
     val nextAppointmentDate by remember {
         dataViewModel.upcomingAppointment
@@ -130,11 +124,6 @@ fun SettingsScreen(
                 showChangeLogDialog = { showChangeLogDialog = true }
             )
 
-            val toastExpirationEnabled =
-                stringResource(shared.string.medications_reminders_enabled_success_toast)
-            val toastAppointmentReminderEnabled =
-                stringResource(shared.string.appointments_reminders_enabled_success_toast)
-
             val notificationSection: List<CardItem> = listOf(
                 CardItem(
                     leadingColoredCircleIcon = iconCircleProps,
@@ -158,23 +147,9 @@ fun SettingsScreen(
                             )
                         }
                     },
-                    switchState = enableExpirationDateReminder,
+                    switchState = isExpirationEnabled,
                     onSwitchChange = { isChecked ->
-                        enableExpirationDateReminder = isChecked
-                        prefs.edit { putBoolean("expiration_reminder", isChecked) }
-                        val workManager = WorkManager.getInstance(context)
-                        if (isChecked) {
-                            scope.launch {
-                                scheduleMedicationExpirationReminders(
-                                    context,
-                                    dataViewModel
-                                )
-                            }
-                            Toast.makeText(context, toastExpirationEnabled, Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            workManager.cancelAllWorkByTag("treatments")
-                        }
+                        settingsViewModel.onExpirationReminderSwitch(isChecked)
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
                     trailingIcon = shared.drawable.notification_filled_icon_vector,
@@ -207,26 +182,9 @@ fun SettingsScreen(
                             )
                         }
                     },
-                    switchState = enableAppointmentReminder,
+                    switchState = isAppointmentEnabled,
                     onSwitchChange = { isChecked ->
-                        enableAppointmentReminder = isChecked
-                        prefs.edit { putBoolean("appointment_reminder", isChecked) }
-                        val workManager = WorkManager.getInstance(context)
-                        if (isChecked) {
-                            scope.launch {
-                                scheduleAppointmentReminders(
-                                    context,
-                                    dataViewModel
-                                )
-                            }
-                            Toast.makeText(
-                                context,
-                                toastAppointmentReminderEnabled,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            workManager.cancelAllWorkByTag("appointments")
-                        }
+                        settingsViewModel.onAppointmentSwitch(isChecked)
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
                     trailingIcon = shared.drawable.notification_filled_icon_vector,

@@ -252,6 +252,12 @@ class DataRepository(
     suspend fun setLastBackupUpdate(date: String) =
         userPreferencesDao.setLastBackupDate(date)
 
+    suspend fun isExpirationReminderEnabled(): Boolean =
+        userPreferencesDao.isExpirationReminderEnabled()
+
+    suspend fun isAppointmentReminderEnabled(): Boolean =
+        userPreferencesDao.isAppointmentReminderEnabled()
+
     suspend fun restorePreferences(preferences: UserPreferences) =
         userPreferencesDao.insertOrUpdate(preferences)
 

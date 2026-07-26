@@ -36,6 +36,12 @@ interface UserPreferencesDao {
     @Query("UPDATE user_preferences SET expirationReminder = :enabled WHERE id = 1")
     suspend fun enableExpirationReminder(enabled: Boolean)
 
+    @Query("SELECT expirationReminder FROM user_preferences WHERE id = 1")
+    suspend fun isExpirationReminderEnabled(): Boolean
+
     @Query("UPDATE user_preferences SET appointmentReminder = :enabled WHERE id = 1")
     suspend fun enableAppointmentReminder(enabled: Boolean)
+
+    @Query("SELECT appointmentReminder FROM user_preferences WHERE id = 1")
+    suspend fun isAppointmentReminderEnabled(): Boolean
 }
