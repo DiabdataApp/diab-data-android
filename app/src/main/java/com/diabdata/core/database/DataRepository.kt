@@ -1,5 +1,6 @@
 package com.diabdata.core.database
 
+import com.diabdata.core.backup.ExportData
 import com.diabdata.core.model.Appointment
 import com.diabdata.core.model.Hba1c
 import com.diabdata.core.model.ImportantDate

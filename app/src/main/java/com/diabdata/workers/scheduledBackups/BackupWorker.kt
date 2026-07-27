@@ -7,21 +7,18 @@ import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.diabdata.core.backup.BackupArchiveManager
 import com.diabdata.core.database.DataRepository
-import com.diabdata.core.model.UserDetails
 import com.diabdata.core.notifications.NotificationImportance
 import com.diabdata.core.notifications.showNotification
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.first
-import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 import kotlin.coroutines.cancellation.CancellationException
 import com.diabdata.shared.R as shared
 
@@ -29,12 +26,14 @@ import com.diabdata.shared.R as shared
 class BackupWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val dataRepository: DataRepository
+    private val dataRepository: DataRepository,
+    private val backupArchiveManager: BackupArchiveManager
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         return try {
             val prefs = dataRepository.getUserPreferences().first()
                 ?: return Result.failure()
+
             val backupPath = prefs.backupPath ?: run {
                 Log.w("BackupWorker", "No backup path configured, skipping")
                 applicationContext.showNotification(
@@ -45,11 +44,6 @@ class BackupWorker @AssistedInject constructor(
                 )
                 return Result.failure()
             }
-
-            val userDetails: UserDetails? = dataRepository.getUserDetails().first()
-            val profilePhotoPath = userDetails?.profilePhotoPath
-
-            val jsonString = dataRepository.exportDataAsJsonString()
 
             val treeUri = backupPath.toUri()
             val dateFormat = SimpleDateFormat("dd-MM-yyyy_HH-mm", Locale.getDefault())
@@ -68,23 +62,20 @@ class BackupWorker @AssistedInject constructor(
                 ),
                 "application/zip",
                 fileName
-            ) ?: return Result.failure()
+            ) ?: run {
+                Log.e("BackupWorker", "createDocument returned null")
+                applicationContext.showNotification(
+                    title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
+                    content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_file_creation_error),
+                    channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
+                    importance = NotificationImportance.DEFAULT
+                )
+                return Result.failure()
+            }
 
             applicationContext.contentResolver.openOutputStream(docUri)?.use { outputStream ->
-                ZipOutputStream(outputStream).use { zip ->
-                    zip.putNextEntry(ZipEntry("data.json"))
-                    zip.write(jsonString.toByteArray())
-                    zip.closeEntry()
-
-                    profilePhotoPath?.let { path ->
-                        val photoFile = File(path)
-                        if (photoFile.exists()) {
-                            zip.putNextEntry(ZipEntry("profile_photo.jpg"))
-                            photoFile.inputStream().use { it.copyTo(zip) }
-                            zip.closeEntry()
-                        }
-                    }
-                }
+                backupArchiveManager.writeBackup(outputStream, isScheduledBackup = true)
+                    .getOrThrow()
             }
 
             dataRepository.setLastBackupUpdate(
@@ -93,7 +84,11 @@ class BackupWorker @AssistedInject constructor(
 
             applicationContext.showNotification(
                 title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_success_title),
-                content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_success, backupPath.uriStringToReadablePath(applicationContext), readableDate),
+                content = applicationContext.getString(
+                    shared.string.settings_notifications_scheduled_backup_success,
+                    backupPath.uriStringToReadablePath(applicationContext),
+                    readableDate
+                ),
                 channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.LOW
             )
@@ -105,14 +100,18 @@ class BackupWorker @AssistedInject constructor(
             Log.e("BackupWorker", "Permission denied", e)
             applicationContext.showNotification(
                 title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
-                content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_permission_denied, e.message),
+                content = applicationContext.getString(
+                    shared.string.settings_notifications_scheduled_backup_error_permission_denied,
+                    e.message
+                ),
                 channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.DEFAULT
             )
             Result.failure()
         } catch (e: Exception) {
             Log.e("BackupWorker", "Backup failed", e)
-            val errorDetail = "${e.javaClass.simpleName}: ${e.message}\nat ${e.stackTrace.firstOrNull()}"
+            val errorDetail =
+                "${e.javaClass.simpleName}: ${e.message}\nat ${e.stackTrace.firstOrNull()}"
             applicationContext.showNotification(
                 title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
                 content = errorDetail,

@@ -96,20 +96,7 @@ fun DataSettingsScreen(
                     val profilePhotoPath = userProfileViewModel.getProfilePhotoPath()
                     try {
                         context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                            ZipOutputStream(outputStream).use { zip ->
-                                val jsonString = imExViewModel.exportDataAsJsonString()
-                                zip.putNextEntry(ZipEntry("data.json"))
-                                zip.write(jsonString.toByteArray())
-                                zip.closeEntry()
-                                profilePhotoPath?.let { path ->
-                                    val photoFile = File(path)
-                                    if (photoFile.exists()) {
-                                        zip.putNextEntry(ZipEntry("profile_photo.jpg"))
-                                        photoFile.inputStream().use { it.copyTo(zip) }
-                                        zip.closeEntry()
-                                    }
-                                }
-                            }
+                            imExViewModel.exportData(outputStream)
                         }
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, dataExportSuccess, Toast.LENGTH_SHORT).show()

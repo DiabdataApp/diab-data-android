@@ -1,6 +1,7 @@
 package com.diabdata.core.model
 
 import com.google.gson.annotations.SerializedName
+import java.time.ZonedDateTime
 
 data class BackupMetadata(
     val app: String = "diabdata",
@@ -10,6 +11,9 @@ data class BackupMetadata(
 
     @SerializedName("format_version")
     val formatVersion: Int = 1,
+
+    @SerializedName("created_at_timestamp")
+    val createdAtTimeStamp: ZonedDateTime,
 
     @SerializedName("created_at")
     val createdAt: String,
@@ -51,6 +55,9 @@ data class DataSummary(
 
     @SerializedName("has_user_profile")
     val hasUserProfile: Boolean,
+
+    @SerializedName("has_user_preferences")
+    val hasUserPreferences: Boolean,
 
     @SerializedName("has_profile_photo")
     val hasProfilePhoto: Boolean
