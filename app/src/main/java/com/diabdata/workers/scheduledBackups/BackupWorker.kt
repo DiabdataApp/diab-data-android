@@ -38,7 +38,7 @@ class BackupWorker @AssistedInject constructor(
                 Log.w("BackupWorker", "No backup path configured, skipping")
                 applicationContext.showNotification(
                     title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
-                    content = "Aucun dossier de sauvegarde configuré",
+                    content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_undefined_backup_directory_error),
                     channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                     importance = NotificationImportance.DEFAULT
                 )
@@ -47,10 +47,10 @@ class BackupWorker @AssistedInject constructor(
 
             val treeUri = backupPath.toUri()
             val dateFormat = SimpleDateFormat("dd-MM-yyyy_HH-mm", Locale.getDefault())
-            val readabbleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val readableDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
             val date = dateFormat.format(Date())
-            val readableDate = readabbleDateFormat.format(Date())
+            val readableDate = readableDateFormat.format(Date())
 
             val fileName = "diabdata_backup_${date}.zip"
 
@@ -73,9 +73,20 @@ class BackupWorker @AssistedInject constructor(
                 return Result.failure()
             }
 
-            applicationContext.contentResolver.openOutputStream(docUri)?.use { outputStream ->
-                backupArchiveManager.writeBackup(outputStream, isScheduledBackup = true)
-                    .getOrThrow()
+            val outputStream = applicationContext.contentResolver.openOutputStream(docUri)
+                ?: run {
+                    Log.e("BackupWorker", "openOutputStream returned null")
+                    applicationContext.showNotification(
+                        title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
+                        content = "openOutputStream returned null",
+                        channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
+                        importance = NotificationImportance.DEFAULT
+                    )
+                    return Result.failure()
+                }
+
+            outputStream.use {
+                backupArchiveManager.writeBackup(it, isScheduledBackup = true).getOrThrow()
             }
 
             dataRepository.setLastBackupUpdate(

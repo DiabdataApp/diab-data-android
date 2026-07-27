@@ -14,7 +14,11 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class BackupArchiveManager @Inject constructor(private val repository: DataRepository) {
 
-    suspend fun writeBackup(output: OutputStream, isScheduledBackup: Boolean = false, isEncrypted: Boolean = false): Result<Unit> {
+    suspend fun writeBackup(
+        output: OutputStream,
+        isScheduledBackup: Boolean = false,
+        isEncrypted: Boolean = false
+    ): Result<Unit> {
 
         return try {
             val jsonData = repository.exportDataAsJsonString()
@@ -40,7 +44,7 @@ class BackupArchiveManager @Inject constructor(private val repository: DataRepos
             throw e
         } catch (e: Exception) {
             Log.e(
-                "BAM - writeBackup IOException",
+                "BAM - writeBackup Exception",
                 e.message,
                 e
             )

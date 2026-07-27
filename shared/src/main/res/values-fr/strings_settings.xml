@@ -51,6 +51,7 @@
     <string name="settings_notifications_scheduled_backup_error_title">Échec de sauvegarde automatique.</string>
     <string name="settings_notifications_scheduled_backup_error">La sauvegarde programmée a échoué: %1$s.</string>
     <string name="settings_notifications_scheduled_backup_file_creation_error">Échec lors de la création du fichier de auvegarde.</string>
+    <string name="settings_notifications_scheduled_backup_undefined_backup_directory_error">Le dossier de sauvegarde automatique n'est pas défini.</string>
     <string name="settings_notifications_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes: %1$s.</string>
 
     <!-- ============================================= -->
