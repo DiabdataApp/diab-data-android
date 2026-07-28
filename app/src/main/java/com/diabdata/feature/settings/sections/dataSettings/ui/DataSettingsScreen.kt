@@ -44,15 +44,12 @@ import com.diabdata.feature.settings.sections.dataSettings.BackupViewModel
 import com.diabdata.feature.settings.sections.dataSettings.ui.components.AutoBackupCard
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
+import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 import com.diabdata.shared.R as shared
 
 @Suppress("Unused", "UnusedVariable")
@@ -93,26 +90,27 @@ fun DataSettingsScreen(
         onResult = { uri: Uri? ->
             uri?.let {
                 scope.launch(Dispatchers.IO) {
-                    val profilePhotoPath = userProfileViewModel.getProfilePhotoPath()
-                    try {
-                        context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                            imExViewModel.exportData(outputStream)
-                        }
-                        withContext(Dispatchers.Main) {
+                    val result = context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                        imExViewModel.exportData(outputStream)
+                    } ?: Result.failure(Exception("Unable to open output stream"))
+
+                    withContext(Dispatchers.Main) {
+                        result.onSuccess {
                             Toast.makeText(context, dataExportSuccess, Toast.LENGTH_SHORT).show()
+                            context.showNotification(
+                                title = dataExportSuccess,
+                                content = uri.lastPathSegment.orEmpty().uriStringToReadablePath(context),
+                                channelName = notifChannelName,
+                            )
+                        }.onFailure { e ->
+                            Log.e("Export", "Export failed", e)
+                            Toast.makeText(context, "$dataExportError : ${e.message}", Toast.LENGTH_LONG).show()
+                            context.showNotification(
+                                title = "$dataExportError : ${e.message}",
+                                content = uri.lastPathSegment.orEmpty(),
+                                channelName = notifChannelName,
+                            )
                         }
-                        context.showNotification(
-                            title = dataExportSuccess,
-                            content = uri.lastPathSegment.orEmpty(),
-                            channelName = notifChannelName,
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        context.showNotification(
-                            title = "$dataExportError : ${e.message}",
-                            content = uri.lastPathSegment.orEmpty(),
-                            channelName = notifChannelName,
-                        )
                     }
                 }
             }
@@ -125,82 +123,20 @@ fun DataSettingsScreen(
         onResult = { uri: Uri? ->
             uri?.let {
                 scope.launch(Dispatchers.IO) {
-                    try {
-                        context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                            val bytes = inputStream.readBytes()
-                            val isZip = bytes.size >= 2
-                                    && bytes[0] == 0x50.toByte()
-                                    && bytes[1] == 0x4B.toByte()
-                            if (isZip) {
-                                var jsonString: String? = null
-                                var photoBytes: ByteArray? = null
-                                ZipInputStream(bytes.inputStream()).use { zip ->
-                                    var entry = zip.nextEntry
-                                    while (entry != null) {
-                                        when (entry.name) {
-                                            "data.json" -> jsonString = String(zip.readBytes())
-                                            "profile_photo.jpg" -> photoBytes = zip.readBytes()
-                                        }
-                                        zip.closeEntry()
-                                        entry = zip.nextEntry
-                                    }
-                                }
-                                var newPhotoPath: String? = null
-                                photoBytes?.let { pBytes ->
-                                    val photoFile = File(
-                                        context.filesDir,
-                                        "profile_photo_${System.currentTimeMillis()}.jpg"
-                                    )
-                                    photoFile.outputStream().use { output ->
-                                        output.write(pBytes)
-                                    }
-                                    context.filesDir.listFiles()
-                                        ?.filter {
-                                            it.name.startsWith("profile_photo")
-                                                    && it.name != photoFile.name
-                                        }
-                                        ?.forEach { it.delete() }
-                                    newPhotoPath = photoFile.absolutePath
-                                }
-                                jsonString?.let { json ->
-                                    if (json.isNotEmpty()) {
-                                        imExViewModel.importDataFromJsonString(json, newPhotoPath)
-                                    }
-                                }
-                            } else {
-                                val jsonString = String(bytes)
-                                if (jsonString.isNotEmpty()) {
-                                    imExViewModel.importDataFromJsonString(jsonString)
-                                } else {
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(
-                                            context,
-                                            emptyImportFileError,
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-                                    return@use
-                                }
-                            }
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(context, dataImportSuccess, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                    val result = context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                        imExViewModel.importData(inputStream)
+                    } ?: Result.failure(Exception("Unable to open input stream"))
+
+                    withContext(Dispatchers.Main) {
+                        result.onSuccess {
+                            Toast.makeText(context, dataImportSuccess, Toast.LENGTH_SHORT).show()
                             context.showNotification(
                                 title = dataImportSuccess,
-                                content = uri.lastPathSegment.orEmpty(),
+                                content = uri.toString().uriStringToReadablePath(context),
                                 channelName = notifChannelName,
                             )
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Import", "GLOBAL CRASH", e)
-                        e.printStackTrace()
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                context,
-                                "$dataImportError : ${e.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
+                        }.onFailure { e ->
+                            Toast.makeText(context, "$dataImportError : ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
                 }

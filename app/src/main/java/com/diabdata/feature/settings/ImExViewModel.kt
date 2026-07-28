@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.diabdata.core.backup.BackupArchiveManager
 import com.diabdata.core.database.DataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -15,6 +16,9 @@ class ImExViewModel @Inject constructor (
 ): ViewModel() {
     suspend fun exportData(output: OutputStream): Result<Unit> =
         backupArchiveManager.writeBackup(output)
+
+    suspend fun importData(input: InputStream): Result<Unit> =
+        backupArchiveManager.readBackup(input)
 
     suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) = repository.importDataFromJsonString(json, profilePhotoPath)
 }

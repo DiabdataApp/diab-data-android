@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -330,6 +331,19 @@ class DataRepository(
                 insertOrUpdate(userPreferences.copy())
             }
         }
+    }
+
+    suspend fun saveProfilePhotoBytes(bytes: ByteArray, filesDir: File): String {
+        val fileName = "profile_photo_${System.currentTimeMillis()}.jpg"
+        val file = File(filesDir, fileName)
+
+        filesDir.listFiles()
+            ?.filter { it.name.startsWith("profile_photo_") && it.name != fileName }
+            ?.forEach { it.delete() }
+
+        file.writeBytes(bytes)
+        addProfilePhotoPath(file.absolutePath)
+        return file.absolutePath
     }
 
     // ----------------
