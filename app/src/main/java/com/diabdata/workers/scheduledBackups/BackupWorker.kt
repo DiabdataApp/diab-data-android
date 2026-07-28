@@ -29,20 +29,34 @@ class BackupWorker @AssistedInject constructor(
     private val dataRepository: DataRepository,
     private val backupArchiveManager: BackupArchiveManager
 ) : CoroutineWorker(appContext, workerParams) {
+    private val tag = "BackupWorker"
+
+    private fun failWithNotification (technicalMessage: String, localisedString: Int): Result {
+        Log.w(tag, technicalMessage)
+        applicationContext.showNotification(
+            title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
+            content = applicationContext.getString(localisedString),
+            channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
+            importance = NotificationImportance.DEFAULT
+        )
+
+        return Result.failure()
+    }
+
     override suspend fun doWork(): Result {
         return try {
-            val prefs = dataRepository.getUserPreferences().first()
-                ?: return Result.failure()
+            val prefs = dataRepository.getUserPreferences().first() ?: run {
+                return failWithNotification(
+                    "No preferences found, skipping",
+                    shared.string.settings_notifications_scheduled_backup_no_preferences_error
+                )
+            }
 
             val backupPath = prefs.backupPath ?: run {
-                Log.w("BackupWorker", "No backup path configured, skipping")
-                applicationContext.showNotification(
-                    title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
-                    content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_undefined_backup_directory_error),
-                    channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
-                    importance = NotificationImportance.DEFAULT
+                return failWithNotification(
+                    "No backup path configured, skipping",
+                    shared.string.settings_notifications_scheduled_backup_undefined_backup_directory_error
                 )
-                return Result.failure()
             }
 
             val treeUri = backupPath.toUri()
@@ -63,26 +77,18 @@ class BackupWorker @AssistedInject constructor(
                 "application/zip",
                 fileName
             ) ?: run {
-                Log.e("BackupWorker", "createDocument returned null")
-                applicationContext.showNotification(
-                    title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
-                    content = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_file_creation_error),
-                    channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
-                    importance = NotificationImportance.DEFAULT
+                return failWithNotification(
+                    "createDocument returned null",
+                    shared.string.settings_notifications_scheduled_backup_file_creation_error
                 )
-                return Result.failure()
             }
 
             val outputStream = applicationContext.contentResolver.openOutputStream(docUri)
                 ?: run {
-                    Log.e("BackupWorker", "openOutputStream returned null")
-                    applicationContext.showNotification(
-                        title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
-                        content = "openOutputStream returned null",
-                        channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
-                        importance = NotificationImportance.DEFAULT
+                    return failWithNotification(
+                        "openOutputStream returned null",
+                        shared.string.settings_notifications_scheduled_backup_file_access_error
                     )
-                    return Result.failure()
                 }
 
             outputStream.use {
@@ -108,19 +114,19 @@ class BackupWorker @AssistedInject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: SecurityException) {
-            Log.e("BackupWorker", "Permission denied", e)
+            Log.e(tag, "Permission denied", e)
             applicationContext.showNotification(
                 title = applicationContext.getString(shared.string.settings_notifications_scheduled_backup_error_title),
                 content = applicationContext.getString(
                     shared.string.settings_notifications_scheduled_backup_error_permission_denied,
-                    e.message
+                    e.message.toString()
                 ),
                 channelName = applicationContext.getString(shared.string.settings_notifications_scheduled_data_backup_channel_name),
                 importance = NotificationImportance.DEFAULT
             )
             Result.failure()
         } catch (e: Exception) {
-            Log.e("BackupWorker", "Backup failed", e)
+            Log.e(tag, "Backup failed", e)
             val errorDetail =
                 "${e.javaClass.simpleName}: ${e.message}\nat ${e.stackTrace.firstOrNull()}"
             applicationContext.showNotification(

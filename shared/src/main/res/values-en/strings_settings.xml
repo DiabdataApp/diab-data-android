@@ -52,6 +52,8 @@
     <string name="settings_notifications_scheduled_backup_error">Scheduled backup failed: %1$s.</string>
     <string name="settings_notifications_scheduled_backup_file_creation_error">Unable to create backup file.</string>
     <string name="settings_notifications_scheduled_backup_undefined_backup_directory_error">The scheduled backup directory is undefined.</string>
+    <string name="settings_notifications_scheduled_backup_no_preferences_error">The preferences for scheduled backup were not found.</string>
+    <string name="settings_notifications_scheduled_backup_file_access_error">Unable to access scheduled backup directory.</string>
     <string name="settings_notifications_scheduled_backup_error_permission_denied">Scheduled backup failed due to permission denial: %1$s.</string>
 
     <!-- ============================================= -->

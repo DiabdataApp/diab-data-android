@@ -254,9 +254,9 @@ fun DataSettingsScreen(
             enabled = backupPrefs?.automaticBackupEnabled ?: false,
             onEnabledChange = { backupViewModel.setAutoBackupEnabled(it) },
             frequency = BackupFrequency.fromKey(backupPrefs?.frequency ?: "weekly"),
-            onFrequencyChange = { backupViewModel.setFrequency(it) },
+            onFrequencyChange = { backupViewModel.setAutoBackupFrequency(it) },
             backupPath = backupPrefs?.backupPath,
-            onPathChange = { backupViewModel.setBackupPath(it) },
+            onPathChange = { backupViewModel.setAutoBackupPath(it) },
             lastBackupDate = backupPrefs?.lastBackupDate,
             onResetButtonClick = {
                 Log.d("BackupReset", "1. Click - backupPrefs: $backupPrefs")
@@ -266,7 +266,7 @@ fun DataSettingsScreen(
                         return@launch
                     }
                     Log.d("BackupReset", "3. Backup saved: $backup")
-                    backupViewModel.resetBackupPreferences()
+                    backupViewModel.resetPreferences()
                     Log.d("BackupReset", "4. Reset called, showing snackbar...")
                     try {
                         val result = snackbarHostState.showSnackbar(
