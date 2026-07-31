@@ -279,7 +279,7 @@ fun SettingsScreen(
                         }
                     },
                     onClick = onNavigateToDataSettings,
-                    trailingIcon = shared.drawable.arrow_right_icon
+                    trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
                 shape = RoundedCornerShape(20.dp)
             )
@@ -305,7 +305,7 @@ fun SettingsScreen(
                         }
                     },
                     onClick = {},
-                    trailingIcon = shared.drawable.arrow_right_icon
+                    trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
                 shape = RoundedCornerShape(20.dp)
             )

@@ -40,6 +40,7 @@ import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.ImExViewModel
+import com.diabdata.feature.settings.sections.dataSettings.BackupStatusState
 import com.diabdata.feature.settings.sections.dataSettings.BackupViewModel
 import com.diabdata.feature.settings.sections.dataSettings.ui.components.AutoBackupCard
 import com.diabdata.feature.userProfile.UserProfileViewModel
@@ -56,7 +57,7 @@ import com.diabdata.shared.R as shared
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DataSettingsScreen(
-    dataViewModel: DataViewModel
+    dataViewModel: DataViewModel,
 ) {
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", LocalLocale.current.platformLocale)
     val currentDate = dateFormat.format(Date())
@@ -78,6 +79,7 @@ fun DataSettingsScreen(
 
     val backupViewModel: BackupViewModel = hiltViewModel()
     val backupPrefs by backupViewModel.preferences.collectAsState()
+    val backupStatus by backupViewModel.backupStatus.collectAsState()
 
     val resetMessage = stringResource(shared.string.settings_backup_policy_reset_snackbar)
     val undoLabel = stringResource(shared.string.common_undo)
@@ -155,15 +157,15 @@ fun DataSettingsScreen(
     ) {
         val dataBaseSection: List<CardItem> = listOf(
             CardItem(
-                leadingIcon = shared.drawable.backup_db_icon_vector,
+                leadingIcon = shared.drawable.database_download_icon_vector,
                 content = {
                     Row { Text(stringResource(shared.string.settings_data_export_label)) }
                 },
                 onClick = { createFileLauncher.launch(fileName) },
-                trailingIcon = shared.drawable.arrow_right_icon
+                trailingIcon = shared.drawable.arrow_right_icon_vector
             ),
             CardItem(
-                leadingIcon = shared.drawable.restore_db_icon_vector,
+                leadingIcon = shared.drawable.database_upload_icon_vector,
                 content = {
                     Row { Text(stringResource(shared.string.settings_data_import_label)) }
                 },
@@ -172,17 +174,17 @@ fun DataSettingsScreen(
                         arrayOf("application/json", "application/zip")
                     )
                 },
-                trailingIcon = shared.drawable.arrow_right_icon
+                trailingIcon = shared.drawable.arrow_right_icon_vector
             ),
             CardItem(
-                leadingIcon = shared.drawable.purge_db_icon_vector,
+                leadingIcon = shared.drawable.database_off_icon_vector,
                 leadingIconColor = MaterialTheme.colorScheme.error,
                 isDestructive = true,
                 content = {
                     Row { Text(stringResource(shared.string.settings_data_database_purge_label)) }
                 },
                 onClick = { showConfirmDialog = true },
-                trailingIcon = shared.drawable.arrow_right_icon
+                trailingIcon = shared.drawable.arrow_right_icon_vector
             )
         )
 
@@ -193,7 +195,6 @@ fun DataSettingsScreen(
             onFrequencyChange = { backupViewModel.setAutoBackupFrequency(it) },
             backupPath = backupPrefs?.backupPath,
             onPathChange = { backupViewModel.setAutoBackupPath(it) },
-            lastBackupDate = backupPrefs?.lastBackupDate,
             onResetButtonClick = {
                 Log.d("BackupReset", "1. Click - backupPrefs: $backupPrefs")
                 scope.launch {
@@ -219,7 +220,8 @@ fun DataSettingsScreen(
                         Log.e("BackupReset", "snackbar error", e)
                     }
                 }
-            }
+            },
+            backupStatusState = backupStatus ?: BackupStatusState(null, null)
         )
 
         CardsList(
@@ -232,7 +234,7 @@ fun DataSettingsScreen(
             onDismissRequest = { showConfirmDialog = false },
             icon = {
                 SvgIcon(
-                    resId = shared.drawable.purge_db_icon_vector,
+                    resId = shared.drawable.database_off_icon_vector,
                     modifier = Modifier.size(48.dp),
                     color = MaterialTheme.colorScheme.error
                 )

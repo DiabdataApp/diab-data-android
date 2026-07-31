@@ -28,9 +28,16 @@
 
     <!-- Automated backup section -->
     <string name="settings_set_data_backup_scheduler_label">Backup schedule</string>
+    <string name="settings_data_backup_scheduler_supporting_text">Scheduled backup settings</string>
     <string name="settings_set_data_backup_scheduler_description">Enable to set your data\'s automatic backup schedule up.</string>
-    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_set_data_backup_frequency_label">Backup frequency</string>
+    <string name="settings_set_data_backup_path_label">Backup folder</string>
     <string name="settings_set_data_backup_path">Choose backup folder</string>
+    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_scheduled_data_backup_status_label">Scheduled backup status</string>
+    <string name="settings_set_data_backup_history_last_label">Last:</string>
+    <string name="settings_set_data_backup_history_next_label">Scheduled:</string>
+    <string name="settings_set_data_backup_enabled">Enable</string>
 
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>

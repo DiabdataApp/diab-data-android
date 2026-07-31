@@ -13,6 +13,7 @@ import com.diabdata.core.model.MedicalDevice
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
 import com.diabdata.core.model.Weight
+import com.diabdata.core.workManager.WorkManagerModule
 import com.diabdata.feature.graphs.classes.PlotPoint
 import com.diabdata.shared.R
 import com.diabdata.shared.utils.dataTypes.AddableType
@@ -35,6 +36,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DataViewModel @Inject constructor(
     val repository: DataRepository,
+    private val workManager: WorkManager,
     application: Application
 ) : AndroidViewModel(application) {
     // Load all data
@@ -244,8 +246,6 @@ class DataViewModel @Inject constructor(
     // DataViewModel
 
     fun clearDatabase(context: Context) = viewModelScope.launch {
-        val workManager = WorkManager.getInstance(context)
-
         withContext(Dispatchers.IO) {
             repository.clearAllDataAndReset()
 

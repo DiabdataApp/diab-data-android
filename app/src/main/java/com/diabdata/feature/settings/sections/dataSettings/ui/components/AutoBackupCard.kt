@@ -8,14 +8,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,11 +23,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -41,25 +37,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.diabdata.core.ui.components.cardsList.CardItem
-import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.theme.DiabDataTheme
 import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.feature.settings.sections.dataSettings.BackupStatusState
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
-import com.diabdata.shared.utils.dateUtils.formatDateToLocale
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import com.diabdata.shared.R as shared
 
@@ -71,294 +68,373 @@ fun AutoBackupCard(
     onFrequencyChange: (BackupFrequency) -> Unit,
     backupPath: String?,
     onPathChange: (String) -> Unit,
-    lastBackupDate: String?,
     onResetButtonClick: () -> Unit,
+    backupStatusState: BackupStatusState
 ) {
-    val transition = updateTransition(targetState = enabled, label = "AutoBackupTransition")
-
-    val bottomCornerRadius by transition.animateDp(
-        transitionSpec = {
-            spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        },
-        label = "bottomCornerRadius"
-    ) { state ->
-        if (state) 3.dp else 20.dp
-    }
-
-    val safeRadius = bottomCornerRadius.coerceAtLeast(0.dp)
-
-    val subMenuSurfaceTintAlpha by transition.animateFloat(
-        transitionSpec = {
-            spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        },
-        label = "subMenuSurfaceTint"
-    ) { state ->
-        if (state) 0.8f else 0.0f
-    }
+    var expanded by rememberSaveable { mutableStateOf(true) }
+    val numChildren = 5
+    val itemCount = 1 + if (expanded) numChildren else 0
 
     // File picker launcher
     val context = LocalContext.current
     val folderPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree(),
-        onResult = { uri: Uri? ->
+        contract = ActivityResultContracts.OpenDocumentTree(), onResult = { uri: Uri? ->
             uri?.let {
                 context.contentResolver.takePersistableUriPermission(
                     it,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
                 onPathChange(it.toString())
             }
-        }
+        })
+
+    val containerColor = MaterialTheme.colorScheme.surface
+    val containerContentColor = MaterialTheme.colorScheme.onSurface
+
+    var isSaving by remember { mutableStateOf(false) }
+
+    val motionScheme = MaterialTheme.motionScheme
+
+    val rotation by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        animationSpec = motionScheme.defaultSpatialSpec(),
+        label = "chevronRotation"
     )
 
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(
-            alpha = subMenuSurfaceTintAlpha
-        ),
+    Column(
+        verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        Column(
-            verticalArrangement = spacedBy(3.dp),
+        SegmentedListItem(
+            onClick = { expanded = !expanded },
+            modifier = Modifier.semantics {
+                stateDescription = if (expanded) "Expanded" else "Collapsed"
+            },
+            shapes = if (expanded) ListItemDefaults.segmentedShapes(
+                index = 0,
+                count = itemCount,
+            ) else ListItemDefaults.segmentedShapes(0, 1).copy(
+                shape = RoundedCornerShape(15.dp)
+            ),
+            leadingContent = {
+                SvgIcon(
+                    resId = shared.drawable.save_clock_icon_vector,
+                    color = containerContentColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            trailingContent = {
+                IconButton(
+                    onClick = { expanded = !expanded }, modifier = Modifier.size(24.dp)
+                ) {
+                    SvgIcon(
+                        resId = shared.drawable.arrow_down_icon_vector,
+                        color = containerContentColor,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .graphicsLayer(rotationZ = rotation)
+                    )
+                }
+            },
+            content = {
+                Text(stringResource(shared.string.settings_set_data_backup_scheduler_label))
+            },
+            supportingContent = {
+                Text(stringResource(shared.string.settings_data_backup_scheduler_supporting_text))
+            },
+            colors = ListItemDefaults.colors(
+                containerColor = containerColor,
+                headlineColor = containerContentColor,
+                supportingColor = containerContentColor
+            ),
+        )
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
+            exit = shrinkVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
         ) {
-            CardListItem(
-                cardItem = CardItem(
-                    leadingIcon = shared.drawable.recurring_backup_folder_icon_vector,
+            Column(verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap)) {
+
+                // 2. Schedule frequency choice
+                SegmentedListItem(
+                    shapes = ListItemDefaults.segmentedShapes(index = 2, count = itemCount),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.recurring_event_filled_icon_vector,
+                            color = containerContentColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = containerColor,
+                        headlineColor = containerContentColor,
+                        supportingColor = containerContentColor
+                    ),
                     content = {
-                        Column {
-                            Text(
-                                text = stringResource(shared.string.settings_set_data_backup_scheduler_label),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                text = stringResource(shared.string.settings_set_data_backup_scheduler_description),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                        Text(
+                            text = stringResource(shared.string.settings_set_data_backup_frequency_label),
+                        )
+                    },
+                    supportingContent = {
+                        FlowRow(
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                        ) {
+                            BackupFrequency.entries.forEachIndexed { index, freq ->
+                                ToggleButton(
+                                    checked = frequency == freq,
+                                    onCheckedChange = { onFrequencyChange(freq) },
+                                    shapes = when (index) {
+                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                        BackupFrequency.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                    },
+                                    modifier = Modifier
+                                        .semantics {
+                                            role = Role.RadioButton
+                                        }
+                                        .weight(if (frequency == freq) 1.2f else 0.8f),
+                                ) {
+                                    Text(
+                                        text = stringResource(freq.labelRes),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelMedium
+                                    )
+                                }
+                            }
+                        }
+                    })
+
+                // 3. Backup folder choice
+                SegmentedListItem(
+                    shapes = ListItemDefaults.segmentedShapes(index = 3, count = itemCount),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.folder_check_icon_vector,
+                            color = containerContentColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = containerColor,
+                        headlineColor = containerContentColor,
+                        supportingColor = containerContentColor
+                    ),
+                    content = {
+                        Text(
+                            text = stringResource(shared.string.settings_set_data_backup_path_label),
+                        )
+                    },
+                    supportingContent = {
+                        if (!backupPath.isNullOrBlank()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = spacedBy(8.dp),
+                            ) {
+                                Text(
+                                    text = backupPath.uriStringToReadablePath(context),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                IconButton(
+                                    onClick = { folderPickerLauncher.launch(null) },
+                                    modifier = Modifier.size(24.dp),
+                                ) {
+                                    SvgIcon(
+                                        resId = shared.drawable.folder_swap_icon_vector,
+                                        modifier = Modifier.size(18.dp),
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        } else {
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = { folderPickerLauncher.launch(null) },
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = spacedBy(8.dp),
+                                    ) {
+                                        SvgIcon(
+                                            resId = shared.drawable.backup_folder_settings_icon_vector,
+                                            modifier = Modifier.size(20.dp),
+                                            color = MaterialTheme.colorScheme.onPrimary
+                                        )
+                                        Text(
+                                            text = stringResource(shared.string.settings_set_data_backup_path),
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                // 4. Last backup info
+                SegmentedListItem(
+                    shapes = ListItemDefaults.segmentedShapes(index = 4, count = itemCount),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.save_info_icon_vector,
+                            color = containerContentColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = containerColor,
+                        headlineColor = containerContentColor,
+                        supportingColor = containerContentColor
+                    ),
+                    content = {
+                        Text(
+                            text = stringResource(shared.string.settings_scheduled_data_backup_status_label),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    },
+                    supportingContent = {
+                        Column(
+                            verticalArrangement = spacedBy(8.dp)
+                        ) {
+                            Row(
+                                horizontalArrangement = spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Status: ")
+                                Row(
+                                    horizontalArrangement = spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (enabled) {
+                                        SvgIcon(
+                                            resId = shared.drawable.play_arrow_icon_vector,
+                                            modifier = Modifier.size(18.dp),
+                                            color = LocalContentColor.current
+                                        )
+                                        Text("Active")
+                                    } else {
+                                        SvgIcon(
+                                            resId = shared.drawable.pause_outlined_icon_vector,
+                                            modifier = Modifier.size(18.dp),
+                                            color = LocalContentColor.current
+                                        )
+                                        Text("Inactive")
+                                    }
+                                }
+                            }
+                            if (backupStatusState.lastBackupDate != null && backupStatusState.nextBackupEstimate != null) {
+                                // If we have previous and next scheduled backup dates
+                                val dates = listOf(
+                                    Triple(
+                                        backupStatusState.lastBackupDate,
+                                        shared.drawable.last_backup_icon_vector,
+                                        shared.string.settings_set_data_backup_history_last_label
+                                    ), Triple(
+                                        backupStatusState.nextBackupEstimate,
+                                        shared.drawable.next_backup_icon_vector,
+                                        shared.string.settings_set_data_backup_history_next_label
+                                    )
+                                )
+
+                                Column(
+                                    verticalArrangement = spacedBy(4.dp),
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    dates.forEach { date ->
+                                        Row(
+                                            horizontalArrangement = spacedBy(4.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                stringResource(date.third)
+                                            )
+                                            Text(date.first)
+                                        }
+                                        if (date != dates.last()) {
+                                            HorizontalDivider()
+                                        }
+                                    }
+                                }
+                            } else if (backupStatusState.lastBackupDate?.isNotBlank() == true || backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
+                                // If we only have one of the two
+                                Row(
+                                    horizontalArrangement = spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (backupStatusState.lastBackupDate?.isNotBlank() == true) {
+                                        Text(
+                                            stringResource(shared.string.settings_set_data_backup_history_last_label)
+                                        )
+                                        Text(backupStatusState.lastBackupDate)
+                                    } else if (backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
+                                        Text(
+                                            stringResource(shared.string.settings_set_data_backup_history_next_label)
+                                        )
+                                        Text(backupStatusState.nextBackupEstimate)
+                                    }
+                                }
+                            } else {
+                                // If we don't have any backup dates
+                                Text(
+                                    text = stringResource(shared.string.settings_no_data_backup_file),
+                                )
+                            }
+                        }
+                    })
+
+                // 5.Action buttons
+                SegmentedListItem(
+                    shapes = ListItemDefaults.segmentedShapes(index = 5, count = itemCount),
+                    onClick = {
+                        isSaving = true
+                        onResetButtonClick()
+                        isSaving = false
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        headlineColor = MaterialTheme.colorScheme.onErrorContainer,
+                        supportingColor = MaterialTheme.colorScheme.onErrorContainer
+                    ),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.reset_settings_icon_vector,
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    },
+                    content = {
+                        Text(stringResource(shared.string.common_reset))
+                    },
+                    trailingContent = {
+                        IconButton(
+                            onClick = { expanded = !expanded }, modifier = Modifier.size(24.dp)
+                        ) {
+                            SvgIcon(
+                                resId = shared.drawable.arrow_right_icon_vector,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     },
-                    switchState = enabled,
-                    onSwitchChange = onEnabledChange,
-                    trailingIcon = shared.drawable.tick_icon_vector
-                ),
-                shape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = safeRadius,
-                    bottomEnd = safeRadius
-                ),
-            )
 
-            transition.AnimatedVisibility(
-                visible = { targetEnabled -> targetEnabled },
-                enter = expandVertically(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioNoBouncy,
-                        stiffness = Spring.StiffnessMediumLow
                     )
-                ) + fadeIn(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioNoBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                ),
-                exit = shrinkVertically(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioNoBouncy,
-                        stiffness = Spring.StiffnessMediumLow
-                    )
-                ) + fadeOut(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioNoBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                ),
-            ) {
-                Column(
-                    verticalArrangement = spacedBy(3.dp),
-                    modifier = Modifier.padding(
-                        top = 9.dp,
-                        bottom = 12.dp,
-                        start = 12.dp,
-                        end = 12.dp
-                    )
-                ) {
-                    CardListItem(
-                        alignTop = true,
-                        cardItem = CardItem(
-                            leadingIcon = shared.drawable.recurring_event_filled_icon_vector,
-                            content = {
-                                Column(
-                                    verticalArrangement = spacedBy(12.dp)
-                                ) {
-                                    Text(
-                                        text = "Récurrence",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-
-                                    FlowRow(
-                                        Modifier
-                                            .padding(horizontal = 8.dp)
-                                            .fillMaxWidth(),
-                                        horizontalArrangement = spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                                        verticalArrangement = spacedBy(2.dp),
-                                    ) {
-                                        BackupFrequency.entries.forEachIndexed { index, freq ->
-                                            ToggleButton(
-                                                checked = frequency == freq,
-                                                onCheckedChange = { onFrequencyChange(freq) },
-                                                shapes = when (index) {
-                                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                                    BackupFrequency.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                                },
-                                                modifier = Modifier.semantics {
-                                                    role = Role.RadioButton
-                                                },
-                                            ) {
-                                                Text(
-                                                    text = stringResource(freq.labelRes),
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    style = MaterialTheme.typography.labelMedium
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                        ),
-                        shape = RoundedCornerShape(3.dp)
-                    )
-
-                    CardListItem(
-                        cardItem = CardItem(
-                            leadingIcon = shared.drawable.folder_open_icon_vector,
-                            content = {
-                                Column(verticalArrangement = spacedBy(8.dp)) {
-                                    Text(
-                                        text = "Emplacement de sauvegarde",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                    if (!backupPath.isNullOrBlank()) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = spacedBy(8.dp),
-                                        ) {
-                                            Text(
-                                                text = backupPath.uriStringToReadablePath(context),
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.weight(1f),
-                                            )
-                                            IconButton(
-                                                onClick = { folderPickerLauncher.launch(null) },
-                                                modifier = Modifier.size(24.dp),
-                                            ) {
-                                                SvgIcon(
-                                                    resId = shared.drawable.folder_swap_icon_vector,
-                                                    modifier = Modifier.size(18.dp),
-                                                    color = MaterialTheme.colorScheme.primary
-                                                )
-                                            }
-                                        }
-                                    } else {
-                                        Row(
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Button(
-                                                onClick = { folderPickerLauncher.launch(null) },
-                                            ) {
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = spacedBy(8.dp),
-                                                ) {
-                                                    SvgIcon(
-                                                        resId = shared.drawable.backup_folder_settings_icon_vector,
-                                                        modifier = Modifier.size(20.dp),
-                                                        color = MaterialTheme.colorScheme.onPrimary
-                                                    )
-                                                    Text(
-                                                        text = stringResource(shared.string.settings_set_data_backup_path),
-                                                        style = MaterialTheme.typography.labelSmall
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                        ),
-                        shape = RoundedCornerShape(3.dp),
-                        alignTop = true,
-                    )
-
-                    CardListItem(
-                        cardItem = CardItem(
-                            leadingIcon = shared.drawable.recurring_event_filled_icon_vector,
-                            content = {
-                                Column {
-                                    Text(
-                                        text = "Dernière sauvegarde",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-
-                                    Text(
-                                        text = lastBackupDate?.takeIf { it.isNotBlank() }?.formatDateToLocale()
-                                            ?: stringResource(shared.string.settings_no_data_backup_file),
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                }
-                            },
-                        ),
-                        alignTop = true,
-                        shape = RoundedCornerShape(
-                            topStart = 3.dp,
-                            topEnd = 3.dp,
-                            bottomStart = 8.dp,
-                            bottomEnd = 8.dp
-                        )
-                    )
-
-                    Button(
-                        onClick = onResetButtonClick,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.textButtonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                        ),
-                    ) {
-                        Row(
-                            horizontalArrangement = spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            SvgIcon(
-                                resId = shared.drawable.reset_settings_icon_vector,
-                                modifier = Modifier.size(20.dp),
-                                color = MaterialTheme.colorScheme.onTertiaryContainer
-                            )
-                            Text(stringResource(shared.string.common_reset))
-                        }
-                    }
-                }
             }
         }
     }
 }
 
 const val locale = "fr"
-const val darkTheme = false
-const val testData = true
+const val testData = false
 const val testBackupPath = "content://com.android.externalstorage.documents/tree/primary%3ADiabdata"
-const val testLastBackupDate = "2026-07-23T02:25:24.008588"
+val backupStatusState = BackupStatusState("30 juil. 2026", "31/08/26 16h30")
+val emptyBackupStatusState = BackupStatusState(null, null)
+val withNextBackupDate = BackupStatusState(null, "30 juil. 2026")
 
 @Preview(
     name = "ON",
@@ -368,22 +444,24 @@ const val testLastBackupDate = "2026-07-23T02:25:24.008588"
     showSystemUi = true
 )
 @Composable
-fun AutoBackupCardPreviewOnLight() {
-    var enableAutoBackup by remember { mutableStateOf(true) }
-    var frequency by remember { mutableStateOf<BackupFrequency?>(BackupFrequency.DAILY) }
-    var backupPath by remember {
-        @Suppress("SimplifyBooleanWithConstants")
-        mutableStateOf(testBackupPath.takeIf { it.isNotBlank() && testData } ?: "")
-    }
+fun TwoToneInfoRowPreview() {
+
     var darkTheme by remember { mutableStateOf(false) }
 
+    var frequency by remember { mutableStateOf<BackupFrequency?>(BackupFrequency.DAILY) }
+    var backupPath by remember {
+        @Suppress("SimplifyBooleanWithConstants") mutableStateOf(testBackupPath.takeIf { it.isNotBlank() && testData }
+            ?: "")
+    }
+    var enableAutoBackup by remember { mutableStateOf(false) }
+
     DiabDataTheme(dynamicColor = false, darkTheme = darkTheme) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top=30.dp)
-        ){
-            Column (
+                .padding(top = 30.dp)
+        ) {
+            Column(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .padding(30.dp)
@@ -391,23 +469,21 @@ fun AutoBackupCardPreviewOnLight() {
                     .animateContentSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                @Suppress("SimplifyBooleanWithConstants")
                 AutoBackupCard(
                     enabled = enableAutoBackup,
                     onEnabledChange = { enableAutoBackup = it },
                     frequency = frequency,
                     backupPath = backupPath,
-                    lastBackupDate = testLastBackupDate?.takeIf { it.isNotBlank() && testData } ?: "",
                     onFrequencyChange = { frequency = it },
                     onPathChange = { backupPath = it },
-                    onResetButtonClick = { backupPath = "" }
+                    onResetButtonClick = { backupPath = "" },
+                    backupStatusState = if (testData) backupStatusState else emptyBackupStatusState
                 )
 
                 Column(
                     modifier = Modifier
                         .background(
-                            MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(16.dp)
+                            MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp)
                         )
                         .padding(vertical = 12.dp, horizontal = 32.dp),
                     verticalArrangement = spacedBy(8.dp)

@@ -40,8 +40,8 @@ import com.diabdata.shared.utils.dateUtils.shortenedFormatLocalDate
 import com.diabdata.core.utils.ui.ColoredIconCircle
 import com.diabdata.feature.devices.ui.components.MedicalDeviceCardData
 import com.diabdata.core.ui.components.actionInput.ButtonType
-import com.diabdata.core.ui.components.DataTable
-import com.diabdata.core.ui.components.DataTableDecoration
+import com.diabdata.core.ui.components.tables.DataTable
+import com.diabdata.core.ui.components.tables.DataTableDecoration
 import com.diabdata.core.ui.components.actionInput.FaultyToggleButton
 import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.core.ui.components.noDataView.IconTypes

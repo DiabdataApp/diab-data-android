@@ -1,4 +1,4 @@
-package com.diabdata.core.ui.components
+package com.diabdata.core.ui.components.tables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -25,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val workManager: WorkManager,
     private val repository: DataRepository,
     private val db: DiabDataDatabase,
 ) : ViewModel() {
@@ -45,8 +46,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onExpirationReminderSwitch(enabled: Boolean) {
-        val workManager = WorkManager.getInstance(context)
-
         viewModelScope.launch {
             repository.enableExpirationReminder(enabled)
             if (enabled) {
@@ -58,8 +57,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onAppointmentSwitch(enabled: Boolean) {
-        val workManager = WorkManager.getInstance(context)
-
         viewModelScope.launch {
             repository.enableAppointmentReminder(enabled)
             if (enabled) {

@@ -4,15 +4,20 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import com.diabdata.core.database.DataRepository
 import com.diabdata.core.model.UserPreferences
 import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler
+import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler.AUTO_BACKUP_UNIQUE_WORK_NAME
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
+import com.diabdata.shared.utils.dateUtils.formatDateToLocale
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
@@ -22,7 +27,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BackupViewModel @Inject constructor(
-    private val repository: DataRepository, private val application: Application
+    private val repository: DataRepository,
+    private val workManager: WorkManager,
+    private val application: Application
 ) : ViewModel() {
     private val backupScheduleMutex: Mutex = Mutex()
 
@@ -139,4 +146,25 @@ class BackupViewModel @Inject constructor(
             }
         }
     }
+
+    val nextBackupTimeMillisFlow: StateFlow<Long?> = workManager.getWorkInfosForUniqueWorkFlow(AUTO_BACKUP_UNIQUE_WORK_NAME)
+        .map { infos -> infos.firstOrNull() }
+        .map { info ->
+            val t = info?.nextScheduleTimeMillis
+            if (t == null || t == Long.MAX_VALUE) null else t
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    val backupStatus: StateFlow<BackupStatusState?> =
+        combine(preferences, nextBackupTimeMillisFlow) { prefs, nextMillis ->
+            BackupStatusState(
+                lastBackupDate = prefs?.lastBackupDate.let {prefs?.lastBackupDate?.formatDateToLocale()},
+                nextBackupEstimate = nextMillis.let {nextMillis?.formatDateToLocale()}
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupStatusState(null, null))
 }
+
+data class BackupStatusState(
+    val lastBackupDate: String?,
+    val nextBackupEstimate: String?
+)
