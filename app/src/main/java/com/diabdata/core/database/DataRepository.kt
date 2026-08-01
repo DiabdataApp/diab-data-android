@@ -300,37 +300,76 @@ class DataRepository(
         return gson.toJson(exportData)
     }
 
+    // Domains specific data import functions
+    /**
+     * Import weights from a list of [Weight]
+     */
+    suspend fun  importWeights(weights: List<Weight>) = withContext(Dispatchers.IO) {
+        weights.forEach { insertWeight(it.copy()) }
+    }
+
+    /**
+     * Import HBA1C from a list of [Hba1c]
+     */
+    suspend fun importHba1c(hba1c: List<Hba1c>) = withContext(Dispatchers.IO) {
+        hba1c.forEach { insertHba1c(it.copy()) }
+    }
+
+    /**
+     * Import appointments from a list of [Appointment]
+     */
+    suspend fun importAppointments(appointments: List<Appointment>) = withContext(Dispatchers.IO) {
+        appointments.forEach { insertAppointment(it.copy()) }
+    }
+
+    /**
+     * Import treatments from a list of [Treatment]
+     */
+    suspend fun importTreatments(treatments: List<Treatment>) = withContext(Dispatchers.IO) {
+        treatments.forEach { insertTreatment(it.copy()) }
+    }
+
+    /**
+     * Import important dates from a list of [ImportantDate]
+     */
+    suspend fun importImportantDates(importantDates: List<ImportantDate>) = withContext(Dispatchers.IO) {
+        importantDates.forEach { insertImportantDate(it.copy()) }
+    }
+
+    /**
+     * Import medical devices from a list of [MedicalDevice]
+     */
+    suspend fun importMedicalDevices(medicalDevices: List<MedicalDevice>) = withContext(Dispatchers.IO) {
+        medicalDevices.forEach { insertDevice(it.copy()) }
+    }
+
+    /**
+     * Import user details [UserDetails]
+     */
+    suspend fun importUserDetails(userDetails: UserDetails) = withContext(Dispatchers.IO) {
+        updateUserDetails(userDetails.copy())
+    }
+
+    /**
+     * Import user preferences [UserPreferences]
+     */
+    suspend fun importUserPreferences(userPreferences: UserPreferences) = withContext(Dispatchers.IO) {
+        insertOrUpdate(userPreferences.copy())
+    }
+
     suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) {
         val gson = GsonFactory.create()
 
         val importedData: ExportData = gson.fromJson(json, ExportData::class.java)
 
-        withContext(Dispatchers.IO) {
-            importedData.weights.forEach { weight ->
-                insertWeight(weight.copy()) // Reset IDs to have them auto incremented by Room to prevent app crashes
-            }
-            importedData.hba1c.forEach { hba1c ->
-                insertHba1c(hba1c.copy())
-            }
-            importedData.appointments.forEach { appointment ->
-                insertAppointment(appointment.copy())
-            }
-            importedData.treatments.forEach { treatment ->
-                insertTreatment(treatment.copy())
-            }
-            importedData.importantDates.forEach { diagnosis ->
-                insertImportantDate(diagnosis.copy())
-            }
-            importedData.devices.forEach { device ->
-                insertDevice(device.copy())
-            }
-            importedData.userDetails?.let { userDetails ->
-                updateUserDetails(userDetails.copy(profilePhotoPath = profilePhotoPath))
-            }
-            importedData.userPreferences?.let { userPreferences ->
-                insertOrUpdate(userPreferences.copy())
-            }
-        }
+        importWeights(importedData.weights)
+        importHba1c(importedData.hba1c)
+        importAppointments(importedData.appointments)
+        importTreatments(importedData.treatments)
+        importImportantDates(importedData.importantDates)
+        importMedicalDevices(importedData.devices)
+        importUserDetails(importedData.userDetails ?: UserDetails())
+        importUserPreferences(importedData.userPreferences ?: UserPreferences())
     }
 
     suspend fun saveProfilePhotoBytes(bytes: ByteArray, filesDir: File): String {

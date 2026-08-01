@@ -12,9 +12,6 @@ data class BackupMetadata(
     @SerializedName("format_version")
     val formatVersion: Int = 1,
 
-    @SerializedName("created_at_timestamp")
-    val createdAtTimeStamp: ZonedDateTime,
-
     @SerializedName("created_at")
     val createdAt: String,
 

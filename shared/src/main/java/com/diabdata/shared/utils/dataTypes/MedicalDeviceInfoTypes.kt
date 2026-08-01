@@ -12,7 +12,6 @@ import com.diabdata.shared.R as shared
  * @param baseColor The base color of the devices's icon.
  * @param iconRes The drawable resource ID for the devices's icon.
  */
-
 enum class MedicalDeviceInfoType(
     @param:StringRes
     val displayNameRes: Int,
