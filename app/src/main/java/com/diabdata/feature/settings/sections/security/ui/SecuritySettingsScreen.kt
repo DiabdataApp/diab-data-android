@@ -1,5 +1,6 @@
 package com.diabdata.feature.settings.sections.security.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +41,7 @@ import com.diabdata.core.utils.ui.SvgIcon
 import com.diabdata.feature.settings.sections.security.SecuritySettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.diabdata.shared.R as shared
 
 @Composable
@@ -53,6 +56,10 @@ fun SecuritySettingsScreen() {
 
     var passwordValue: String by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val setBackupPasswordError = stringResource(shared.string.settings_security_set_backup_password_error)
+    val unsetPasswordErrorMessage = stringResource(shared.string.settings_security_unset_backup_password_error)
 
     val passwordButtonIcon = if (hasBackupPassword) shared.drawable.save_as_icon_vector else shared.drawable.save_icon_vector
 
@@ -72,7 +79,6 @@ fun SecuritySettingsScreen() {
             verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
         ) {
             SegmentedListItem(
-                onClick = { },
                 modifier = Modifier,
                 shapes = ListItemDefaults.segmentedShapes(0, 2),
                 leadingContent = {
@@ -102,7 +108,18 @@ fun SecuritySettingsScreen() {
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     scope.launch(Dispatchers.IO) {
-                                        viewModel.setBackupPassword(passwordValue)
+                                        val setPassword = viewModel.setBackupPassword(passwordValue)
+                                        if (setPassword.isSuccess) {
+                                            passwordValue = ""
+                                        } else if (setPassword.isFailure) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "$setBackupPasswordError : ${setPassword.exceptionOrNull()?.message}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     }
                                 }
                             ),
@@ -111,7 +128,18 @@ fun SecuritySettingsScreen() {
                                 FilledTonalIconButton(
                                     onClick = {
                                         scope.launch(Dispatchers.IO) {
-                                            viewModel.setBackupPassword(passwordValue)
+                                            val setPassword = viewModel.setBackupPassword(passwordValue)
+                                            if (setPassword.isSuccess) {
+                                                passwordValue = ""
+                                            } else if (setPassword.isFailure) {
+                                                withContext(Dispatchers.Main) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "$setBackupPasswordError : ${setPassword.exceptionOrNull()?.message}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
                                         }
                                     },
                                     enabled = passwordValue.isNotEmpty() || !hasBackupPassword,
@@ -132,7 +160,16 @@ fun SecuritySettingsScreen() {
                             TextButton(
                                 onClick = {
                                     scope.launch(Dispatchers.IO) {
-                                        viewModel.clearBackupPassword()
+                                        val result = viewModel.clearBackupPassword()
+                                        withContext(Dispatchers.Main) {
+                                            result.onFailure { e ->
+                                                Toast.makeText(
+                                                    context,
+                                                    "$unsetPasswordErrorMessage : ${e.message}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     }
                                 },
                                 colors = ButtonDefaults.textButtonColors(
