@@ -1,0 +1,207 @@
+package com.diabdata.feature.settings.sections.security.ui
+
+import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedListItem
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
+import com.diabdata.core.utils.ui.SvgIcon
+import com.diabdata.feature.settings.sections.security.SecuritySettingsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import com.diabdata.shared.R as shared
+
+@Composable
+fun SecuritySettingsScreen() {
+    val viewModel: SecuritySettingsViewModel = hiltViewModel()
+
+    val containerColor = MaterialTheme.colorScheme.surface
+    val containerContentColor = MaterialTheme.colorScheme.onSurface
+
+    val backupEncryptionEnabled by viewModel.backupEncryptionEnabled.collectAsState()
+    val hasBackupPassword = viewModel.hasBackupPassword.collectAsState().value
+
+    var passwordValue: String by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+
+    val passwordButtonIcon = if (hasBackupPassword) shared.drawable.save_as_icon_vector else shared.drawable.save_icon_vector
+
+    val isBackupEncryptionEnabledIcon = if (backupEncryptionEnabled) shared.drawable.shield_lock_filled_icon_vector else shared.drawable.shield_lock_icon_vector
+    val lockUnlockIcon = if (backupEncryptionEnabled) shared.drawable.lock_icon_vector else shared.drawable.lock_open_icon_vector
+    val backupToggleSupportingText = if (backupEncryptionEnabled) shared.string.settings_security_disable_backup_encryption else shared.string.settings_security_enable_backup_encryption
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp)
+            .padding(top = 32.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = spacedBy(32.dp)
+    ) {
+        Column(
+            verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
+        ) {
+            SegmentedListItem(
+                onClick = { },
+                modifier = Modifier,
+                shapes = ListItemDefaults.segmentedShapes(0, 2),
+                leadingContent = {
+                    SvgIcon(
+                        resId = shared.drawable.password_icon_vector,
+                        color = containerContentColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                content = {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            label = {
+                                Text(
+                                    stringResource(shared.string.settings_security_set_backup_password_label),
+                                    fontFamily = GoogleSansFlexFontFamily
+                                )
+                            },
+                            value = passwordValue,
+                            onValueChange = { passwordValue = it },
+                            visualTransformation = PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    scope.launch(Dispatchers.IO) {
+                                        viewModel.setBackupPassword(passwordValue)
+                                    }
+                                }
+                            ),
+                            singleLine = true,
+                            trailingIcon = {
+                                FilledTonalIconButton(
+                                    onClick = {
+                                        scope.launch(Dispatchers.IO) {
+                                            viewModel.setBackupPassword(passwordValue)
+                                        }
+                                    },
+                                    enabled = passwordValue.isNotEmpty() || !hasBackupPassword,
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                        .size(36.dp)
+                                ) {
+                                    SvgIcon(
+                                        resId = passwordButtonIcon,
+                                        modifier = Modifier.size(18.dp),
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
+                        )
+
+                        if (hasBackupPassword) {
+                            TextButton(
+                                onClick = {
+                                    scope.launch(Dispatchers.IO) {
+                                        viewModel.clearBackupPassword()
+                                    }
+                                },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.error
+                                ),
+                                modifier = Modifier.align(Alignment.End)
+                            ) {
+                                Text(
+                                    text = stringResource(shared.string.settings_security_unset_backup_password_label),
+                                    fontFamily = GoogleSansFlexFontFamily
+                                )
+                            }
+                        }
+                    }
+                },
+                colors = ListItemDefaults.colors(
+                    containerColor = containerColor,
+                    headlineColor = containerContentColor,
+                    supportingColor = containerContentColor
+                ),
+            )
+
+            SegmentedListItem(
+                onClick = { },
+                modifier = Modifier,
+                shapes = ListItemDefaults.segmentedShapes(1, 2),
+                leadingContent = {
+                    SvgIcon(
+                        resId = isBackupEncryptionEnabledIcon,
+                        color = if (backupEncryptionEnabled) MaterialTheme.colorScheme.primary else containerContentColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = backupEncryptionEnabled,
+                        onCheckedChange = {
+                            scope.launch(Dispatchers.IO) {
+                                viewModel.toggleBackupEncryption(it)
+                            }
+                        },
+                        enabled = hasBackupPassword,
+                        thumbContent = {
+                            SvgIcon(
+                                resId = lockUnlockIcon,
+                                color = containerContentColor,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    )
+                },
+                content = {
+                    Text(
+                        text = stringResource(shared.string.settings_security_backup_encryption_label),
+                        fontFamily = GoogleSansFlexFontFamily
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = stringResource(backupToggleSupportingText),
+                        fontFamily = GoogleSansFlexFontFamily
+                    )
+                },
+                colors = ListItemDefaults.colors(
+                    containerColor = containerColor,
+                    headlineColor = containerContentColor,
+                    supportingColor = containerContentColor
+                )
+            )
+        }
+    }
+}

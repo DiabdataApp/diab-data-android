@@ -1,4 +1,4 @@
-package com.diabdata.core.database.utils
+package com.diabdata.core.database.encryption
 
 import android.content.Context
 import android.util.Log

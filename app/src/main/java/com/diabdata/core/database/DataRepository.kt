@@ -303,6 +303,8 @@ class DataRepository(
     // Domains specific data import functions
     /**
      * Import weights from a list of [Weight]
+     *
+     * @param weights List of weights to import
      */
     suspend fun  importWeights(weights: List<Weight>) = withContext(Dispatchers.IO) {
         weights.forEach { insertWeight(it.copy()) }
@@ -310,6 +312,8 @@ class DataRepository(
 
     /**
      * Import HBA1C from a list of [Hba1c]
+     *
+     * @param hba1c List of HBA1C to import
      */
     suspend fun importHba1c(hba1c: List<Hba1c>) = withContext(Dispatchers.IO) {
         hba1c.forEach { insertHba1c(it.copy()) }
@@ -317,6 +321,8 @@ class DataRepository(
 
     /**
      * Import appointments from a list of [Appointment]
+     *
+     * @param appointments List of appointments to import
      */
     suspend fun importAppointments(appointments: List<Appointment>) = withContext(Dispatchers.IO) {
         appointments.forEach { insertAppointment(it.copy()) }
@@ -324,6 +330,8 @@ class DataRepository(
 
     /**
      * Import treatments from a list of [Treatment]
+     *
+     * @param treatments List of treatments to import
      */
     suspend fun importTreatments(treatments: List<Treatment>) = withContext(Dispatchers.IO) {
         treatments.forEach { insertTreatment(it.copy()) }
@@ -331,6 +339,8 @@ class DataRepository(
 
     /**
      * Import important dates from a list of [ImportantDate]
+     *
+     * @param importantDates List of important dates to import
      */
     suspend fun importImportantDates(importantDates: List<ImportantDate>) = withContext(Dispatchers.IO) {
         importantDates.forEach { insertImportantDate(it.copy()) }
@@ -338,6 +348,8 @@ class DataRepository(
 
     /**
      * Import medical devices from a list of [MedicalDevice]
+     *
+     * @param medicalDevices List of medical devices to import
      */
     suspend fun importMedicalDevices(medicalDevices: List<MedicalDevice>) = withContext(Dispatchers.IO) {
         medicalDevices.forEach { insertDevice(it.copy()) }
@@ -345,6 +357,8 @@ class DataRepository(
 
     /**
      * Import user details [UserDetails]
+     *
+     * @param userDetails User details to import
      */
     suspend fun importUserDetails(userDetails: UserDetails) = withContext(Dispatchers.IO) {
         updateUserDetails(userDetails.copy())
@@ -352,11 +366,37 @@ class DataRepository(
 
     /**
      * Import user preferences [UserPreferences]
+     *
+     * @param userPreferences User preferences to import
      */
     suspend fun importUserPreferences(userPreferences: UserPreferences) = withContext(Dispatchers.IO) {
         insertOrUpdate(userPreferences.copy())
     }
 
+    /**
+     * Toggle backup encryption
+     *
+     * @param enabled Whether to enable backup encryption
+     */
+    suspend fun toggleBackupEncryption(enabled: Boolean) = withContext(Dispatchers.IO) {
+        userPreferencesDao.toggleBackupEncryptionEnabled(enabled)
+    }
+
+    /**
+     * Check if backup encryption is enabled
+     *
+     * @return Whether backup encryption is enabled
+     */
+    suspend fun isBackupEncryptionEnabled(): Boolean = withContext(Dispatchers.IO) {
+        userPreferencesDao.isBackupEncryptionEnabled()
+    }
+
+    /**
+     * Legacy import from JSON method
+     *
+     * @param json JSON string to import
+     * @param profilePhotoPath Path to profile photo file
+     */
     suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) {
         val gson = GsonFactory.create()
 
@@ -372,6 +412,14 @@ class DataRepository(
         importUserPreferences(importedData.userPreferences ?: UserPreferences())
     }
 
+    /**
+     * Save profile photo to files directory and udpate photo path
+     *
+     * @param bytes Bytes of the profile photo
+     * @param filesDir Files directory
+     *
+     * @return Path to the saved profile photo
+     */
     suspend fun saveProfilePhotoBytes(bytes: ByteArray, filesDir: File): String {
         val fileName = "profile_photo_${System.currentTimeMillis()}.jpg"
         val file = File(filesDir, fileName)

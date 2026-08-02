@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase.Callback
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.diabdata.core.database.migrations.ALL_MIGRATIONS
-import com.diabdata.core.database.utils.SqlCipherKeyManager
+import com.diabdata.core.database.encryption.SqlCipherKeyManager
 import com.diabdata.feature.appointments.data.AppointmentDao
 import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
 import com.diabdata.feature.dataMatrixScanner.utils.MedicalDevicesInitializer

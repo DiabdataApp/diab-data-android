@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 23,
-    "identityHash": "682fe370ca524672c13c5567f1e6aa63",
+    "version": 24,
+    "identityHash": "c6d6cc89dfec7433baf4351164c9de5a",
     "entities": [
       {
         "tableName": "weight_entries",
@@ -574,7 +574,7 @@
       },
       {
         "tableName": "user_preferences",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `automaticBackupEnabled` INTEGER NOT NULL, `frequency` TEXT NOT NULL, `lastBackupDate` TEXT, `backupPath` TEXT, `expirationReminder` INTEGER NOT NULL, `appointmentReminder` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `automaticBackupEnabled` INTEGER NOT NULL, `frequency` TEXT NOT NULL, `lastBackupDate` TEXT, `backupPath` TEXT, `expirationReminder` INTEGER NOT NULL, `appointmentReminder` INTEGER NOT NULL, `backupEncryptionEnabled` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -615,6 +615,12 @@
             "columnName": "appointmentReminder",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "backupEncryptionEnabled",
+            "columnName": "backupEncryptionEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -627,7 +633,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '682fe370ca524672c13c5567f1e6aa63')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6d6cc89dfec7433baf4351164c9de5a')"
     ]
   }
 }

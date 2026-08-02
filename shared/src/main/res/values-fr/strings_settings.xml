@@ -39,6 +39,14 @@
     <string name="settings_set_data_backup_history_next_label">Programmée:</string>
     <string name="settings_set_data_backup_enabled">Activer</string>
 
+    <string name="settings_security_settings">Confidentialité</string>
+    <string name="settings_security_settings_section_description">Gestion des paramètres de confidentialité</string>
+    <string name="settings_security_set_backup_password_label">Définir la clé des sauvegardes</string>
+    <string name="settings_security_unset_backup_password_label">Réinitialiser</string>
+    <string name="settings_security_backup_encryption_label">Chiffrement des sauvegardes</string>
+    <string name="settings_security_enable_backup_encryption">Activer le chiffrement</string>
+    <string name="settings_security_disable_backup_encryption">Désactiver le chiffrement</string>
+
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
 

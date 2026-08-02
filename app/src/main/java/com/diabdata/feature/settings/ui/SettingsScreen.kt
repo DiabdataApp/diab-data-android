@@ -33,6 +33,7 @@ import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.components.cardsList.CardsList
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.ColoredIconCircleProps
 import com.diabdata.core.utils.ui.darken
 import com.diabdata.feature.settings.SettingsViewModel
@@ -55,7 +56,8 @@ import com.diabdata.shared.R as shared
 @Composable
 fun SettingsScreen(
     dataViewModel: DataViewModel,
-    onNavigateToDataSettings: () -> Unit
+    onNavigateToDataSettings: () -> Unit,
+    onNavigateToSecuritySettings: () -> Unit
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -137,12 +139,14 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.medications_expiry_notification_title_text),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = displayText,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
@@ -179,12 +183,14 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.appointments_setting_screen_reminder_label),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = displayText,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
@@ -269,12 +275,14 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.settings_data_section_title),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = stringResource(shared.string.settings_data_section_description_text),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
@@ -294,17 +302,21 @@ fun SettingsScreen(
                     content = {
                         Column {
                             Text(
-                                text = "SECURITY",
-                                style = MaterialTheme.typography.titleMedium
+                                text = stringResource(shared.string.settings_security_settings),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
-                                text = "SECURITY",
+                                text = stringResource(shared.string.settings_security_settings_section_description),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
-                    onClick = {},
+                    onClick = {
+                        onNavigateToSecuritySettings()
+                    },
                     trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
                 shape = RoundedCornerShape(20.dp)

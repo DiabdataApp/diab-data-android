@@ -200,7 +200,8 @@ fun AutoBackupCard(
                                         text = stringResource(freq.labelRes),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.labelMedium
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontFamily = GoogleSansFlexFontFamily
                                     )
                                 }
                             }
@@ -225,6 +226,7 @@ fun AutoBackupCard(
                     content = {
                         Text(
                             text = stringResource(shared.string.settings_set_data_backup_path_label),
+                            fontFamily = GoogleSansFlexFontFamily
                         )
                     },
                     supportingContent = {
@@ -239,6 +241,7 @@ fun AutoBackupCard(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.weight(1f),
+                                    fontFamily = GoogleSansFlexFontFamily,
                                 )
                                 IconButton(
                                     onClick = { folderPickerLauncher.launch(null) },
@@ -269,7 +272,8 @@ fun AutoBackupCard(
                                         )
                                         Text(
                                             text = stringResource(shared.string.settings_set_data_backup_path),
-                                            style = MaterialTheme.typography.labelSmall
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontFamily = GoogleSansFlexFontFamily
                                         )
                                     }
                                 }
@@ -295,7 +299,8 @@ fun AutoBackupCard(
                     content = {
                         Text(
                             text = stringResource(shared.string.settings_scheduled_data_backup_status_label),
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = GoogleSansFlexFontFamily
                         )
                     },
                     supportingContent = {
@@ -317,14 +322,20 @@ fun AutoBackupCard(
                                             modifier = Modifier.size(18.dp),
                                             color = LocalContentColor.current
                                         )
-                                        Text("Active")
+                                        Text(
+                                            text = "Active",
+                                            fontFamily = GoogleSansFlexFontFamily
+                                        )
                                     } else {
                                         SvgIcon(
                                             resId = shared.drawable.pause_outlined_icon_vector,
                                             modifier = Modifier.size(18.dp),
                                             color = LocalContentColor.current
                                         )
-                                        Text("Inactive")
+                                        Text(
+                                            text = "Inactive",
+                                            fontFamily = GoogleSansFlexFontFamily
+                                        )
                                     }
                                 }
                             }
@@ -352,9 +363,13 @@ fun AutoBackupCard(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                stringResource(date.third)
+                                                text = stringResource(date.third),
+                                                fontFamily = GoogleSansFlexFontFamily
                                             )
-                                            Text(date.first)
+                                            Text(
+                                                text = date.first,
+                                                fontFamily = GoogleSansFlexFontFamily
+                                            )
                                         }
                                         if (date != dates.last()) {
                                             HorizontalDivider()
@@ -369,20 +384,26 @@ fun AutoBackupCard(
                                 ) {
                                     if (backupStatusState.lastBackupDate?.isNotBlank() == true) {
                                         Text(
-                                            stringResource(shared.string.settings_set_data_backup_history_last_label)
+                                            text = stringResource(shared.string.settings_set_data_backup_history_last_label),
+                                            fontFamily = GoogleSansFlexFontFamily
                                         )
                                         Text(backupStatusState.lastBackupDate)
                                     } else if (backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
                                         Text(
-                                            stringResource(shared.string.settings_set_data_backup_history_next_label)
+                                            text = stringResource(shared.string.settings_set_data_backup_history_next_label),
+                                            fontFamily = GoogleSansFlexFontFamily
                                         )
-                                        Text(backupStatusState.nextBackupEstimate)
+                                        Text(
+                                            text = backupStatusState.nextBackupEstimate,
+                                            fontFamily = GoogleSansFlexFontFamily
+                                        )
                                     }
                                 }
                             } else {
                                 // If we don't have any backup dates
                                 Text(
                                     text = stringResource(shared.string.settings_no_data_backup_file),
+                                    fontFamily = GoogleSansFlexFontFamily,
                                 )
                             }
                         }
@@ -409,7 +430,10 @@ fun AutoBackupCard(
                         )
                     },
                     content = {
-                        Text(stringResource(shared.string.common_reset))
+                        Text(
+                            text = stringResource(shared.string.common_reset),
+                            fontFamily = GoogleSansFlexFontFamily
+                        )
                     },
                     trailingContent = {
                         IconButton(

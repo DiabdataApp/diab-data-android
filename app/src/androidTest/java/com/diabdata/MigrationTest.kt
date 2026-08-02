@@ -1,7 +1,10 @@
 package com.diabdata
 
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -9,6 +12,7 @@ import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.database.migrations.ALL_MIGRATIONS
 import com.diabdata.core.database.migrations.MIGRATION_20_21
 import com.diabdata.core.database.migrations.MIGRATION_22_23
+import com.diabdata.core.database.migrations.MIGRATION_23_24
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +33,25 @@ class MigrationTest {
         openFactory = FrameworkSQLiteOpenHelperFactory()
     )
 
+    fun SupportSQLiteDatabase.insertRow(table: String, vararg values: Pair<String, Any?>) {
+        val cv = ContentValues()
+        values.forEach { (k, v) ->
+            when (v) {
+                null -> cv.putNull(k)
+                is Int -> cv.put(k, v)
+                is String -> cv.put(k, v)
+                is Long -> cv.put(k, v)
+            }
+        }
+        insert(
+            table = table, conflictAlgorithm = SQLiteDatabase.CONFLICT_REPLACE, values = cv
+        )
+    }
+
     @Test
     @Throws(IOException::class)
     fun migrateAll() {
-        helper.createDatabase(diabDataTestDb, 19).use {
-        }
+        helper.createDatabase(diabDataTestDb, 19).use {}
 
         Room.databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
@@ -105,6 +123,38 @@ class MigrationTest {
                     assertEquals(1, cursor.count)
                     assertEquals(1, cursor.getInt(0))
                     assertEquals(0, cursor.getInt(1))
+                }
+            }
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate23To24Test() {
+        helper.createDatabase(diabDataTestDb, 23).use { db ->
+            db.insertRow(
+                "user_preferences",
+                "id" to 1,
+                "automaticBackupEnabled" to 0,
+                "frequency" to "WEEKLY",
+                "lastBackupDate" to null,
+                "backupPath" to null,
+                "expirationReminder" to 0,
+                "appointmentReminder" to 0,
+            )
+        }
+
+        helper.runMigrationsAndValidate(diabDataTestDb, 24, true, MIGRATION_23_24)
+            .use { updatedDb ->
+                updatedDb.query(
+                    """
+                SELECT id, backupEncryptionEnabled 
+                FROM user_preferences
+                """.trimIndent()
+                ).use { cursor ->
+                    assertEquals(1, cursor.count)
+                    cursor.moveToFirst()
+                    assertEquals(0, cursor.getInt(0))  // id corrigé à 0
+                    assertEquals(0, cursor.getInt(1))  // valeur par défaut
                 }
             }
     }
