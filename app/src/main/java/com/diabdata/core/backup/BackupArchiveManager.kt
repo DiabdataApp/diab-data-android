@@ -3,7 +3,6 @@ package com.diabdata.core.backup
 import android.app.Application
 import android.os.Build
 import android.util.Log
-import androidx.core.net.toUri
 import com.diabdata.BuildConfig
 import com.diabdata.core.backup.encryption.BackupEncryptionKeyManager
 import com.diabdata.core.database.DataRepository
