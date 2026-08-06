@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +40,8 @@ import com.diabdata.core.ui.LocalSnackbarHostState
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardsList
 import com.diabdata.core.utils.ui.SvgIcon
-import com.diabdata.feature.settings.ImExViewModel
+import com.diabdata.feature.settings.imEx.ImExViewModel
+import com.diabdata.feature.settings.imEx.ImportUiState
 import com.diabdata.feature.settings.sections.dataSettings.BackupStatusState
 import com.diabdata.feature.settings.sections.dataSettings.BackupViewModel
 import com.diabdata.feature.settings.sections.dataSettings.ui.components.AutoBackupCard
@@ -120,27 +122,28 @@ fun DataSettingsScreen(
     )
 
     // ── Import launcher ──
+    val importState by imExViewModel.uiState.collectAsState()
+
+    LaunchedEffect(importState) {
+        when (importState) {
+            is ImportUiState.Success -> {
+                Toast.makeText(context, dataImportSuccess, Toast.LENGTH_SHORT).show()
+                // notification si vous voulez la garder
+            }
+            is ImportUiState.Error -> {
+                val message = (importState as ImportUiState.Error).message
+                Toast.makeText(context, "$dataImportError : $message", Toast.LENGTH_LONG).show()
+            }
+            else -> Unit
+        }
+    }
+
     val importFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri: Uri? ->
             uri?.let {
-                scope.launch(Dispatchers.IO) {
-                    val result = context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                        imExViewModel.importData(inputStream)
-                    } ?: Result.failure(Exception("Unable to open input stream"))
-
-                    withContext(Dispatchers.Main) {
-                        result.onSuccess {
-                            Toast.makeText(context, dataImportSuccess, Toast.LENGTH_SHORT).show()
-                            context.showNotification(
-                                title = dataImportSuccess,
-                                content = uri.toString().uriStringToReadablePath(context),
-                                channelName = notifChannelName,
-                            )
-                        }.onFailure { e ->
-                            Toast.makeText(context, "$dataImportError : ${e.message}", Toast.LENGTH_LONG).show()
-                        }
-                    }
+                context.contentResolver.openInputStream(uri)?.let { inputStream ->
+                    imExViewModel.onFileSelected(inputStream)
                 }
             }
         }
@@ -221,6 +224,7 @@ fun DataSettingsScreen(
                     }
                 }
             },
+            isBackupEnabled = backupPrefs?.automaticBackupEnabled ?: false,
             backupStatusState = backupStatus ?: BackupStatusState(null, null)
         )
 

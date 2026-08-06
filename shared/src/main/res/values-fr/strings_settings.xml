@@ -35,15 +35,18 @@
     <string name="settings_set_data_backup_path">Choisir le dossier de sauvegarde</string>
     <string name="settings_no_data_backup_file">Aucune sauvegarde trouvée</string>
     <string name="settings_scheduled_data_backup_status_label">Statut de la sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_enable_label">Activer la sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_disable_label">Désactiver la sauvegarde automatique</string>
     <string name="settings_set_data_backup_history_last_label">Dernière:</string>
     <string name="settings_set_data_backup_history_next_label">Programmée:</string>
-    <string name="settings_set_data_backup_enabled">Activer</string>
 
     <string name="settings_security_settings">Confidentialité</string>
     <string name="settings_security_settings_section_description">Gestion des paramètres de confidentialité</string>
     <string name="settings_security_set_backup_password_label">Définir la clé des sauvegardes</string>
+    <string name="settings_security_set_backup_password_success">La clé de chiffrement a été définie avec succès</string>
     <string name="settings_security_set_backup_password_error">Erreur lors de l\'enregistrement de la clé</string>
     <string name="settings_security_unset_backup_password_label">Réinitialiser</string>
+    <string name="settings_security_unset_backup_password_description">Réinitialiser la clé désactivera également le chiffrement</string>
     <string name="settings_security_unset_backup_password_error">Erreur lors de la réinitialisation de la clé</string>
     <string name="settings_security_backup_encryption_label">Chiffrement des sauvegardes</string>
     <string name="settings_security_enable_backup_encryption">Activer le chiffrement</string>

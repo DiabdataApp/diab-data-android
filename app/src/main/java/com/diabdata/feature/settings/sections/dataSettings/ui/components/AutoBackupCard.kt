@@ -31,6 +31,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
@@ -69,10 +70,11 @@ fun AutoBackupCard(
     backupPath: String?,
     onPathChange: (String) -> Unit,
     onResetButtonClick: () -> Unit,
-    backupStatusState: BackupStatusState
+    backupStatusState: BackupStatusState,
+    isBackupEnabled: Boolean = false,
 ) {
     var expanded by rememberSaveable { mutableStateOf(true) }
-    val numChildren = 5
+    val numChildren = 6
     val itemCount = 1 + if (expanded) numChildren else 0
 
     // File picker launcher
@@ -100,6 +102,8 @@ fun AutoBackupCard(
         animationSpec = motionScheme.defaultSpatialSpec(),
         label = "chevronRotation"
     )
+
+    val toggleScheduledBackupText = if (isBackupEnabled) stringResource(shared.string.settings_set_data_backup_scheduler_disable_label) else stringResource(shared.string.settings_set_data_backup_scheduler_enable_label)
 
     Column(
         verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
@@ -147,6 +151,7 @@ fun AutoBackupCard(
                 supportingColor = containerContentColor
             ),
         )
+
         AnimatedVisibility(
             visible = expanded,
             enter = expandVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
@@ -304,129 +309,135 @@ fun AutoBackupCard(
                         )
                     },
                     supportingContent = {
-                        Column(
-                            verticalArrangement = spacedBy(8.dp)
-                        ) {
+                        if (backupStatusState.lastBackupDate != null && backupStatusState.nextBackupEstimate != null) {
+                            // If we have previous and next scheduled backup dates
+                            val dates = listOf(
+                                Triple(
+                                    backupStatusState.lastBackupDate,
+                                    shared.drawable.last_backup_icon_vector,
+                                    shared.string.settings_set_data_backup_history_last_label
+                                ), Triple(
+                                    backupStatusState.nextBackupEstimate,
+                                    shared.drawable.next_backup_icon_vector,
+                                    shared.string.settings_set_data_backup_history_next_label
+                                )
+                            )
+
+                            Column(
+                                verticalArrangement = spacedBy(4.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                dates.forEach { date ->
+                                    Row(
+                                        horizontalArrangement = spacedBy(4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = stringResource(date.third),
+                                            fontFamily = GoogleSansFlexFontFamily
+                                        )
+                                        Text(
+                                            text = date.first,
+                                            fontFamily = GoogleSansFlexFontFamily
+                                        )
+                                    }
+                                    if (date != dates.last()) {
+                                        HorizontalDivider()
+                                    }
+                                }
+                            }
+                        } else if (backupStatusState.lastBackupDate?.isNotBlank() == true || backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
+                            // If we only have one of the two
                             Row(
                                 horizontalArrangement = spacedBy(4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("Status: ")
-                                Row(
-                                    horizontalArrangement = spacedBy(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (enabled) {
-                                        SvgIcon(
-                                            resId = shared.drawable.play_arrow_icon_vector,
-                                            modifier = Modifier.size(18.dp),
-                                            color = LocalContentColor.current
-                                        )
-                                        Text(
-                                            text = "Active",
-                                            fontFamily = GoogleSansFlexFontFamily
-                                        )
-                                    } else {
-                                        SvgIcon(
-                                            resId = shared.drawable.pause_outlined_icon_vector,
-                                            modifier = Modifier.size(18.dp),
-                                            color = LocalContentColor.current
-                                        )
-                                        Text(
-                                            text = "Inactive",
-                                            fontFamily = GoogleSansFlexFontFamily
-                                        )
-                                    }
-                                }
-                            }
-                            if (backupStatusState.lastBackupDate != null && backupStatusState.nextBackupEstimate != null) {
-                                // If we have previous and next scheduled backup dates
-                                val dates = listOf(
-                                    Triple(
-                                        backupStatusState.lastBackupDate,
-                                        shared.drawable.last_backup_icon_vector,
-                                        shared.string.settings_set_data_backup_history_last_label
-                                    ), Triple(
-                                        backupStatusState.nextBackupEstimate,
-                                        shared.drawable.next_backup_icon_vector,
-                                        shared.string.settings_set_data_backup_history_next_label
+                                if (backupStatusState.lastBackupDate?.isNotBlank() == true) {
+                                    Text(
+                                        text = stringResource(shared.string.settings_set_data_backup_history_last_label),
+                                        fontFamily = GoogleSansFlexFontFamily
                                     )
-                                )
 
-                                Column(
-                                    verticalArrangement = spacedBy(4.dp),
-                                    horizontalAlignment = Alignment.Start
-                                ) {
-                                    dates.forEach { date ->
-                                        Row(
-                                            horizontalArrangement = spacedBy(4.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(
-                                                text = stringResource(date.third),
-                                                fontFamily = GoogleSansFlexFontFamily
-                                            )
-                                            Text(
-                                                text = date.first,
-                                                fontFamily = GoogleSansFlexFontFamily
-                                            )
-                                        }
-                                        if (date != dates.last()) {
-                                            HorizontalDivider()
-                                        }
-                                    }
+                                    Text(backupStatusState.lastBackupDate)
+                                } else if (backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
+                                    Text(
+                                        text = stringResource(shared.string.settings_set_data_backup_history_next_label),
+                                        fontFamily = GoogleSansFlexFontFamily
+                                    )
+
+                                    Text(
+                                        text = backupStatusState.nextBackupEstimate,
+                                        fontFamily = GoogleSansFlexFontFamily
+                                    )
                                 }
-                            } else if (backupStatusState.lastBackupDate?.isNotBlank() == true || backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
-                                // If we only have one of the two
-                                Row(
-                                    horizontalArrangement = spacedBy(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (backupStatusState.lastBackupDate?.isNotBlank() == true) {
-                                        Text(
-                                            text = stringResource(shared.string.settings_set_data_backup_history_last_label),
-                                            fontFamily = GoogleSansFlexFontFamily
-                                        )
-                                        Text(backupStatusState.lastBackupDate)
-                                    } else if (backupStatusState.nextBackupEstimate?.isNotBlank() == true) {
-                                        Text(
-                                            text = stringResource(shared.string.settings_set_data_backup_history_next_label),
-                                            fontFamily = GoogleSansFlexFontFamily
-                                        )
-                                        Text(
-                                            text = backupStatusState.nextBackupEstimate,
-                                            fontFamily = GoogleSansFlexFontFamily
-                                        )
-                                    }
-                                }
-                            } else {
-                                // If we don't have any backup dates
-                                Text(
-                                    text = stringResource(shared.string.settings_no_data_backup_file),
-                                    fontFamily = GoogleSansFlexFontFamily,
-                                )
                             }
+                        } else {
+                            // If we don't have any backup dates
+                            Text(
+                                text = stringResource(shared.string.settings_no_data_backup_file),
+                                fontFamily = GoogleSansFlexFontFamily,
+                            )
                         }
                     })
 
-                // 5.Action buttons
+                // 5. Backup activation switch
                 SegmentedListItem(
                     shapes = ListItemDefaults.segmentedShapes(index = 5, count = itemCount),
+                    colors = ListItemDefaults.colors(
+                        containerColor = containerColor,
+                        headlineColor = containerContentColor,
+                        supportingColor = containerContentColor
+                    ),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.play_arrow_icon_vector,
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    },
+                    content = {
+                        Text(
+                            text = toggleScheduledBackupText,
+                            fontFamily = GoogleSansFlexFontFamily
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = isBackupEnabled,
+                            onCheckedChange = onEnabledChange,
+                            thumbContent = {
+                                val iconRes = if (isBackupEnabled) shared.drawable.play_arrow_icon_vector else shared.drawable.pause_outlined_icon_vector
+                                SvgIcon(
+                                    resId = iconRes,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    color = if (isBackupEnabled) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.surface
+                                    }
+                                )
+                            }
+                        )
+                    },
+                )
+
+                // 6. Reset button
+                SegmentedListItem(
+                    shapes = ListItemDefaults.segmentedShapes(index = 6, count = itemCount),
                     onClick = {
                         isSaving = true
                         onResetButtonClick()
                         isSaving = false
                     },
                     colors = ListItemDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        headlineColor = MaterialTheme.colorScheme.onErrorContainer,
-                        supportingColor = MaterialTheme.colorScheme.onErrorContainer
+                        headlineColor = MaterialTheme.colorScheme.error,
+                        supportingColor = MaterialTheme.colorScheme.error
                     ),
                     leadingContent = {
                         SvgIcon(
                             resId = shared.drawable.reset_settings_icon_vector,
                             modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                            color = MaterialTheme.colorScheme.error
                         )
                     },
                     content = {
@@ -441,13 +452,12 @@ fun AutoBackupCard(
                         ) {
                             SvgIcon(
                                 resId = shared.drawable.arrow_right_icon_vector,
-                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
                     },
-
-                    )
+                )
             }
         }
     }
@@ -541,8 +551,7 @@ fun TwoToneInfoRowPreview() {
                                         modifier = Modifier.size(20.dp)
                                     )
                                 }
-                            }
-                        )
+                            })
                     }
                 }
             }

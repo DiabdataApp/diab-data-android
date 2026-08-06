@@ -59,6 +59,8 @@ class BackupWorker @AssistedInject constructor(
                 )
             }
 
+            val isEncrypted = dataRepository.isBackupEncryptionEnabled()
+
             val treeUri = backupPath.toUri()
             val dateFormat = SimpleDateFormat("dd-MM-yyyy_HH-mm", Locale.getDefault())
             val readableDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
@@ -92,7 +94,7 @@ class BackupWorker @AssistedInject constructor(
                 }
 
             outputStream.use {
-                backupArchiveManager.writeBackup(it, isScheduledBackup = true).getOrThrow()
+                backupArchiveManager.writeBackup(it, isScheduledBackup = true, isEncrypted = isEncrypted).getOrThrow()
             }
 
             dataRepository.setLastBackupUpdate(

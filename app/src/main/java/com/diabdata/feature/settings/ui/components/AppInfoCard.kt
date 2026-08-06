@@ -51,7 +51,7 @@ fun AppInfoCard(isBeta: Boolean, versionName: String, showChangeLogDialog: () ->
         ),
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(15.dp),
 
     ) {
         Row(

@@ -36,15 +36,18 @@
     <string name="settings_set_data_backup_path">Choose backup folder</string>
     <string name="settings_no_data_backup_file">No backups found</string>
     <string name="settings_scheduled_data_backup_status_label">Scheduled backup status</string>
+    <string name="settings_set_data_backup_scheduler_enable_label">Enable scheduled backup</string>
+    <string name="settings_set_data_backup_scheduler_disable_label">Disable scheduled backup</string>
     <string name="settings_set_data_backup_history_last_label">Last:</string>
     <string name="settings_set_data_backup_history_next_label">Scheduled:</string>
-    <string name="settings_set_data_backup_enabled">Enable</string>
 
     <string name="settings_security_settings">Privacy</string>
     <string name="settings_security_settings_section_description">Manage privacy settings</string>
     <string name="settings_security_set_backup_password_label">Set backup key</string>
+    <string name="settings_security_set_backup_password_success">Backup encryption key saved successfully</string>
     <string name="settings_security_set_backup_password_error">Error while attempting to set password</string>
     <string name="settings_security_unset_backup_password_label">Reset</string>
+    <string name="settings_security_unset_backup_password_description">Performing this action will also disable backup encryption</string>
     <string name="settings_security_unset_backup_password_error">Error while attempting to reset password</string>
     <string name="settings_security_backup_encryption_label">Encrypt backups</string>
     <string name="settings_security_enable_backup_encryption">Enable backup encryption</string>

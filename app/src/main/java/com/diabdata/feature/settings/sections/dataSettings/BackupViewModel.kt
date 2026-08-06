@@ -158,8 +158,8 @@ class BackupViewModel @Inject constructor(
     val backupStatus: StateFlow<BackupStatusState?> =
         combine(preferences, nextBackupTimeMillisFlow) { prefs, nextMillis ->
             BackupStatusState(
-                lastBackupDate = prefs?.lastBackupDate.let {prefs?.lastBackupDate?.formatDateToLocale()},
-                nextBackupEstimate = nextMillis.let {nextMillis?.formatDateToLocale()}
+                lastBackupDate = prefs?.lastBackupDate?.formatDateToLocale(),
+                nextBackupEstimate = nextMillis?.formatDateToLocale()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupStatusState(null, null))
 }

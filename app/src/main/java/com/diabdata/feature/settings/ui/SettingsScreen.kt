@@ -289,7 +289,7 @@ fun SettingsScreen(
                     onClick = onNavigateToDataSettings,
                     trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(15.dp)
             )
 
             // Security section
@@ -319,7 +319,7 @@ fun SettingsScreen(
                     },
                     trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(15.dp)
             )
 
             // Notification section
