@@ -35,14 +35,7 @@ class ImExViewModel @Inject constructor (
 
     suspend fun importData(input: InputStream): Result<Unit> =
         withContext(Dispatchers.IO) {
-            return@withContext try {
                 backupArchiveManager.readBackup(input)
-                Result.success(Unit)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
         }
 
     fun onFileSelected(input: InputStream) {

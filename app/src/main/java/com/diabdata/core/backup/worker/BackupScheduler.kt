@@ -1,4 +1,4 @@
-package com.diabdata.feature.settings.sections.dataSettings.workers
+package com.diabdata.core.backup.worker
 
 import android.content.Context
 import android.util.Log
@@ -9,7 +9,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
-import com.diabdata.workers.scheduledBackups.BackupWorker
 import java.util.concurrent.TimeUnit
 
 object BackupScheduler {

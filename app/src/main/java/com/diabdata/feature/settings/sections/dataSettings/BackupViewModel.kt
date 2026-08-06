@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
+import com.diabdata.core.backup.BackupScheduleCoordinator
 import com.diabdata.core.database.DataRepository
 import com.diabdata.core.model.UserPreferences
-import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler
-import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler.AUTO_BACKUP_UNIQUE_WORK_NAME
+import com.diabdata.core.backup.worker.BackupScheduler
+import com.diabdata.core.backup.worker.BackupScheduler.AUTO_BACKUP_UNIQUE_WORK_NAME
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import com.diabdata.shared.utils.dateUtils.formatDateToLocale
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
@@ -29,37 +30,11 @@ import javax.inject.Inject
 class BackupViewModel @Inject constructor(
     private val repository: DataRepository,
     private val workManager: WorkManager,
-    private val application: Application
+    private val application: Application,
+    private val backupScheduleCoordinator: BackupScheduleCoordinator
 ) : ViewModel() {
-    private val backupScheduleMutex: Mutex = Mutex()
-
     val preferences: StateFlow<UserPreferences?> = repository.getUserPreferences()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-
-    private suspend fun applyBackupSchedule(
-        enabled: Boolean, frequency: BackupFrequency
-    ): Result<Unit> {
-        Log.d(
-            "BackupDebug", "applyBackupSchedule called with enabled=$enabled, frequency=$frequency"
-        )
-        return backupScheduleMutex.withLock {
-            try {
-                Log.d("BackupDebug", "applyBackupSchedule cancelling previous backup worker")
-                BackupScheduler.cancel(application).result.await()
-
-                if (enabled) {
-                    Log.d("BackupDebug", "applyBackupSchedule scheduling new backup worker")
-                    BackupScheduler.scheduleFromUser(application, frequency).result.await()
-                }
-                Result.success(Unit)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e("BackupDebug", "Failed to apply backup schedule", e)
-                Result.failure(e)
-            }
-        }
-    }
 
     fun setAutoBackupEnabled(enabled: Boolean) {
         Log.d("BackupDebug", "setAutoBackupEnabled called with enabled=$enabled")
@@ -70,7 +45,7 @@ class BackupViewModel @Inject constructor(
                 "About to schedule with frequency=${frequency.days} days, prefs=${preferences.value}"
             )
             repository.setAutoBackupEnabled(enabled)
-            val result = applyBackupSchedule(enabled, frequency)
+            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -86,7 +61,7 @@ class BackupViewModel @Inject constructor(
             )
             repository.setBackupFrequency(frequency.key)
             val result =
-                applyBackupSchedule(preferences.value?.automaticBackupEnabled ?: false, frequency)
+                backupScheduleCoordinator.applyBackupSchedule(preferences.value?.automaticBackupEnabled ?: false, frequency)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -108,7 +83,7 @@ class BackupViewModel @Inject constructor(
                 "BackupDebug",
                 "About to schedule with frequency=${frequency.days} days, prefs=${preferences.value}"
             )
-            val result = applyBackupSchedule(enabled, frequency)
+            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -123,7 +98,7 @@ class BackupViewModel @Inject constructor(
                 "BackupDebug",
                 "About to schedule with frequency=${preferences.frequency} days, prefs=$preferences"
             )
-            val result = applyBackupSchedule(
+            val result = backupScheduleCoordinator.applyBackupSchedule(
                 preferences.automaticBackupEnabled, BackupFrequency.fromKey(preferences.frequency)
             )
             result.onFailure {
@@ -140,7 +115,7 @@ class BackupViewModel @Inject constructor(
             Log.d(
                 "BackupDebug", "About to schedule with frequency=weekly, prefs=${preferences.value}"
             )
-            val result = applyBackupSchedule(false, BackupFrequency.WEEKLY)
+            val result = backupScheduleCoordinator.applyBackupSchedule(false, BackupFrequency.WEEKLY)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }

@@ -1,9 +1,9 @@
 package com.diabdata.core.backup
 
 import android.app.Application
-import android.app.backup.BackupManager
 import android.os.Build
 import android.util.Log
+import androidx.core.net.toUri
 import com.diabdata.BuildConfig
 import com.diabdata.core.backup.encryption.BackupEncryptionKeyManager
 import com.diabdata.core.database.DataRepository
@@ -12,13 +12,13 @@ import com.diabdata.core.model.DataSummary
 import com.diabdata.core.model.UserDetails
 import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.utils.data.GsonFactory
-import com.diabdata.feature.settings.sections.dataSettings.workers.BackupScheduler
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import net.lingala.zip4j.exception.ZipException
 import net.lingala.zip4j.io.inputstream.ZipInputStream
 import net.lingala.zip4j.io.outputstream.ZipOutputStream
 import net.lingala.zip4j.model.ZipParameters
@@ -35,14 +35,60 @@ import kotlin.time.Clock
 class BackupArchiveManager @Inject constructor(
     private val repository: DataRepository,
     private val application: Application,
-    private val backupEncryptionKeyManager: BackupEncryptionKeyManager
+    private val backupEncryptionKeyManager: BackupEncryptionKeyManager,
+    private val backupScheduleCoordinator: BackupScheduleCoordinator
 ) {
     private val backupManagerTag = "BackupArchiveManager"
+    private val gson = GsonFactory.create(prettyPrint = true)
 
     inline fun <reified T> Gson.toJsonList(list: List<T>): String = this.toJson(list)
 
     inline fun <reified T> Gson.fromJsonList(json: String): List<T> =
         this.fromJson(json, TypeToken.getParameterized(List::class.java, T::class.java).type)
+
+    sealed class BackupFormat {
+        data class NewFormat(val metadata: BackupMetadata) : BackupFormat()
+        object LegacyZip : BackupFormat()
+        object LegacyRawJson : BackupFormat()
+        object Invalid : BackupFormat()
+    }
+
+    private fun detectBackupFormat(byteArray: ByteArray): BackupFormat {
+        val isZip = byteArray.size >= 2 && byteArray[0] == 0x50.toByte() && byteArray[1] == 0x4B.toByte()
+        if (!isZip) {
+            return if (byteArray.isNotEmpty()) BackupFormat.LegacyRawJson else BackupFormat.Invalid
+        }
+
+        var metadata: BackupMetadata? = null
+        val entryNames = mutableListOf<String>()
+
+        ZipInputStream(ByteArrayInputStream(byteArray)).use { zip ->
+            var entry = zip.nextEntry
+            while (entry != null) {
+                entryNames += entry.fileName
+
+                if (entry.fileName == "metadata.json") {
+                    metadata = gson.fromJson(zip.readBytes().toString(Charsets.UTF_8), BackupMetadata::class.java)
+                }
+
+                entry = zip.nextEntry
+            }
+        }
+
+        return when {
+            metadata != null -> BackupFormat.NewFormat(metadata)
+            "data.json" in entryNames -> BackupFormat.LegacyZip
+            else -> BackupFormat.Invalid
+        }
+    }
+
+    private fun isBackupPathAccessible(path: String?): Boolean {
+        if (path.isNullOrBlank()) return false
+        val uri = path.toUri()
+        return application.contentResolver.persistedUriPermissions.any {
+            it.uri == uri && it.isReadPermission && it.isWritePermission
+        }
+    }
 
     suspend fun writeBackup(
         output: OutputStream, isScheduledBackup: Boolean = false, isEncrypted: Boolean = false
@@ -108,8 +154,6 @@ class BackupArchiveManager @Inject constructor(
                     )
                 )
 
-                val gson = GsonFactory.create(prettyPrint = true)
-
                 val plainFiles: List<Triple<String, ByteArray, Boolean>> = buildList {
                     add(Triple("metadata.json", gson.toJson(backupMetadata).toByteArray(), false))
                 }
@@ -170,22 +214,42 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
-    suspend fun readBackup(input: InputStream): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun readBackup(input: InputStream, password: String? = null): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
             val bytes = input.readBytes()
-            val isZip = bytes.size >= 2 && bytes[0] == 0x50.toByte() && bytes[1] == 0x4B.toByte()
+            val backupType = detectBackupFormat(bytes)
 
-            val gson = GsonFactory.create()
-
-            if (!isZip) {
-                val jsonContent = String(bytes, Charsets.UTF_8)
-                if (jsonContent.isEmpty()) return@withContext Result.failure(Exception("Backup is empty"))
-                repository.importDataFromJsonString(jsonContent)
-                return@withContext Result.success(Unit)
+            when (backupType) {
+                is BackupFormat.LegacyRawJson -> legacyJsonImport(String(bytes, Charsets.UTF_8))
+                is BackupFormat.LegacyZip -> legacyZipImport(bytes)
+                is BackupFormat.NewFormat -> zipImport(bytes, password)
+                is BackupFormat.Invalid -> Result.failure(Exception("Unsupported backup format"))
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(backupManagerTag, "readBackup Exception: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
 
+    private suspend fun legacyJsonImport(jsonContent: String): Result<Unit> {
+        return try {
+            if (jsonContent.isEmpty()) return Result.failure(Exception("Backup is empty"))
+
+            repository.importDataFromJsonString(jsonContent)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e(backupManagerTag, "legacyJsonImport Exception: ${e.message}", e)
+            Result.failure(exception = e)
+        }
+    }
+
+    private suspend fun legacyZipImport(input: ByteArray): Result<Unit> {
+        return try {
             val entries = mutableMapOf<String, ByteArray>()
-            ZipInputStream(ByteArrayInputStream(bytes)).use { zis ->
+            ZipInputStream(ByteArrayInputStream(input)).use { zis ->
                 var entry = zis.nextEntry
                 while (entry != null) {
                     entries[entry.fileName] = zis.readBytes()
@@ -193,65 +257,67 @@ class BackupArchiveManager @Inject constructor(
                 }
             }
 
-            // Import data from new backup Zip format
-            if (entries.containsKey("metadata.json")) {
-                entries["weights.json"]?.let {
-                    repository.importWeights(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["hba1c.json"]?.let {
-                    repository.importHba1c(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["appointments.json"]?.let {
-                    repository.importAppointments(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["treatments.json"]?.let {
-                    repository.importTreatments(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["important_dates.json"]?.let {
-                    repository.importImportantDates(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["medical_devices.json"]?.let {
-                    repository.importMedicalDevices(gson.fromJsonList(it.toString(Charsets.UTF_8)))
-                }
-                entries["user_preferences.json"]?.let {
-                    repository.importUserPreferences(gson.fromJson(it.toString(Charsets.UTF_8), UserPreferences::class.java))
-                }
-                entries["user_profile.json"]?.let {
-                    val userDetails = gson.fromJson(it.toString(Charsets.UTF_8), UserDetails::class.java)
-                    repository.importUserDetails(userDetails)
-                }
-                entries["profile_photo.jpg"]?.let { photoBytes ->
-                    repository.saveProfilePhotoBytes(photoBytes, application.filesDir)
-                }
-            } else if (entries.containsKey("data.json")) {
-                val jsonContent = entries["data.json"]!!.toString(Charsets.UTF_8)
-                val photoBytes: ByteArray? = entries["profile_photo.jpg"]
-                repository.importDataFromJsonString(jsonContent)
-                photoBytes?.let { repository.saveProfilePhotoBytes(it, application.filesDir) }
+            val jsonContent = entries["data.json"]!!.toString(Charsets.UTF_8)
+            val photoBytes: ByteArray? = entries["profile_photo.jpg"]
 
-            } else {
-                Log.w(backupManagerTag, "readBackup: unrecognized ZIP content")
-                return@withContext Result.failure(Exception("Backup archive is missing data.json or metadata.json"))
+            repository.importDataFromJsonString(jsonContent)
+            photoBytes?.let { repository.saveProfilePhotoBytes(it, application.filesDir) }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e(backupManagerTag, "legacyZipImport Exception: ${e.message}", e)
+            Result.failure(exception = e)
+        }
+    }
+
+    // New zip format handling
+    private val importHandlers: Map<String, suspend (ByteArray) -> Unit> = mapOf(
+        "weights.json" to { bytes -> repository.importWeights(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "hba1c.json" to { bytes -> repository.importHba1c(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "appointments.json" to { bytes -> repository.importAppointments(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "treatments.json" to { bytes -> repository.importTreatments(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "important_dates.json" to { bytes -> repository.importImportantDates(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "medical_devices.json" to { bytes -> repository.importMedicalDevices(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
+        "user_preferences.json" to { bytes -> repository.importUserPreferences(gson.fromJson(bytes.toString(Charsets.UTF_8), UserPreferences::class.java)) },
+        "user_profile.json" to { bytes -> repository.importUserDetails(gson.fromJson(bytes.toString(Charsets.UTF_8), UserDetails::class.java)) },
+        "profile_photo.jpg" to { bytes -> repository.saveProfilePhotoBytes(bytes, application.filesDir) }
+    )
+
+    private suspend fun zipImport(input: ByteArray, password: String? = null): Result<Unit> {
+        return try {
+            val entries = mutableMapOf<String, ByteArray>()
+            ZipInputStream(ByteArrayInputStream(input), password?.toCharArray()).use { zis ->
+                var entry = zis.nextEntry
+                while (entry != null) {
+                    entries[entry.fileName] = zis.readBytes()
+                    entry = zis.nextEntry
+                }
+            }
+
+            importHandlers.forEach { (fileName, handler) ->
+                entries[fileName]?.let { handler(it) }
             }
 
             val importedPrefs = repository.getUserPreferences().first()
             importedPrefs?.let {
-                if (it.frequency.isNotEmpty() && it.automaticBackupEnabled) {
-                    BackupScheduler.cancel(application)
-                    BackupScheduler.scheduleFromUser(
-                        context = application,
-                        BackupFrequency.fromKey(it.frequency)
-                    )
-                } else {
-                    BackupScheduler.cancel(application)
+                val canAutoBackup = it.automaticBackupEnabled && isBackupPathAccessible(it.backupPath)
+
+                backupScheduleCoordinator.applyBackupSchedule(
+                    canAutoBackup,
+                    BackupFrequency.fromKey(it.frequency)
+                ).onFailure { e -> Log.w(backupManagerTag, "Failed to resync backup schedule after import: ${e.message}", e) }
+
+                if (it.automaticBackupEnabled && !canAutoBackup) {
+                    repository.setAutoBackupEnabled(false)
                 }
             }
 
             Result.success(Unit)
-        } catch (e: CancellationException) {
-            throw e
+        } catch (e: ZipException) {
+            if (e.type == ZipException.Type.WRONG_PASSWORD) return Result.failure(Exception("Wrong backup password"))
+            Result.failure(e)
         } catch (e: Exception) {
-            Log.e(backupManagerTag, "readBackup Exception: ${e.message}", e)
+            Log.e(backupManagerTag, "zipImport Exception: ${e.message}", e)
             Result.failure(exception = e)
         }
     }

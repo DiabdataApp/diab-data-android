@@ -103,7 +103,7 @@ fun RecentDevicesScreen(
                         is ScanResult.Device -> {
                             val info = result.data
                             val entity = scannerViewModel.getMedicalDeviceByCode(info.gtin)
-                            Log.d("EXTRACTED-GTIN", info.gtin)
+                            Log.d("EXTRACTED-GTIN", "GTIN: ${info.gtin}\n - entity: $entity,\n-device: ${result.data},\n-lot: ${result.data.lot},\n- serial: ${result.data.serialNumber},\n- ref: ${result.data.referenceNumber}")
 
                             if (entity != null) {
                                 val device = generateMedicalDeviceEntry(result, entity)
