@@ -82,14 +82,6 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
-    private fun isBackupPathAccessible(path: String?): Boolean {
-        if (path.isNullOrBlank()) return false
-        val uri = path.toUri()
-        return application.contentResolver.persistedUriPermissions.any {
-            it.uri == uri && it.isReadPermission && it.isWritePermission
-        }
-    }
-
     suspend fun writeBackup(
         output: OutputStream, isScheduledBackup: Boolean = false, isEncrypted: Boolean = false
     ): Result<Unit> {
@@ -299,16 +291,13 @@ class BackupArchiveManager @Inject constructor(
             }
 
             val importedPrefs = repository.getUserPreferences().first()
+
             importedPrefs?.let {
-                val canAutoBackup = it.automaticBackupEnabled && isBackupPathAccessible(it.backupPath)
-
-                backupScheduleCoordinator.applyBackupSchedule(
-                    canAutoBackup,
-                    BackupFrequency.fromKey(it.frequency)
-                ).onFailure { e -> Log.w(backupManagerTag, "Failed to resync backup schedule after import: ${e.message}", e) }
-
-                if (it.automaticBackupEnabled && !canAutoBackup) {
-                    repository.setAutoBackupEnabled(false)
+                val scheduleResult = backupScheduleCoordinator.applyBackupSchedule(it.automaticBackupEnabled, BackupFrequency.fromKey(it.frequency), it.backupPath)
+                scheduleResult.onSuccess { didSchedule ->
+                    if (it.automaticBackupEnabled && !didSchedule) {
+                        repository.setAutoBackupEnabled(false)
+                    }
                 }
             }
 

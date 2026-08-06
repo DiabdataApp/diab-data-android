@@ -6,24 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import com.diabdata.core.backup.BackupScheduleCoordinator
+import com.diabdata.core.backup.worker.BackupScheduler.AUTO_BACKUP_UNIQUE_WORK_NAME
 import com.diabdata.core.database.DataRepository
 import com.diabdata.core.model.UserPreferences
-import com.diabdata.core.backup.worker.BackupScheduler
-import com.diabdata.core.backup.worker.BackupScheduler.AUTO_BACKUP_UNIQUE_WORK_NAME
 import com.diabdata.shared.utils.dataTypes.BackupFrequency
 import com.diabdata.shared.utils.dateUtils.formatDateToLocale
 import com.diabdata.shared.utils.utils.uriStringToReadablePath
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +40,7 @@ class BackupViewModel @Inject constructor(
                 "About to schedule with frequency=${frequency.days} days, prefs=${preferences.value}"
             )
             repository.setAutoBackupEnabled(enabled)
-            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency)
+            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency, preferences.value?.backupPath)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -61,7 +56,7 @@ class BackupViewModel @Inject constructor(
             )
             repository.setBackupFrequency(frequency.key)
             val result =
-                backupScheduleCoordinator.applyBackupSchedule(preferences.value?.automaticBackupEnabled ?: false, frequency)
+                backupScheduleCoordinator.applyBackupSchedule(preferences.value?.automaticBackupEnabled ?: false, frequency, preferences.value?.backupPath)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -83,7 +78,7 @@ class BackupViewModel @Inject constructor(
                 "BackupDebug",
                 "About to schedule with frequency=${frequency.days} days, prefs=${preferences.value}"
             )
-            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency)
+            val result = backupScheduleCoordinator.applyBackupSchedule(enabled, frequency, path)
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
@@ -99,7 +94,9 @@ class BackupViewModel @Inject constructor(
                 "About to schedule with frequency=${preferences.frequency} days, prefs=$preferences"
             )
             val result = backupScheduleCoordinator.applyBackupSchedule(
-                preferences.automaticBackupEnabled, BackupFrequency.fromKey(preferences.frequency)
+                preferences.automaticBackupEnabled,
+                BackupFrequency.fromKey(preferences.frequency),
+                preferences.backupPath
             )
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
@@ -115,7 +112,11 @@ class BackupViewModel @Inject constructor(
             Log.d(
                 "BackupDebug", "About to schedule with frequency=weekly, prefs=${preferences.value}"
             )
-            val result = backupScheduleCoordinator.applyBackupSchedule(false, BackupFrequency.WEEKLY)
+            val result = backupScheduleCoordinator.applyBackupSchedule(
+                false,
+                BackupFrequency.WEEKLY,
+                preferences.value?.backupPath
+            )
             result.onFailure {
                 Log.e("BackupDebug", "Failed to apply backup schedule", it)
             }
