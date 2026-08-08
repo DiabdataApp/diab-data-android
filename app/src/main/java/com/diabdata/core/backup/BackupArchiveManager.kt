@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.diabdata.BuildConfig
 import com.diabdata.core.backup.encryption.BackupEncryptionKeyManager
+import com.diabdata.core.backup.worker.BackupWorker
 import com.diabdata.core.database.DataRepository
 import com.diabdata.core.model.BackupMetadata
 import com.diabdata.core.model.DataSummary
@@ -31,6 +32,16 @@ import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 
+/**
+ * Handles reading and writing backup archives for the app's user data.
+ *
+ * Supports three archive formats, resolved transparently on read via [detectBackupFormat]:
+ * - The current format: a ZIP containing a plain-text `metadata.json` entry alongside one entry
+ *   per data type, optionally AES-encrypted (see [zipImport]).
+ * - A legacy ZIP format containing a single `data.json` entry and an optional profile photo
+ *   (see [legacyZipImport]).
+ * - A legacy raw JSON format, predating any ZIP-based backup (see [legacyJsonImport]).
+ */
 class BackupArchiveManager @Inject constructor(
     private val repository: DataRepository,
     private val application: Application,
@@ -40,25 +51,45 @@ class BackupArchiveManager @Inject constructor(
     private val backupManagerTag = "BackupArchiveManager"
     private val gson = GsonFactory.create(prettyPrint = true)
 
+    /** Serializes [list] to a JSON array string. */
     inline fun <reified T> Gson.toJsonList(list: List<T>): String = this.toJson(list)
 
+    /** Deserializes [json], a JSON array string, into a `List<T>`. */
     inline fun <reified T> Gson.fromJsonList(json: String): List<T> =
         this.fromJson(json, TypeToken.getParameterized(List::class.java, T::class.java).type)
 
+    /** Result of [detectBackupFormat], identifying which archive format a backup byte array uses. */
     sealed class BackupFormat {
+        /** The current backup format, identified by the presence of a parsed [metadata]. */
         data class NewFormat(val metadata: BackupMetadata) : BackupFormat()
+
+        /** A legacy ZIP archive containing a single `data.json` entry, never encrypted. */
         object LegacyZip : BackupFormat()
+
+        /** A legacy backup consisting of raw JSON content, with no ZIP wrapping. */
         object LegacyRawJson : BackupFormat()
+
+        /** The byte array could not be recognized as any supported backup format. */
         object Invalid : BackupFormat()
     }
 
+    /**
+     * Identifies which [BackupFormat] [byteArray] represents, without decrypting or extracting any
+     * content besides the unencrypted `metadata.json` entry when present.
+     *
+     * This is a read-only inspection pass: for ZIP archives, only entry names are collected and only
+     * `metadata.json` (never encrypted) is actually read, so this function never needs a password.
+     *
+     * @param byteArray The full backup content, buffered in memory.
+     * @return The detected [BackupFormat].
+     */
     private fun detectBackupFormat(byteArray: ByteArray): BackupFormat {
         val isZip = byteArray.size >= 2 && byteArray[0] == 0x50.toByte() && byteArray[1] == 0x4B.toByte()
         if (!isZip) {
             return if (byteArray.isNotEmpty()) BackupFormat.LegacyRawJson else BackupFormat.Invalid
         }
 
-        var metadata: BackupMetadata? = null
+        var metadata: BackupMetadata?
         val entryNames = mutableListOf<String>()
 
         ZipInputStream(ByteArrayInputStream(byteArray)).use { zip ->
@@ -68,6 +99,7 @@ class BackupArchiveManager @Inject constructor(
 
                 if (entry.fileName == "metadata.json") {
                     metadata = gson.fromJson(zip.readBytes().toString(Charsets.UTF_8), BackupMetadata::class.java)
+                    return BackupFormat.NewFormat(metadata)
                 }
 
                 entry = zip.nextEntry
@@ -75,12 +107,57 @@ class BackupArchiveManager @Inject constructor(
         }
 
         return when {
-            metadata != null -> BackupFormat.NewFormat(metadata)
             "data.json" in entryNames -> BackupFormat.LegacyZip
             else -> BackupFormat.Invalid
         }
     }
 
+    /**
+     * Attempts to silently resolve the password for an encrypted [BackupFormat.NewFormat] archive,
+     * using the key stored in [backupEncryptionKeyManager]. Validates the candidate password by
+     * actually decrypting a single non-`metadata.json` entry from [input].
+     *
+     * Only covers the silent Keystore attempt; resolving a password entered manually by the user is
+     * handled separately by [zipImport] itself.
+     *
+     * @param input The full backup archive content, buffered in memory.
+     * @return The validated password on success, or `null` if no key is stored, or if it fails to
+     * decrypt this archive.
+     */
+    private suspend fun resolvePassword(input: ByteArray): CharArray? {
+        val storedPassword = backupEncryptionKeyManager.getPassword().getOrNull()?.toCharArray()
+            ?: return null
+
+        return try {
+            ZipInputStream(ByteArrayInputStream(input), storedPassword).use { zis ->
+                var entry = zis.nextEntry
+                while (entry != null) {
+                    if (entry.fileName != "metadata.json") {
+                        zis.readBytes()
+                        return storedPassword
+                    }
+                    entry = zis.nextEntry
+                }
+                null
+            }
+        } catch (e: ZipException) {
+            if (e.type == ZipException.Type.WRONG_PASSWORD) null else throw e
+        }
+    }
+
+    /**
+     * Builds a backup archive of all user data and writes it to [output] in the current ZIP format
+     * (see [BackupFormat.NewFormat]).
+     *
+     * Also used by [BackupWorker] to produce scheduled backups.
+     *
+     * @param output The [OutputStream] the archive is written to.
+     * @param isScheduledBackup Whether this backup was triggered by the automatic backup schedule,
+     * as opposed to a manual export by the user. Recorded in the archive's metadata only.
+     * @param isEncrypted Whether every entry except `metadata.json` should be AES-encrypted using the
+     * key managed by [backupEncryptionKeyManager].
+     * @return [Result.success] on success, [Result.failure] with the underlying exception otherwise.
+     */
     suspend fun writeBackup(
         output: OutputStream, isScheduledBackup: Boolean = false, isEncrypted: Boolean = false
     ): Result<Unit> {
@@ -92,13 +169,10 @@ class BackupArchiveManager @Inject constructor(
                 if (isEncrypted) {
                     encryptionKey = backupEncryptionKeyManager.getPassword().let {
                         if (it.isSuccess) {
-                            if (it.getOrNull() == null) {
-                                throw Exception("Unable to get encryption key expected non-null")
-                            } else {
-                                it.getOrNull()!!.toCharArray()
-                            }
+                            it.getOrNull()?.toCharArray()
+                                ?: throw BackupExportException.EncryptionKeyUnavailable()
                         } else {
-                            throw Exception("Unable to get encryption key: ${it.exceptionOrNull()?.message}")
+                            throw BackupExportException.EncryptionKeyUnavailable(cause = it.exceptionOrNull())
                         }
                     }
                 }
@@ -205,16 +279,36 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
-    suspend fun readBackup(input: InputStream, password: String? = null): Result<Unit> = withContext(Dispatchers.IO) {
+    /**
+     * Reads a backup archive from [input] and imports its content into the database, transparently
+     * handling all supported [BackupFormat]s (see [detectBackupFormat]).
+     *
+     * @param input The [InputStream] to read the backup from, fully buffered before processing.
+     * @param password The password to decrypt the archive with, if it was encrypted. Ignored for
+     * unencrypted or legacy backups. Defaults to `null`.
+     * @return [Result.success] on success, [Result.failure] with the underlying exception
+     * otherwise. See [BackupImportException] for the specific business errors that can occur.
+     */
+    suspend fun readBackup(input: InputStream, password: CharArray? = null): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
             val bytes = input.readBytes()
-            val backupType = detectBackupFormat(bytes)
 
-            when (backupType) {
+            when (val backupType = detectBackupFormat(bytes)) {
                 is BackupFormat.LegacyRawJson -> legacyJsonImport(String(bytes, Charsets.UTF_8))
                 is BackupFormat.LegacyZip -> legacyZipImport(bytes)
-                is BackupFormat.NewFormat -> zipImport(bytes, password)
-                is BackupFormat.Invalid -> Result.failure(Exception("Unsupported backup format"))
+                is BackupFormat.NewFormat -> {
+                    if (!backupType.metadata.isEncrypted || password != null) {
+                        zipImport(bytes, password)
+                    } else {
+                        val resolvedPassword = resolvePassword(bytes)
+                        if (resolvedPassword != null) {
+                            zipImport(bytes, resolvedPassword)
+                        } else {
+                            Result.failure(BackupImportException.PasswordRequired())
+                        }
+                    }
+                }
+                is BackupFormat.Invalid -> Result.failure(BackupImportException.InvalidFormat())
             }
         } catch (e: CancellationException) {
             throw e
@@ -224,9 +318,16 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
+    /**
+     * Imports a [BackupFormat.LegacyRawJson] backup: [jsonContent] is the entire backup content,
+     * predating any ZIP wrapping.
+     *
+     * @param jsonContent The raw JSON backup content.
+     * @return [Result.success] on success, [Result.failure] with the underlying exception otherwise.
+     */
     private suspend fun legacyJsonImport(jsonContent: String): Result<Unit> {
         return try {
-            if (jsonContent.isEmpty()) return Result.failure(Exception("Backup is empty"))
+            if (jsonContent.isEmpty()) return Result.failure(BackupImportException.EmptyBackup())
 
             repository.importDataFromJsonString(jsonContent)
 
@@ -237,6 +338,13 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
+    /**
+     * Imports a [BackupFormat.LegacyZip] backup: a ZIP archive containing a single `data.json` entry
+     * and an optional `profile_photo.jpg` entry, never encrypted.
+     *
+     * @param input The full ZIP archive content, buffered in memory.
+     * @return [Result.success] on success, [Result.failure] with the underlying exception otherwise.
+     */
     private suspend fun legacyZipImport(input: ByteArray): Result<Unit> {
         return try {
             val entries = mutableMapOf<String, ByteArray>()
@@ -261,7 +369,13 @@ class BackupArchiveManager @Inject constructor(
         }
     }
 
-    // New zip format handling
+    /**
+     * Maps each entry name of a [BackupFormat.NewFormat] archive to the handler responsible for
+     * deserializing its content and importing it via [repository]. Consumed by [zipImport].
+     *
+     * Adding a new data type to the backup format only requires adding an entry here, no change to
+     * [zipImport] itself.
+     */
     private val importHandlers: Map<String, suspend (ByteArray) -> Unit> = mapOf(
         "weights.json" to { bytes -> repository.importWeights(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
         "hba1c.json" to { bytes -> repository.importHba1c(gson.fromJsonList(bytes.toString(Charsets.UTF_8))) },
@@ -274,10 +388,21 @@ class BackupArchiveManager @Inject constructor(
         "profile_photo.jpg" to { bytes -> repository.saveProfilePhotoBytes(bytes, application.filesDir) }
     )
 
-    private suspend fun zipImport(input: ByteArray, password: String? = null): Result<Unit> {
+    /**
+     * Imports a [BackupFormat.NewFormat] archive: extracts every entry (decrypting them with
+     * [password] if needed, per [importHandlers]), then resynchronizes the automatic backup
+     * schedule against the imported preferences via [backupScheduleCoordinator].
+     *
+     * @param input The full ZIP archive content, buffered in memory.
+     * @param password The password to decrypt entries with, if the archive is encrypted. Defaults to
+     * `null` for unencrypted archives.
+     * @return [Result.success] on success, [Result.failure] with the underlying exception otherwise.
+     * See [BackupImportException] for the specific business errors that can occur.
+     */
+    private suspend fun zipImport(input: ByteArray, password: CharArray? = null): Result<Unit> {
         return try {
             val entries = mutableMapOf<String, ByteArray>()
-            ZipInputStream(ByteArrayInputStream(input), password?.toCharArray()).use { zis ->
+            ZipInputStream(ByteArrayInputStream(input), password).use { zis ->
                 var entry = zis.nextEntry
                 while (entry != null) {
                     entries[entry.fileName] = zis.readBytes()
@@ -302,7 +427,8 @@ class BackupArchiveManager @Inject constructor(
 
             Result.success(Unit)
         } catch (e: ZipException) {
-            if (e.type == ZipException.Type.WRONG_PASSWORD) return Result.failure(Exception("Wrong backup password"))
+            if (e.type == ZipException.Type.WRONG_PASSWORD) return Result.failure(
+                BackupImportException.WrongPassword())
             Result.failure(e)
         } catch (e: Exception) {
             Log.e(backupManagerTag, "zipImport Exception: ${e.message}", e)
