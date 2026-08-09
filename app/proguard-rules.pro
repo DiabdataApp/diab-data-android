@@ -63,7 +63,7 @@
 
 # Core models (used by Gson for import/export)
 -keep class com.diabdata.core.model.** { *; }
--keep class com.diabdata.core.database.ExportData { *; }
+-keep class com.diabdata.core.backup.ExportData { *; }
 
 # Widget models (used by Gson for widget DataStore)
 -keep class com.diabdata.widget.WidgetState { *; }

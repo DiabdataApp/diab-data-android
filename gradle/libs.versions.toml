@@ -24,11 +24,13 @@ material3Expressive = "1.5.0-alpha24"
 navigationCompose = "2.9.8"
 protobufJavalite = "4.35.1"
 roomRuntime = "2.8.4"
+sqlcipherAndroid = "4.17.0"
 tilesTesting = "1.6.1"
 vico = "2.3.6"
 watchface = "1.2.1"
 wear = "1.4.0"
 workRuntimeKtx = "2.11.2"
+zip4j = "2.11.6"
 zxingAndroidEmbedded = "4.3.0"
 zxing = "3.5.4"
 glanceAppwidget = "1.2.0-rc01"
@@ -135,6 +137,7 @@ kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 
 # Vico
+sqlcipher-android = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipherAndroid" }
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m2 = { group = "com.patrykandpatrick.vico", name = "compose-m2", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
@@ -142,6 +145,7 @@ vico-multiplatform = { group = "com.patrykandpatrick.vico", name = "multiplatfor
 vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref = "vico" }
 
 # ZXing
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 

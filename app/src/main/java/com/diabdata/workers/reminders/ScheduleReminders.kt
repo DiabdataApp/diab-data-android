@@ -3,6 +3,7 @@ package com.diabdata.workers.reminders
 import android.content.Context
 import androidx.work.WorkManager
 import androidx.work.await
+import com.diabdata.core.database.DataRepository
 import com.diabdata.core.database.DataViewModel
 import kotlinx.coroutines.flow.first
 import java.time.format.DateTimeFormatter
@@ -63,13 +64,13 @@ suspend fun scheduleAllReminders(context: Context, dataViewModel: DataViewModel)
     }
 }
 
-suspend fun scheduleAppointmentReminders(context: Context, dataViewModel: DataViewModel) {
+suspend fun scheduleAppointmentReminders(context: Context, dataRepository: DataRepository) {
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag("appointments").await()
     workManager.pruneWork().await()
 
     val reminderOffsets = listOf(30, 14, 1)
-    val appointments = dataViewModel.upcomingAppointment.first()
+    val appointments = dataRepository.getUpcomingAppointments().first()
 
     appointments.forEach { appointment ->
         reminderOffsets.forEach { offset ->
@@ -96,13 +97,13 @@ suspend fun scheduleAppointmentReminders(context: Context, dataViewModel: DataVi
     }
 }
 
-suspend fun scheduleMedicationExpirationReminders(context: Context, dataViewModel: DataViewModel) {
+suspend fun scheduleMedicationExpirationReminders(context: Context, dataRepository: DataRepository) {
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag("treatments").await()
     workManager.pruneWork().await()
 
     val reminderOffsets = listOf(30, 14, 1)
-    val expirations = dataViewModel.upcomingExpiringTreatmentDates.first()
+    val expirations = dataRepository.getUpcomingExpDates().first()
 
     expirations.forEach { treatment ->
         reminderOffsets.forEach { offset ->

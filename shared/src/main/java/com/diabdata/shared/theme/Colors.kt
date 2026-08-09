@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val NotificationIconColor = Color(0xFFD71CEC)
 val DataIconColor = Color(0xFFCEBB15)
+val SecurityIconColor = Color(0xFF1565C0)
 val GtinFilesIconColor = Color(0xFF8DCC29)
 
 val BetaVersionColorLight = Color(0xFF00796B)

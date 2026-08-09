@@ -88,9 +88,9 @@ import com.diabdata.core.utils.ui.getItemShape
  */
 @Composable
 fun CardsList(
+    modifier: Modifier = Modifier,
     header: String? = null,
     cards: List<CardItem>,
-    modifier: Modifier = Modifier,
     pageSize: Int? = null
 ) {
     var currentPage by remember { mutableIntStateOf(0) }

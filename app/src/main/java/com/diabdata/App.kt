@@ -63,6 +63,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.ui.LocalSnackbarHostState
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ScreenSize
 import com.diabdata.core.utils.getScreenSize
 import com.diabdata.core.utils.ui.SvgIcon
@@ -70,7 +71,8 @@ import com.diabdata.feature.databaseView.DatabaseEditionView
 import com.diabdata.feature.devices.ui.DevicesScreen
 import com.diabdata.feature.graphs.GraphViewer
 import com.diabdata.feature.home.HomeScreen
-import com.diabdata.feature.settings.dataSettingsSection.ui.DataSettingsScreen
+import com.diabdata.feature.settings.sections.dataSettings.ui.DataSettingsScreen
+import com.diabdata.feature.settings.sections.security.ui.SecuritySettingsScreen
 import com.diabdata.feature.settings.ui.SettingsScreen
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.feature.userProfile.ui.UserAvatarWithMenu
@@ -260,6 +262,7 @@ fun App(
                                             Text(
                                                 when (currentRoute) {
                                                     "settings/data" -> stringResource(shared.string.settings_data_section_title)
+                                                    "settings/security" -> stringResource(shared.string.settings_security_settings)
                                                     else -> ""
                                                 }
                                             )
@@ -300,6 +303,7 @@ fun App(
                                     Text(
                                         when (currentRoute) {
                                             "settings/data" -> stringResource(shared.string.settings_data_section_title)
+                                            "settings/security" -> stringResource(shared.string.settings_security_settings)
                                             else -> ""
                                         }
                                     )
@@ -361,7 +365,8 @@ fun App(
                                     label = {
                                         Text(
                                             text = stringResource(item.label),
-                                            overflow = TextOverflow.Ellipsis
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontFamily = GoogleSansFlexFontFamily
                                         )
                                     },
                                     selected = selected,
@@ -389,7 +394,7 @@ fun App(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     topBar = {
                         when {
-                            isProfileRoute -> { /* Pas de TopAppBar */ }
+                            isProfileRoute -> {  }
                             isSubSettingsRoute -> {
                                 TopAppBar(
                                     title = {
@@ -397,7 +402,7 @@ fun App(
                                             text = currentRoute.let { route ->
                                                 when (route) {
                                                     "settings/data" -> stringResource(shared.string.settings_data_section_title)
-
+                                                    "settings/security" -> stringResource(shared.string.settings_security_settings)
                                                     else -> ""
                                                 }
                                             }
@@ -566,6 +571,9 @@ fun DiabDataNavHost(
                     dataViewModel = dataViewModel,
                     onNavigateToDataSettings = {
                         navController.navigate("settings/data")
+                    },
+                    onNavigateToSecuritySettings = {
+                        navController.navigate("settings/security")
                     }
                 )
             }
@@ -573,6 +581,9 @@ fun DiabDataNavHost(
                 DataSettingsScreen(
                     dataViewModel = dataViewModel
                 )
+            }
+            composable("settings/security") {
+                SecuritySettingsScreen()
             }
         }
     }

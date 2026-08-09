@@ -1,7 +1,9 @@
 package com.diabdata.shared.utils.dateUtils
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
@@ -59,6 +61,15 @@ fun String.formatDateToLocale(locale: Locale = Locale.getDefault()): String {
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     val dateTime = LocalDateTime.parse(this, inputFormatter)
 
-    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yy - HH:mm", locale)
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm", locale)
+    return dateTime.format(outputFormatter)
+}
+
+fun Long.formatDateToLocale(locale: Locale = Locale.getDefault()): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val dateTime = Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm", locale)
     return dateTime.format(outputFormatter)
 }

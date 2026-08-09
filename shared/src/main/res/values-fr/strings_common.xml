@@ -5,6 +5,7 @@
     <!-- COMMON ACTIONS -->
     <!-- ============================================= -->
     <string name="common_save">Enregistrer</string>
+    <string name="common_saving">Enregistrement...</string>
     <string name="common_confirm">Confirmer</string>
     <string name="common_back">Retour</string>
     <string name="common_close">Fermer</string>

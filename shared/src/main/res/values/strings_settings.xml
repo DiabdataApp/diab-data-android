@@ -20,6 +20,8 @@
     <string name="settings_data_section_description_text">Import, export, clear data</string>
     <string name="settings_data_export_label">Export data</string>
     <string name="settings_data_import_label">Import data</string>
+    <string name="settings_data_import_password_required_title">Password required</string>
+    <string name="settings_data_import_password_label">Backup password</string>
     <string name="settings_data_database_purge_label">Empty database</string>
 
     <!-- Purge confirmation dialog -->
@@ -29,9 +31,35 @@
 
     <!-- Automated backup section -->
     <string name="settings_set_data_backup_scheduler_label">Backup schedule</string>
+    <string name="settings_data_backup_scheduler_supporting_text">Scheduled backup settings</string>
     <string name="settings_set_data_backup_scheduler_description">Enable to set your data\'s automatic backup schedule up.</string>
-    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_set_data_backup_frequency_label">Backup frequency</string>
+    <string name="settings_set_data_backup_path_label">Backup folder</string>
     <string name="settings_set_data_backup_path">Choose backup folder</string>
+    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_scheduled_data_backup_status_label">Scheduled backup status</string>
+    <string name="settings_set_data_backup_scheduler_enable_label">Enable scheduled backup</string>
+    <string name="settings_set_data_backup_scheduler_disable_label">Disable scheduled backup</string>
+    <string name="settings_set_data_backup_history_last_label">Last:</string>
+    <string name="settings_set_data_backup_history_next_label">Scheduled:</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > PRIVACY -->
+    <!-- ============================================= -->
+
+    <string name="settings_security_settings">Privacy</string>
+    <string name="settings_security_settings_section_description">Manage privacy settings</string>
+    <string name="settings_security_settings_section_backup_password_label">Backup encryption</string>
+    <string name="settings_security_set_backup_password_label">Set backup key</string>
+    <string name="settings_security_set_backup_password_success">Backup encryption key saved successfully</string>
+    <string name="settings_security_set_backup_password_error">Error while attempting to set password</string>
+    <string name="settings_security_unset_backup_password_label">Reset</string>
+    <string name="settings_security_unset_backup_password_description">This also disables backup encryption</string>
+    <string name="settings_security_unset_backup_password_error">Error while attempting to reset password</string>
+    <string name="settings_security_backup_encryption_label">Encrypt backups</string>
+    <string name="settings_security_enable_backup_encryption">Enable backup encryption</string>
+    <string name="settings_security_disable_backup_encryption">Disable backup encryption</string>
+    <string name="settings_security_backup_encryption_tip">Changing your password only affects backups created afterwards. Backups created before this change will still require their original password to be restored.</string>
 
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
@@ -50,6 +78,10 @@
     <string name="settings_notifications_scheduled_backup_success">Scheduled backup saved in %1$s at %2$s.</string>
     <string name="settings_notifications_scheduled_backup_error_title">Scheduled backup fail.</string>
     <string name="settings_notifications_scheduled_backup_error">Scheduled backup failed: %1$s.</string>
+    <string name="settings_notifications_scheduled_backup_file_creation_error">Unable to create backup file.</string>
+    <string name="settings_notifications_scheduled_backup_undefined_backup_directory_error">The scheduled backup directory is undefined.</string>
+    <string name="settings_notifications_scheduled_backup_no_preferences_error">The preferences for scheduled backup were not found.</string>
+    <string name="settings_notifications_scheduled_backup_file_access_error">Unable to access scheduled backup directory.</string>
     <string name="settings_notifications_scheduled_backup_error_permission_denied">Scheduled backup failed due to permission denial: %1$s.</string>
 
     <!-- ============================================= -->

@@ -1,7 +1,6 @@
 package com.diabdata.feature.settings.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -28,14 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.work.WorkManager
 import com.diabdata.BuildConfig
 import com.diabdata.core.database.DataViewModel
 import com.diabdata.core.ui.components.cardsList.CardItem
 import com.diabdata.core.ui.components.cardsList.CardListItem
 import com.diabdata.core.ui.components.cardsList.CardsList
+import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.ColoredIconCircleProps
 import com.diabdata.core.utils.ui.darken
 import com.diabdata.feature.settings.SettingsViewModel
@@ -44,8 +42,7 @@ import com.diabdata.feature.settings.ui.components.changelog.ChangelogDialog
 import com.diabdata.shared.theme.DataIconColor
 import com.diabdata.shared.theme.GtinFilesIconColor
 import com.diabdata.shared.theme.NotificationIconColor
-import com.diabdata.workers.reminders.scheduleAppointmentReminders
-import com.diabdata.workers.reminders.scheduleMedicationExpirationReminders
+import com.diabdata.shared.theme.SecurityIconColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -59,7 +56,8 @@ import com.diabdata.shared.R as shared
 @Composable
 fun SettingsScreen(
     dataViewModel: DataViewModel,
-    onNavigateToDataSettings: () -> Unit
+    onNavigateToDataSettings: () -> Unit,
+    onNavigateToSecuritySettings: () -> Unit
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -77,18 +75,15 @@ fun SettingsScreen(
 
     var showChangeLogDialog by remember { mutableStateOf(false) }
 
-    val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val userPreferences by settingsViewModel.preferences.collectAsState()
+    val isExpirationEnabled = userPreferences?.expirationReminder ?: false
+    val isAppointmentEnabled = userPreferences?.appointmentReminder ?: false
 
-    var enableExpirationDateReminder by remember {
-        mutableStateOf(prefs.getBoolean("expiration_reminder", false))
-    }
-    var enableAppointmentReminder by remember {
-        mutableStateOf(prefs.getBoolean("appointment_reminder", false))
-    }
+    val toastAppointmentReminderEnabled = stringResource(shared.string.appointments_reminders_enabled_success_toast)
+    val toastMedicationReminderEnabled = stringResource(shared.string.medications_reminders_enabled_success_toast)
 
     val medicationStoreRebuiltText = stringResource(shared.string.medications_medication_store_rebuilt_toast_message)
-    val medicalDevicesStoreRebuiltText =
-        stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
+    val medicalDevicesStoreRebuiltText = stringResource(shared.string.devices_medical_devices_store_rebuilt_toast)
 
     val nextAppointmentDate by remember {
         dataViewModel.upcomingAppointment
@@ -130,11 +125,6 @@ fun SettingsScreen(
                 showChangeLogDialog = { showChangeLogDialog = true }
             )
 
-            val toastExpirationEnabled =
-                stringResource(shared.string.medications_reminders_enabled_success_toast)
-            val toastAppointmentReminderEnabled =
-                stringResource(shared.string.appointments_reminders_enabled_success_toast)
-
             val notificationSection: List<CardItem> = listOf(
                 CardItem(
                     leadingColoredCircleIcon = iconCircleProps,
@@ -149,31 +139,26 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.medications_expiry_notification_title_text),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = displayText,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
-                    switchState = enableExpirationDateReminder,
+                    switchState = isExpirationEnabled,
                     onSwitchChange = { isChecked ->
-                        enableExpirationDateReminder = isChecked
-                        prefs.edit { putBoolean("expiration_reminder", isChecked) }
-                        val workManager = WorkManager.getInstance(context)
+                        settingsViewModel.onExpirationReminderSwitch(isChecked)
                         if (isChecked) {
-                            scope.launch {
-                                scheduleMedicationExpirationReminders(
-                                    context,
-                                    dataViewModel
-                                )
-                            }
-                            Toast.makeText(context, toastExpirationEnabled, Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            workManager.cancelAllWorkByTag("treatments")
+                            Toast.makeText(
+                                context,
+                                toastMedicationReminderEnabled,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
@@ -198,34 +183,26 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.appointments_setting_screen_reminder_label),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = displayText,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
-                    switchState = enableAppointmentReminder,
+                    switchState = isAppointmentEnabled,
                     onSwitchChange = { isChecked ->
-                        enableAppointmentReminder = isChecked
-                        prefs.edit { putBoolean("appointment_reminder", isChecked) }
-                        val workManager = WorkManager.getInstance(context)
+                        settingsViewModel.onAppointmentSwitch(isChecked)
                         if (isChecked) {
-                            scope.launch {
-                                scheduleAppointmentReminders(
-                                    context,
-                                    dataViewModel
-                                )
-                            }
                             Toast.makeText(
                                 context,
                                 toastAppointmentReminderEnabled,
                                 Toast.LENGTH_SHORT
                             ).show()
-                        } else {
-                            workManager.cancelAllWorkByTag("appointments")
                         }
                     },
                     switchColor = NotificationIconColor.darken(0.2f),
@@ -298,19 +275,51 @@ fun SettingsScreen(
                         Column {
                             Text(
                                 text = stringResource(shared.string.settings_data_section_title),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                             Text(
                                 text = stringResource(shared.string.settings_data_section_description_text),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
                             )
                         }
                     },
                     onClick = onNavigateToDataSettings,
-                    trailingIcon = shared.drawable.arrow_right_icon
+                    trailingIcon = shared.drawable.arrow_right_icon_vector
                 ),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(15.dp)
+            )
+
+            // Security section
+            CardListItem(
+                CardItem(
+                    leadingColoredCircleIcon = iconCircleProps.copy(
+                        baseColor = SecurityIconColor,
+                        iconRes = shared.drawable.shield_toggle_icon_vector
+                    ),
+                    content = {
+                        Column {
+                            Text(
+                                text = stringResource(shared.string.settings_security_settings),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontFamily = GoogleSansFlexFontFamily
+                            )
+                            Text(
+                                text = stringResource(shared.string.settings_security_settings_section_description),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontFamily = GoogleSansFlexFontFamily
+                            )
+                        }
+                    },
+                    onClick = {
+                        onNavigateToSecuritySettings()
+                    },
+                    trailingIcon = shared.drawable.arrow_right_icon_vector
+                ),
+                shape = RoundedCornerShape(15.dp)
             )
 
             // Notification section

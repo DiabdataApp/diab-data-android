@@ -38,19 +38,10 @@ class UserProfileViewModel @Inject constructor(
 
     fun saveProfilePhoto(uri: Uri, onSaved: (String) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fileName = "profile_photo_${System.currentTimeMillis()}.jpg"
-            val file = File(application.filesDir, fileName)
+            val bytes = application.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                ?: return@launch // ou gérer l'échec explicitement
 
-            application.filesDir.listFiles()
-                ?.filter { it.name.startsWith("profile_photo_") && it.name != fileName }
-                ?.forEach { it.delete() }
-
-            application.contentResolver.openInputStream(uri)?.use { input ->
-                file.outputStream().use { output -> input.copyTo(output) }
-            }
-
-            val path = file.absolutePath
-            repository.addProfilePhotoPath(path)
+            val path = repository.saveProfilePhotoBytes(bytes, application.filesDir)
 
             withContext(Dispatchers.Main) {
                 onSaved(path)

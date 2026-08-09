@@ -272,7 +272,7 @@ fun CardListItemSwitch () {
                                 )
                             }
                         },
-                        trailingIcon = shared.drawable.arrow_right_icon,
+                        trailingIcon = shared.drawable.arrow_right_icon_vector,
                         onTrailingIconClick = {}
                     ),
                     CardItem(

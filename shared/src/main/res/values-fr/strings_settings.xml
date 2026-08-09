@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!-- ============================================= -->
+    <!-- ============================================= -->
     <!-- SETTINGS -->
     <!-- ============================================= -->
     <!-- Section headings -->
@@ -19,6 +19,8 @@
     <string name="settings_data_section_description_text">Importer, exporter, supprimer les données</string>
     <string name="settings_data_export_label">Exporter les données</string>
     <string name="settings_data_import_label">Importer les données</string>
+    <string name="settings_data_import_password_required_title">Mot de passe requis</string>
+    <string name="settings_data_import_password_label">Mot de passe de la sauvegarde</string>
     <string name="settings_data_database_purge_label">Vider la base de données</string>
 
     <!-- Purge confirmation dialog -->
@@ -28,9 +30,35 @@
 
     <!-- Automated backup section -->
     <string name="settings_set_data_backup_scheduler_label">Sauvegarde automatique</string>
+    <string name="settings_data_backup_scheduler_supporting_text">Réglages de sauvegarde automatique</string>
     <string name="settings_set_data_backup_scheduler_description">Activer la sauvegarde automatique pour la configurer.</string>
-    <string name="settings_no_data_backup_file">No backups found</string>
+    <string name="settings_set_data_backup_frequency_label">Fréquence de sauvegarde</string>
+    <string name="settings_set_data_backup_path_label">Emplacement de sauvegarde</string>
     <string name="settings_set_data_backup_path">Choisir le dossier de sauvegarde</string>
+    <string name="settings_no_data_backup_file">Aucune sauvegarde trouvée</string>
+    <string name="settings_scheduled_data_backup_status_label">Statut de la sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_enable_label">Activer la sauvegarde automatique</string>
+    <string name="settings_set_data_backup_scheduler_disable_label">Désactiver la sauvegarde automatique</string>
+    <string name="settings_set_data_backup_history_last_label">Dernière:</string>
+    <string name="settings_set_data_backup_history_next_label">Programmée:</string>
+
+    <!-- ============================================= -->
+    <!-- SETTINGS > PRIVACY -->
+    <!-- ============================================= -->
+
+    <string name="settings_security_settings">Confidentialité</string>
+    <string name="settings_security_settings_section_description">Gestion des paramètres de confidentialité</string>
+    <string name="settings_security_settings_section_backup_password_label">Chiffrement des sauvegardes</string>
+    <string name="settings_security_set_backup_password_label">Définir la clé des sauvegardes</string>
+    <string name="settings_security_set_backup_password_success">La clé de chiffrement a été définie avec succès</string>
+    <string name="settings_security_set_backup_password_error">Erreur lors de l\'enregistrement de la clé</string>
+    <string name="settings_security_unset_backup_password_label">Réinitialiser</string>
+    <string name="settings_security_unset_backup_password_description">Désactivera également le chiffrement</string>
+    <string name="settings_security_unset_backup_password_error">Erreur lors de la réinitialisation de la clé</string>
+    <string name="settings_security_backup_encryption_label">Chiffrer les sauvegardes</string>
+    <string name="settings_security_enable_backup_encryption">Activer le chiffrement</string>
+    <string name="settings_security_disable_backup_encryption">Désactiver le chiffrement</string>
+    <string name="settings_security_backup_encryption_tip">La modification du mot de passe n\'affectera que les sauvegardes créées par la suite. Les sauvegardes créées précédemment nécessiteront leur mot de passe d\'origine pour être restaurées.</string>
 
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
@@ -50,7 +78,11 @@
     <string name="settings_notifications_scheduled_backup_success">Sauvegarde automatique ajoutée dans %1$s à %2$s.</string>
     <string name="settings_notifications_scheduled_backup_error_title">Échec de sauvegarde automatique.</string>
     <string name="settings_notifications_scheduled_backup_error">La sauvegarde programmée a échoué: %1$s.</string>
-    <string name="settings_notifications_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes: %1$s.</string>
+    <string name="settings_notifications_scheduled_backup_file_creation_error">Échec lors de la création du fichier de auvegarde.</string>
+    <string name="settings_notifications_scheduled_backup_undefined_backup_directory_error">Le dossier de sauvegarde automatique n\'est pas défini.</string>
+    <string name="settings_notifications_scheduled_backup_no_preferences_error">Les réglages de sauvegarde automatique sont introuvables.</string>
+    <string name="settings_notifications_scheduled_backup_file_access_error">Impossible d\'accéder au fichier de sauvegarde.</string>
+    <string name="settings_notifications_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes : %1$s.</string>
 
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->

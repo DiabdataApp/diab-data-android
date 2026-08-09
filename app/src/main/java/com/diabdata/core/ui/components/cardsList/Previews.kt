@@ -47,7 +47,7 @@ fun CardsListSimplePreview() {
                                 Text("1.0.0", style = MaterialTheme.typography.bodySmall)
                             }
                         },
-                        trailingIcon = R.drawable.arrow_right_icon,
+                        trailingIcon = R.drawable.arrow_right_icon_vector,
                         onTrailingIconClick = { }
                     )
                 )
@@ -86,7 +86,7 @@ fun CardsListSinglePreview() {
                                 )
                             }
                         },
-                        trailingIcon = R.drawable.arrow_right_icon,
+                        trailingIcon = R.drawable.arrow_right_icon_vector,
                         onTrailingIconClick = { }
                     )
                 )
