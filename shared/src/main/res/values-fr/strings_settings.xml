@@ -19,6 +19,8 @@
     <string name="settings_data_section_description_text">Importer, exporter, supprimer les données</string>
     <string name="settings_data_export_label">Exporter les données</string>
     <string name="settings_data_import_label">Importer les données</string>
+    <string name="settings_data_import_password_required_title">Mot de passe requis</string>
+    <string name="settings_data_import_password_label">Mot de passe de la sauvegarde</string>
     <string name="settings_data_database_purge_label">Vider la base de données</string>
 
     <!-- Purge confirmation dialog -->

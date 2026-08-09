@@ -149,7 +149,6 @@ class ImExViewModel @Inject constructor (
                 }
             }
         )
-        Log.d("ImExViewModel", "uiState -> $newState")
         _uiState.value = newState
     }
 

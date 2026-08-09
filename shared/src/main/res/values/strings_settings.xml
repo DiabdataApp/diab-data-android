@@ -20,6 +20,8 @@
     <string name="settings_data_section_description_text">Import, export, clear data</string>
     <string name="settings_data_export_label">Export data</string>
     <string name="settings_data_import_label">Import data</string>
+    <string name="settings_data_import_password_required_title">Password required</string>
+    <string name="settings_data_import_password_label">Backup password</string>
     <string name="settings_data_database_purge_label">Empty database</string>
 
     <!-- Purge confirmation dialog -->
