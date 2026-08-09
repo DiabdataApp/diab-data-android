@@ -43,17 +43,23 @@
     <string name="settings_set_data_backup_history_last_label">Last:</string>
     <string name="settings_set_data_backup_history_next_label">Scheduled:</string>
 
+    <!-- ============================================= -->
+    <!-- SETTINGS > PRIVACY -->
+    <!-- ============================================= -->
+
     <string name="settings_security_settings">Privacy</string>
     <string name="settings_security_settings_section_description">Manage privacy settings</string>
+    <string name="settings_security_settings_section_backup_password_label">Backup encryption</string>
     <string name="settings_security_set_backup_password_label">Set backup key</string>
     <string name="settings_security_set_backup_password_success">Backup encryption key saved successfully</string>
     <string name="settings_security_set_backup_password_error">Error while attempting to set password</string>
     <string name="settings_security_unset_backup_password_label">Reset</string>
-    <string name="settings_security_unset_backup_password_description">Performing this action will also disable backup encryption</string>
+    <string name="settings_security_unset_backup_password_description">This also disables backup encryption</string>
     <string name="settings_security_unset_backup_password_error">Error while attempting to reset password</string>
     <string name="settings_security_backup_encryption_label">Encrypt backups</string>
     <string name="settings_security_enable_backup_encryption">Enable backup encryption</string>
     <string name="settings_security_disable_backup_encryption">Disable backup encryption</string>
+    <string name="settings_security_backup_encryption_tip">Changing your password only affects backups created afterwards. Backups created before this change will still require their original password to be restored.</string>
 
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>

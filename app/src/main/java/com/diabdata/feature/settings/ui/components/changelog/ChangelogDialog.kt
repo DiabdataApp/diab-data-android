@@ -76,7 +76,7 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Updates - 25/08/2026",
+                        text = "Updates - 09/08/2026",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -93,22 +93,24 @@ fun ChangelogDialog(onDismiss: () -> Unit) {
                         "New features",
                         listOf(
                             "Added scheduled backup feature",
-                            "Added database encryption. if data was already stored it will be migrated"
+                            "Added database encryption. if data was already stored it will be migrated.",
+                            "Added backup encryption.",
+                            "Consolidated data export and changed backup format."
                         )
                     )
 
                     changelogSection(
                         "GUI",
                         listOf(
-                            "Improved navigation bar responsiveness",
-                            "Overhauled settings menu"
+                            "Improved navigation bar responsiveness.",
+                            "Overhauled settings menu."
                         )
                     )
 
                     changelogSection(
                         "Bug fixes",
                         listOf(
-                            "Fixed conditional display issue of important date card on home screen"
+                            "Fixed conditional display issue of important date card on home screen."
                         )
                     )
                 }

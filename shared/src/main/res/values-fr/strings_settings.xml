@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!-- ============================================= -->
+    <!-- ============================================= -->
     <!-- SETTINGS -->
     <!-- ============================================= -->
     <!-- Section headings -->
@@ -42,17 +42,23 @@
     <string name="settings_set_data_backup_history_last_label">Dernière:</string>
     <string name="settings_set_data_backup_history_next_label">Programmée:</string>
 
+    <!-- ============================================= -->
+    <!-- SETTINGS > PRIVACY -->
+    <!-- ============================================= -->
+
     <string name="settings_security_settings">Confidentialité</string>
     <string name="settings_security_settings_section_description">Gestion des paramètres de confidentialité</string>
+    <string name="settings_security_settings_section_backup_password_label">Chiffrement des sauvegardes</string>
     <string name="settings_security_set_backup_password_label">Définir la clé des sauvegardes</string>
     <string name="settings_security_set_backup_password_success">La clé de chiffrement a été définie avec succès</string>
     <string name="settings_security_set_backup_password_error">Erreur lors de l\'enregistrement de la clé</string>
     <string name="settings_security_unset_backup_password_label">Réinitialiser</string>
-    <string name="settings_security_unset_backup_password_description">Réinitialiser la clé désactivera également le chiffrement</string>
+    <string name="settings_security_unset_backup_password_description">Désactivera également le chiffrement</string>
     <string name="settings_security_unset_backup_password_error">Erreur lors de la réinitialisation de la clé</string>
-    <string name="settings_security_backup_encryption_label">Chiffrement des sauvegardes</string>
+    <string name="settings_security_backup_encryption_label">Chiffrer les sauvegardes</string>
     <string name="settings_security_enable_backup_encryption">Activer le chiffrement</string>
     <string name="settings_security_disable_backup_encryption">Désactiver le chiffrement</string>
+    <string name="settings_security_backup_encryption_tip">La modification du mot de passe n\'affectera que les sauvegardes créées par la suite. Les sauvegardes créées précédemment nécessiteront leur mot de passe d\'origine pour être restaurées.</string>
 
     <!-- Automated backup section > snackbar -->
     <string name="settings_backup_policy_reset_snackbar">Restore backup schedule?</string>
@@ -76,7 +82,7 @@
     <string name="settings_notifications_scheduled_backup_undefined_backup_directory_error">Le dossier de sauvegarde automatique n\'est pas défini.</string>
     <string name="settings_notifications_scheduled_backup_no_preferences_error">Les réglages de sauvegarde automatique sont introuvables.</string>
     <string name="settings_notifications_scheduled_backup_file_access_error">Impossible d\'accéder au fichier de sauvegarde.</string>
-    <string name="settings_notifications_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes : %1$s.</string>
+    <string name="settings_notifications_scheduled_backup_error_permission_denied">La sauvegarde programmée a échoué à causes de permissions manquantes : %1$s.</string>
 
     <!-- ============================================= -->
     <!-- TOASTS & FEEDBACK MESSAGES -->

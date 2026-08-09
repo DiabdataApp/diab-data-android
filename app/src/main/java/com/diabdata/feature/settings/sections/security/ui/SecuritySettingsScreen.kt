@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -59,233 +61,234 @@ fun SecuritySettingsScreen() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val setBackupPasswordSuccess = stringResource(shared.string.settings_security_set_backup_password_success)
-    val setBackupPasswordError = stringResource(shared.string.settings_security_set_backup_password_error)
-    val unsetPasswordErrorMessage = stringResource(shared.string.settings_security_unset_backup_password_error)
+    val setBackupPasswordSuccess =
+        stringResource(shared.string.settings_security_set_backup_password_success)
+    val setBackupPasswordError =
+        stringResource(shared.string.settings_security_set_backup_password_error)
+    val unsetPasswordErrorMessage =
+        stringResource(shared.string.settings_security_unset_backup_password_error)
 
-    val passwordButtonIcon = if (hasBackupPassword) shared.drawable.save_as_icon_vector else shared.drawable.save_icon_vector
+    val passwordButtonIcon =
+        if (hasBackupPassword) shared.drawable.save_as_icon_vector else shared.drawable.save_icon_vector
 
-    val isBackupEncryptionEnabledIcon = if (backupEncryptionEnabled) shared.drawable.shield_lock_filled_icon_vector else shared.drawable.shield_lock_icon_vector
-    val lockUnlockIcon = if (backupEncryptionEnabled) shared.drawable.lock_icon_vector else shared.drawable.lock_open_icon_vector
-    val backupToggleSupportingText = if (backupEncryptionEnabled) shared.string.settings_security_disable_backup_encryption else shared.string.settings_security_enable_backup_encryption
+    val isBackupEncryptionEnabledIcon =
+        if (backupEncryptionEnabled) shared.drawable.shield_lock_filled_icon_vector else shared.drawable.shield_lock_icon_vector
+    val lockUnlockIcon =
+        if (backupEncryptionEnabled) shared.drawable.lock_icon_vector else shared.drawable.lock_open_icon_vector
+    val backupToggleSupportingText =
+        if (backupEncryptionEnabled) shared.string.settings_security_disable_backup_encryption else shared.string.settings_security_enable_backup_encryption
     val backupEncryptionSectionChildCount = if (hasBackupPassword) 3 else 2
+
+    fun submitPassword() {
+        scope.launch(Dispatchers.IO) {
+            val setPassword = viewModel.setBackupPassword(passwordValue)
+            withContext(Dispatchers.Main) {
+                setPassword.onSuccess {
+                    Toast.makeText(context, setBackupPasswordSuccess, Toast.LENGTH_SHORT).show()
+                    passwordValue = ""
+                }
+                setPassword.onFailure { e ->
+                    Toast.makeText(context, "$setBackupPasswordError : ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp)
             .padding(top = 32.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = spacedBy(32.dp)
+            .verticalScroll(rememberScrollState()), verticalArrangement = spacedBy(32.dp)
     ) {
         Column(
-            verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
+            modifier = Modifier.fillMaxWidth(), verticalArrangement = spacedBy(12.dp)
         ) {
-            SegmentedListItem(
-                modifier = Modifier,
-                shapes = ListItemDefaults.segmentedShapes(0, backupEncryptionSectionChildCount),
-                leadingContent = {
-                    SvgIcon(
-                        resId = shared.drawable.password_icon_vector,
-                        color = containerContentColor,
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                content = {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            label = {
-                                Text(
-                                    stringResource(shared.string.settings_security_set_backup_password_label),
-                                    fontFamily = GoogleSansFlexFontFamily
-                                )
-                            },
-                            value = passwordValue,
-                            onValueChange = { passwordValue = it },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
+            Text(
+                text = stringResource(shared.string.settings_security_settings_section_backup_password_label),
+                fontFamily = GoogleSansFlexFontFamily
+            )
+
+            Column(
+                verticalArrangement = spacedBy(ListItemDefaults.SegmentedGap),
+            ) {
+                SegmentedListItem(
+                    modifier = Modifier,
+                    shapes = ListItemDefaults.segmentedShapes(0, backupEncryptionSectionChildCount),
+                    leadingContent = {
+                        SvgIcon(
+                            resId = shared.drawable.password_icon_vector,
+                            color = containerContentColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    content = {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                label = {
+                                    Text(
+                                        stringResource(shared.string.settings_security_set_backup_password_label),
+                                        fontFamily = GoogleSansFlexFontFamily
+                                    )
+                                },
+                                value = passwordValue,
+                                onValueChange = { passwordValue = it },
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = { submitPassword() }
+                                ),
+                                singleLine = true,
+                                trailingIcon = {
+                                    FilledTonalIconButton(
+                                        onClick = { submitPassword() },
+                                        enabled = passwordValue.isNotEmpty(),
+                                        modifier = Modifier
+                                            .padding(end = 4.dp)
+                                            .size(36.dp)
+                                    ) {
+                                        SvgIcon(
+                                            resId = passwordButtonIcon,
+                                            modifier = Modifier.size(18.dp),
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    }
+                                })
+                        }
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = containerColor,
+                        headlineColor = containerContentColor,
+                        supportingColor = containerContentColor
+                    ),
+                )
+
+                AnimatedVisibility(
+                    visible = hasBackupPassword,
+                    enter = expandVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
+                    exit = shrinkVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
+                ) {
+                    SegmentedListItem(
+                        modifier = Modifier,
+                        shapes = ListItemDefaults.segmentedShapes(
+                            if (hasBackupPassword) 1 else 0, backupEncryptionSectionChildCount
+                        ),
+                        leadingContent = {
+                            SvgIcon(
+                                resId = shared.drawable.backspace_icon_vector,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        content = {
+                            Text(
+                                text = stringResource(shared.string.settings_security_unset_backup_password_label),
+                                fontFamily = GoogleSansFlexFontFamily
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(shared.string.settings_security_unset_backup_password_description),
+                                fontFamily = GoogleSansFlexFontFamily
+                            )
+                        },
+                        trailingContent = {
+                            IconButton(
+                                onClick = {
                                     scope.launch(Dispatchers.IO) {
-                                        val setPassword = viewModel.setBackupPassword(passwordValue)
-                                        if (setPassword.isSuccess) {
-                                            passwordValue = ""
-                                        } else if (setPassword.isFailure) {
-                                            withContext(Dispatchers.Main) {
+                                        val result = viewModel.clearBackupPassword()
+                                        withContext(Dispatchers.Main) {
+                                            result.onSuccess {
                                                 Toast.makeText(
                                                     context,
-                                                    "$setBackupPasswordError : ${setPassword.exceptionOrNull()?.message}",
+                                                    setBackupPasswordSuccess,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                            result.onFailure { e ->
+                                                Toast.makeText(
+                                                    context,
+                                                    "$unsetPasswordErrorMessage : ${e.message}",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                             }
                                         }
                                     }
                                 }
-                            ),
-                            singleLine = true,
-                            trailingIcon = {
-                                FilledTonalIconButton(
-                                    onClick = {
-                                        scope.launch(Dispatchers.IO) {
-                                            val setPassword = viewModel.setBackupPassword(passwordValue)
-                                            if (setPassword.isSuccess) {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast.makeText(
-                                                        context,
-                                                        setBackupPasswordSuccess,
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                                passwordValue = ""
-                                            } else if (setPassword.isFailure) {
-                                                withContext(Dispatchers.Main) {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "$setBackupPasswordError : ${setPassword.exceptionOrNull()?.message}",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            }
-                                        }
-                                    },
-                                    enabled = passwordValue.isNotEmpty() || !hasBackupPassword,
-                                    modifier = Modifier
-                                        .padding(end = 4.dp)
-                                        .size(36.dp)
-                                ) {
-                                    SvgIcon(
-                                        resId = passwordButtonIcon,
-                                        modifier = Modifier.size(18.dp),
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                }
+                            ) {
+                                SvgIcon(
+                                    resId = shared.drawable.arrow_right_icon_vector,
+                                    modifier = Modifier.size(18.dp),
+                                    color = MaterialTheme.colorScheme.error
+                                )
                             }
-                        )
-                    }
-                },
-                colors = ListItemDefaults.colors(
-                    containerColor = containerColor,
-                    headlineColor = containerContentColor,
-                    supportingColor = containerContentColor
-                ),
-            )
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = containerColor,
+                            headlineColor = MaterialTheme.colorScheme.error,
+                            supportingColor = containerContentColor
+                        ),
+                    )
+                }
 
-            AnimatedVisibility(
-                visible = hasBackupPassword,
-                enter = expandVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
-                exit = shrinkVertically(MaterialTheme.motionScheme.slowSpatialSpec()),
-            ) {
                 SegmentedListItem(
-                    modifier = Modifier,
-                    shapes = ListItemDefaults.segmentedShapes(if (hasBackupPassword) 1 else 0, backupEncryptionSectionChildCount),
-                    leadingContent = {
-                        SvgIcon(
-                            resId = shared.drawable.backspace_icon_vector,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    content = {
-                        Text(
-                            text = stringResource(shared.string.settings_security_unset_backup_password_label),
-                            fontFamily = GoogleSansFlexFontFamily
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(shared.string.settings_security_unset_backup_password_description),
-                            fontFamily = GoogleSansFlexFontFamily
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = {
-                                scope.launch(Dispatchers.IO) {
-                                    val result = viewModel.clearBackupPassword()
-                                    withContext(Dispatchers.Main) {
-                                        result.onSuccess {
-                                            Toast.makeText(
-                                                context,
-                                                setBackupPasswordSuccess,
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                        result.onFailure { e ->
-                                            Toast.makeText(
-                                                context,
-                                                "$unsetPasswordErrorMessage : ${e.message}",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                }
-                            }
-                        ) {
-                            SvgIcon(
-                                resId = shared.drawable.arrow_right_icon_vector,
-                                modifier = Modifier.size(18.dp),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    },
-                    colors = ListItemDefaults.colors(
-                        containerColor = containerColor,
-                        headlineColor = MaterialTheme.colorScheme.error,
-                        supportingColor = containerContentColor
-                    ),
-                )
-            }
-
-            SegmentedListItem(
-                modifier = Modifier,
-                shapes = ListItemDefaults.segmentedShapes(if (hasBackupPassword) 2 else 1, backupEncryptionSectionChildCount),
-                leadingContent = {
+                    modifier = Modifier, shapes = ListItemDefaults.segmentedShapes(
+                    if (hasBackupPassword) 2 else 1, backupEncryptionSectionChildCount
+                ), leadingContent = {
                     SvgIcon(
                         resId = isBackupEncryptionEnabledIcon,
                         color = if (backupEncryptionEnabled) MaterialTheme.colorScheme.primary else containerContentColor,
                         modifier = Modifier.size(24.dp)
                     )
-                },
-                trailingContent = {
-                    Switch(
-                        checked = backupEncryptionEnabled,
-                        onCheckedChange = {
-                            scope.launch(Dispatchers.IO) {
-                                viewModel.toggleBackupEncryption(it)
-                            }
-                        },
-                        enabled = hasBackupPassword,
-                        thumbContent = {
-                            SvgIcon(
-                                resId = lockUnlockIcon,
-                                color = containerContentColor,
-                                modifier = Modifier.size(16.dp)
-                            )
+                }, trailingContent = {
+                    Switch(checked = backupEncryptionEnabled, onCheckedChange = {
+                        scope.launch(Dispatchers.IO) {
+                            viewModel.toggleBackupEncryption(it)
                         }
-                    )
-                },
-                content = {
+                    }, enabled = hasBackupPassword, thumbContent = {
+                        SvgIcon(
+                            resId = lockUnlockIcon,
+                            color = containerContentColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    })
+                }, content = {
                     Text(
                         text = stringResource(shared.string.settings_security_backup_encryption_label),
                         fontFamily = GoogleSansFlexFontFamily
                     )
-                },
-                supportingContent = {
+                }, supportingContent = {
                     Text(
                         text = stringResource(backupToggleSupportingText),
                         fontFamily = GoogleSansFlexFontFamily
                     )
-                },
-                colors = ListItemDefaults.colors(
+                }, colors = ListItemDefaults.colors(
                     containerColor = containerColor,
                     headlineColor = containerContentColor,
                     supportingColor = containerContentColor
                 )
-            )
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SvgIcon(
+                    resId = shared.drawable.lightbulb_icon_vector,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(12.dp)
+                )
+                Text(
+                    text = stringResource(shared.string.settings_security_backup_encryption_tip),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = GoogleSansFlexFontFamily
+                )
+            }
         }
     }
 }
