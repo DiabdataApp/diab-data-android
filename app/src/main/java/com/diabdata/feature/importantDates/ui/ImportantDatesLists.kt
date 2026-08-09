@@ -37,7 +37,7 @@ import com.diabdata.core.ui.theme.DiabDataTheme
 import com.diabdata.core.ui.theme.GoogleSansFlexFontFamily
 import com.diabdata.core.utils.ui.ColoredIconCircleProps
 import com.diabdata.core.utils.ui.SvgIcon
-import com.diabdata.feature.settings.dataSettingsSection.ui.components.locale
+import com.diabdata.feature.settings.sections.dataSettings.ui.components.locale
 import com.diabdata.feature.userProfile.UserProfileViewModel
 import com.diabdata.shared.utils.dataTypes.AddableType
 import com.diabdata.shared.utils.dataTypes.DiabetesType

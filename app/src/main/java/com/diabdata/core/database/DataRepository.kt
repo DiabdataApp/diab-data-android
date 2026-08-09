@@ -1,5 +1,6 @@
 package com.diabdata.core.database
 
+import com.diabdata.core.backup.ExportData
 import com.diabdata.core.model.Appointment
 import com.diabdata.core.model.Hba1c
 import com.diabdata.core.model.ImportantDate
@@ -28,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -230,13 +232,18 @@ class DataRepository(
     // ----------------
     // User preferences
     // ----------------
-    /** Flow of user preferences */
     suspend fun insertOrUpdate(preferences: UserPreferences) = userPreferencesDao.insertOrUpdate(preferences)
     fun getUserPreferences(): Flow<UserPreferences?> =
         userPreferencesDao.getUserPreferences()
 
     suspend fun setAutoBackupEnabled(enabled: Boolean) =
         userPreferencesDao.setAutoBackupEnabled(enabled)
+
+    suspend fun enableExpirationReminder(enabled: Boolean) =
+        userPreferencesDao.enableExpirationReminder(enabled)
+
+    suspend fun enableAppointmentReminder(enabled: Boolean) =
+        userPreferencesDao.enableAppointmentReminder(enabled)
 
     suspend fun setBackupFrequency(frequency: String) =
         userPreferencesDao.setFrequency(frequency)
@@ -246,6 +253,12 @@ class DataRepository(
 
     suspend fun setLastBackupUpdate(date: String) =
         userPreferencesDao.setLastBackupDate(date)
+
+    suspend fun isExpirationReminderEnabled(): Boolean =
+        userPreferencesDao.isExpirationReminderEnabled()
+
+    suspend fun isAppointmentReminderEnabled(): Boolean =
+        userPreferencesDao.isAppointmentReminderEnabled()
 
     suspend fun restorePreferences(preferences: UserPreferences) =
         userPreferencesDao.insertOrUpdate(preferences)
@@ -287,37 +300,137 @@ class DataRepository(
         return gson.toJson(exportData)
     }
 
+    // Domains specific data import functions
+    /**
+     * Import weights from a list of [Weight]
+     *
+     * @param weights List of weights to import
+     */
+    suspend fun  importWeights(weights: List<Weight>) = withContext(Dispatchers.IO) {
+        weights.forEach { insertWeight(it.copy()) }
+    }
+
+    /**
+     * Import HBA1C from a list of [Hba1c]
+     *
+     * @param hba1c List of HBA1C to import
+     */
+    suspend fun importHba1c(hba1c: List<Hba1c>) = withContext(Dispatchers.IO) {
+        hba1c.forEach { insertHba1c(it.copy()) }
+    }
+
+    /**
+     * Import appointments from a list of [Appointment]
+     *
+     * @param appointments List of appointments to import
+     */
+    suspend fun importAppointments(appointments: List<Appointment>) = withContext(Dispatchers.IO) {
+        appointments.forEach { insertAppointment(it.copy()) }
+    }
+
+    /**
+     * Import treatments from a list of [Treatment]
+     *
+     * @param treatments List of treatments to import
+     */
+    suspend fun importTreatments(treatments: List<Treatment>) = withContext(Dispatchers.IO) {
+        treatments.forEach { insertTreatment(it.copy()) }
+    }
+
+    /**
+     * Import important dates from a list of [ImportantDate]
+     *
+     * @param importantDates List of important dates to import
+     */
+    suspend fun importImportantDates(importantDates: List<ImportantDate>) = withContext(Dispatchers.IO) {
+        importantDates.forEach { insertImportantDate(it.copy()) }
+    }
+
+    /**
+     * Import medical devices from a list of [MedicalDevice]
+     *
+     * @param medicalDevices List of medical devices to import
+     */
+    suspend fun importMedicalDevices(medicalDevices: List<MedicalDevice>) = withContext(Dispatchers.IO) {
+        medicalDevices.forEach { insertDevice(it.copy()) }
+    }
+
+    /**
+     * Import user details [UserDetails]
+     *
+     * @param userDetails User details to import
+     */
+    suspend fun importUserDetails(userDetails: UserDetails) = withContext(Dispatchers.IO) {
+        updateUserDetails(userDetails.copy())
+    }
+
+    /**
+     * Import user preferences [UserPreferences]
+     *
+     * @param userPreferences User preferences to import
+     */
+    suspend fun importUserPreferences(userPreferences: UserPreferences) = withContext(Dispatchers.IO) {
+        insertOrUpdate(userPreferences.copy())
+    }
+
+    /**
+     * Toggle backup encryption
+     *
+     * @param enabled Whether to enable backup encryption
+     */
+    suspend fun toggleBackupEncryption(enabled: Boolean) = withContext(Dispatchers.IO) {
+        userPreferencesDao.toggleBackupEncryptionEnabled(enabled)
+    }
+
+    /**
+     * Check if backup encryption is enabled
+     *
+     * @return Whether backup encryption is enabled
+     */
+    suspend fun isBackupEncryptionEnabled(): Boolean = withContext(Dispatchers.IO) {
+        userPreferencesDao.isBackupEncryptionEnabled()
+    }
+
+    /**
+     * Legacy import from JSON method
+     *
+     * @param json JSON string to import
+     * @param profilePhotoPath Path to profile photo file
+     */
     suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) {
         val gson = GsonFactory.create()
 
         val importedData: ExportData = gson.fromJson(json, ExportData::class.java)
 
-        withContext(Dispatchers.IO) {
-            importedData.weights.forEach { weight ->
-                insertWeight(weight.copy()) // Reset IDs to have them auto incremented by Room to prevent app crashes
-            }
-            importedData.hba1c.forEach { hba1c ->
-                insertHba1c(hba1c.copy())
-            }
-            importedData.appointments.forEach { appointment ->
-                insertAppointment(appointment.copy())
-            }
-            importedData.treatments.forEach { treatment ->
-                insertTreatment(treatment.copy())
-            }
-            importedData.importantDates.forEach { diagnosis ->
-                insertImportantDate(diagnosis.copy())
-            }
-            importedData.devices.forEach { device ->
-                insertDevice(device.copy())
-            }
-            importedData.userDetails?.let { userDetails ->
-                updateUserDetails(userDetails.copy(profilePhotoPath = profilePhotoPath))
-            }
-            importedData.userPreferences?.let { userPreferences ->
-                insertOrUpdate(userPreferences.copy())
-            }
-        }
+        importWeights(importedData.weights)
+        importHba1c(importedData.hba1c)
+        importAppointments(importedData.appointments)
+        importTreatments(importedData.treatments)
+        importImportantDates(importedData.importantDates)
+        importMedicalDevices(importedData.devices)
+        importUserDetails(importedData.userDetails ?: UserDetails())
+        importUserPreferences(importedData.userPreferences ?: UserPreferences())
+    }
+
+    /**
+     * Save profile photo to files directory and udpate photo path
+     *
+     * @param bytes Bytes of the profile photo
+     * @param filesDir Files directory
+     *
+     * @return Path to the saved profile photo
+     */
+    suspend fun saveProfilePhotoBytes(bytes: ByteArray, filesDir: File): String {
+        val fileName = "profile_photo_${System.currentTimeMillis()}.jpg"
+        val file = File(filesDir, fileName)
+
+        filesDir.listFiles()
+            ?.filter { it.name.startsWith("profile_photo_") && it.name != fileName }
+            ?.forEach { it.delete() }
+
+        file.writeBytes(bytes)
+        addProfilePhotoPath(file.absolutePath)
+        return file.absolutePath
     }
 
     // ----------------

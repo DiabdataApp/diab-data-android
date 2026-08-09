@@ -127,6 +127,8 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+
     implementation(libs.androidx.compose.animation.core)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.core.ktx)
@@ -134,7 +136,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     // BOM
-    implementation(platform(libs.androidx.compose.bom))
+    @Suppress("AvoidDuplicateDependencies")
+    // Suppressed because we need it both for the implementation and tests
+    implementation(composeBom)
 
     // Compose UI
     implementation(libs.androidx.ui)
@@ -182,6 +186,10 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.work.runtime.ktx)
 
+    // Encryption
+    implementation(libs.sqlcipher.android)
+    implementation(libs.zip4j)
+
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.common)
@@ -223,7 +231,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+    @Suppress("AvoidDuplicateDependencies")
+    // Suppressed because we need it both for the implementation and tests
+    androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

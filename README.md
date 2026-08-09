@@ -14,7 +14,7 @@
     <img src="resources/Logo/new_logo.svg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Diab Data</h3>
+<h3 align="center">Diab Data</h3>
   <p align="center">
   <a href="https://github.com/DiabdataApp/diab-data-android/releases">Releases</a> • <a href="https://app.diabdata.fr/">Website</a>
   </p>
@@ -33,14 +33,15 @@
 - [About The Project](#about-the-project)
 - [Features](#features)
 - [Screenshots](#screenshots)
-  - [Built With](#built-with)
+    - [Built With](#built-with)
 - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Clone the repo](#clone-the-repo)
+    - [Prerequisites](#prerequisites)
+    - [Clone the repo](#clone-the-repo)
 - [Project's architecture](#projects-architecture)
 - [Contributing](#contributing)
 - [Roadmap](#roadmap)
 - [Contact](#contact)
+
 </details>
 
 <!-- ABOUT THE PROJECT -->
@@ -49,11 +50,14 @@
 
 <!-- ![image](public/imgs/product_screenshot.png) -->
 
-This project was born from my habit of tracking my diabetes related information on a google sheets document which was a bit
-annoying on the long run. This app aims to let users add important dates and add their medical results to the app in order to
+This project was born from my habit of tracking my diabetes related information on a google sheets
+document which was a bit
+annoying on the long run. This app aims to let users add important dates and add their medical
+results to the app in order to
 have everything in the same place and easier to find and update.
 
 ## Features
+
 <table>
   <thead>
     <tr>
@@ -134,17 +138,17 @@ This project is built using the following frameworks/libraries:
 
 <div>
 
-  [![Static Badge](https://img.shields.io/badge/Kotlin-fuchsia?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
-  [![Static Badge](https://img.shields.io/badge/Jetpack%20Compose-002b41?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose/)
-  [![Static Badge](https://img.shields.io/badge/Room-green)](https://developer.android.com/jetpack/androidx/releases/room)
+[![Static Badge](https://img.shields.io/badge/Kotlin-fuchsia?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Static Badge](https://img.shields.io/badge/Jetpack%20Compose-002b41?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose/)
+[![Static Badge](https://img.shields.io/badge/Room-green)](https://developer.android.com/jetpack/androidx/releases/room)
 
 </div>
 
 <div>
 
-  [![Static Badge](https://img.shields.io/badge/Android%20Studio-3DDC84?logo=androidstudio&logoColor=white)](https://developer.android.com/studio/)
-  [![Static Badge](https://img.shields.io/badge/Google%20material%20font-4285F4?logo=googlefonts&logoColor=white)](https://fonts.google.com/icons?icon.size=24&icon.color=%235f6368&icon.query=date&icon.set=Material+Symbols&icon.style=Outlined)
-  [![Static Badge](https://img.shields.io/badge/Vico-4285F4)](https://github.com/patrykandpatrick/vico)
+[![Static Badge](https://img.shields.io/badge/Android%20Studio-3DDC84?logo=androidstudio&logoColor=white)](https://developer.android.com/studio/)
+[![Static Badge](https://img.shields.io/badge/Google%20material%20font-4285F4?logo=googlefonts&logoColor=white)](https://fonts.google.com/icons?icon.size=24&icon.color=%235f6368&icon.query=date&icon.set=Material+Symbols&icon.style=Outlined)
+[![Static Badge](https://img.shields.io/badge/Vico-4285F4)](https://github.com/patrykandpatrick/vico)
 
 </div>
 
@@ -171,6 +175,7 @@ git clone https://github.com/DiabdataApp/diab-data-android.git
 #### Setting up your variables
 
 Next, rename the local.properties.sample file to local.properties and fill in the required fields:
+
 ```
 sdk.dir=/path/to/your/sdk
 RELAY_SERVER_URL=your.relay.url
@@ -230,27 +235,45 @@ This project follows a **feature branch** workflow with three main branches:
 ### Workflow
 
 1. Create your Feature Branch from `dev`:
+
   ```bash
   git checkout dev
   git pull origin dev
   git checkout -b FCOSSU-Database_migration
   ```
+
 2. Commit your changes:
+
   ```bash
   git commit -m 'Add some new feature'
   ```
+
 3. Push your branch and open a Pull Request → `dev`:
+
   ```bash
   git push origin FCOSSU-Database_migration
   ```
+
 4. Once the PR is reviewed and merged into `dev`:
-   - CI tests run automatically
-   - A beta pre-release is created with debug APKs
+    - CI tests run automatically
+    - A beta pre-release is created with debug APKs
 5. When `dev` is ready for production, a PR is opened `dev → main`:
-  - A production release is created with signed & minified APKs
-  - The content of the release notes will be retrieved from the PR description
+
+- A production release is created with signed & minified APKs
+- The content of the release notes will be retrieved from the PR description
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Visual identity
+
+The app heavily relies on
+Google's [Material Symbols & Icons](https://fonts.google.com/icons?icon.size=24&icon.color=%231f1f1f&icon.set=Material+Symbols&icon.style=Rounded&selected=Material+Symbols+Rounded:home:FILL@1;wght@400;GRAD@0;opsz@24).
+The settings used to retrieve the SVG files are:
+
+| variant  | weight | grade | optical size | style                            |
+|:--------:|:------:|:-----:|:------------:|:---------------------------------|
+| Outlined |  400   |   0   |      24      | Material Symbols (new) - Rounded |
+|  Filled  |  400   |   0   |      24      | Material Symbols (new) - Rounded |
 
 <!-- ROADMAP -->
 
@@ -265,7 +288,8 @@ proposed features (and known issues).
 
 ## Contact
 
-Florian Cossu - [Linkedin](https://www.linkedin.com/in/florian-cossu/) - [Github](https://github.com/Florian-cossu)
+Florian
+Cossu - [Linkedin](https://www.linkedin.com/in/florian-cossu/) - [Github](https://github.com/Florian-cossu)
 
 Project
 Link: [https://github.com/DiabdataApp/diab-data-android](https://github.com/DiabdataApp/diab-data-android)

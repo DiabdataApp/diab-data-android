@@ -16,12 +16,12 @@ import com.diabdata.core.ui.components.cardsList.CardsList
  * ## Corner rounding rules
  * ```
  * Single card (size == 1):
- * ╭────────────────╮  ← all corners 20.dp
+ * ╭────────────────╮  ← all corners 15.dp
  * │                │
  * ╰────────────────╯
  *
  * First card (index == 0):
- * ╭────────────────╮  ← top corners 20.dp
+ * ╭────────────────╮  ← top corners 15.dp
  * │                │
  * ┗────────────────┛  ← bottom corners 3.dp
  *
@@ -33,7 +33,7 @@ import com.diabdata.core.ui.components.cardsList.CardsList
  * Last card (index == size - 1):
  * ┏────────────────┓  ← top corners 3.dp
  * │                │
- * ╰────────────────╯  ← bottom corners 20.dp
+ * ╰────────────────╯  ← bottom corners 15.dp
  * ```
  *
  * ## Usage example
@@ -56,16 +56,16 @@ import com.diabdata.core.ui.components.cardsList.CardsList
  */
 fun getItemShape(index: Int, size: Int): Shape {
     if (size == 1) {
-        return RoundedCornerShape(20.dp)
+        return RoundedCornerShape(15.dp)
     }
     return when (index) {
         0 -> RoundedCornerShape(
-            topStart = 20.dp, topEnd = 20.dp,
+            topStart = 15.dp, topEnd = 15.dp,
             bottomStart = 3.dp, bottomEnd = 3.dp
         )
         size - 1 -> RoundedCornerShape(
             topStart = 3.dp, topEnd = 3.dp,
-            bottomStart = 20.dp, bottomEnd = 20.dp
+            bottomStart = 15.dp, bottomEnd = 15.dp
         )
 
         else -> RoundedCornerShape(3.dp)

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- Validation messages -->
-    <string name="hba1c_invalid_hba1c_error_label" tools:ignore="Typos">Invalid HBA1C</string>
-    <string name="hba1c_invalid_hba1c_error_hint" tools:ignore="Typos">HBA1C must be between 0 and 15 (%)</string>
-
-</resources>
