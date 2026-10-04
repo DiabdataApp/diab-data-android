@@ -275,6 +275,18 @@ The settings used to retrieve the SVG files are:
 | Outlined |  400   |   0   |      24      | Material Symbols (new) - Rounded |
 |  Filled  |  400   |   0   |      24      | Material Symbols (new) - Rounded |
 
+Material Symbols are © Google and distributed under
+the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). Some icons in
+`shared/src/main/res/drawable/` are hand-modified versions of them. The license requires modified files
+to say so (section 4(b)), so any icon you change must start with a comment like:
+
+```xml
+<!-- Modified from Material Symbols "medication" (Google, Apache 2.0) -->
+```
+
+The app font is [Google Sans Flex](https://fonts.google.com/specimen/Google+Sans+Flex), © Google, under
+the [SIL Open Font License 1.1](app/src/main/assets/licenses/google_sans_flex_OFL.txt).
+
 <!-- ROADMAP -->
 
 ## Roadmap
