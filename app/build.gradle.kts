@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.aboutLibraries)
 }
 
 val localProperties = Properties()
@@ -91,7 +92,9 @@ android {
             excludes += setOf(
                 "META-INF/INDEX.LIST",
                 "META-INF/MANIFEST.MF",
-                "META-INF/io.netty.versions.properties"
+                "META-INF/io.netty.versions.properties",
+                "META-INF/license/**",
+                "META-INF/native-image/**"
             )
         }
     }
@@ -101,6 +104,12 @@ android {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+aboutLibraries {
+    collect {
+        configPath = file("config")
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -239,6 +248,10 @@ dependencies {
 
     // Ktor + GSON
     implementation(libs.ktor.serialization.gson)
+
+    // Licenses
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries.compose.m3)
 
     // Shared
     implementation(project(":shared"))
