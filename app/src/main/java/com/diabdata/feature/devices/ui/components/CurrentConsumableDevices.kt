@@ -90,7 +90,7 @@ fun CurrentConsumableDevicesList() {
                 coroutineScope.launch {
                     devicesViewModel.updateDevice(
                         device.copy(
-                            isFaulty = !device.isLifeSpanOver
+                            isLifeSpanOver = !device.isLifeSpanOver
                         )
                     )
                 }

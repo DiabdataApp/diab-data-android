@@ -35,7 +35,7 @@ android {
         testApplicationId = "com.diabdata.test"
         minSdk = 26
         targetSdk = 36
-        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: getLocalVersionCode()
+        versionCode = 15
         versionName = "4.9.79"
         buildConfigField("String", "RELAY_SERVER_URL","\"${localProperties.getProperty("RELAY_SERVER_URL", "")}\"")
         buildConfigField("String", "MEDICATION_GTIN_FILE_VERSION", "\"1.2.0\"")
@@ -97,20 +97,6 @@ android {
     }
 
     buildToolsVersion = "36.0.0"
-}
-
-fun getLocalVersionCode(): Int {
-    val versionFile = file("version.properties")
-    if (!versionFile.exists()) {
-        versionFile.writeText("1")
-    }
-    val current = versionFile.readText().trim().replace(
-        regex = Regex("=$"),
-        replacement = ""
-    ).toInt()
-    val newCode = current + 1
-    versionFile.writeText(newCode.toString())
-    return newCode
 }
 
 ksp {
