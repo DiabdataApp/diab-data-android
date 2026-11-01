@@ -172,14 +172,14 @@ class WeightDaoTest {
         assertEquals(1, allWeights.size)
         assertEquals(false, allWeights[0].isArchived)
 
-        weightDao.setArchived(weight.id, true)
+        weightDao.update(weight.copy(isArchived = true))
 
         allWeights = weightDao.getAllWeightsFlow().first()
 
         assertEquals(1, allWeights.size)
         assertEquals(true, allWeights[0].isArchived)
 
-        weightDao.setArchived(weight.id, false)
+        weightDao.update(weight.copy(isArchived = false))
 
         allWeights = weightDao.getAllWeightsFlow().first()
 

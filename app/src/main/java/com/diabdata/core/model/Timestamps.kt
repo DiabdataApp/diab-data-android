@@ -14,6 +14,11 @@ fun nowMillis(): Instant {
     return Instant.fromEpochMilliseconds(now.toEpochMilliseconds())
 }
 
+fun nowMillisInLong(): Long {
+    val now = Clock.System.now()
+    return now.toEpochMilliseconds()
+}
+
 fun Instant.toLocalDate(): LocalDate {
     return LocalDate.from(this.toJavaInstant().atZone(ZoneId.systemDefault()))
 }

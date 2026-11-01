@@ -19,8 +19,8 @@ interface TreatmentDao {
     @Query("DELETE FROM treatments WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("UPDATE treatments SET isArchived = :archived WHERE id = :id")
-    suspend fun setArchived(id: Int, archived: Boolean)
+    @Query("UPDATE treatments SET isArchived = :archived, updatedAt = :updatedAt WHERE id = :id")
+    suspend fun setArchived(id: Int, archived: Boolean, updatedAt: Long)
 
     @Query("SELECT * FROM treatments ORDER BY expirationDate DESC")
     fun getAllTreatmentsFlow(): Flow<List<Treatment>>

@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.nowMillis
+import com.diabdata.core.model.nowMillisInLong
 import com.diabdata.feature.treatments.data.TreatmentDao
 import com.diabdata.shared.utils.dataTypes.TreatmentType
 import kotlinx.coroutines.flow.first
@@ -117,11 +118,11 @@ class TreatmentDaoTest {
         val treatmentsBefore = treatmentDao.getAllTreatmentsFlow().first()
         assertEquals(treatment, treatmentsBefore[0])
 
-        treatmentDao.setArchived(treatment.id, true)
+        treatmentDao.setArchived(treatment.id, true, nowMillisInLong())
         val treatmentsAfterArchive = treatmentDao.getAllTreatmentsFlow().first()
         assertEquals(true, treatmentsAfterArchive[0].isArchived)
 
-        treatmentDao.setArchived(treatment.id, false)
+        treatmentDao.setArchived(treatment.id, false, nowMillisInLong())
         val treatmentsAfterUnarchive = treatmentDao.getAllTreatmentsFlow().first()
         assertEquals(false, treatmentsAfterUnarchive[0].isArchived)
     }

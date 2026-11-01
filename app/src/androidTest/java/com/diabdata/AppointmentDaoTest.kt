@@ -128,12 +128,12 @@ class AppointmentDaoTest {
         assertEquals(1, appointmentsBefore.size)
         assertEquals(appointment, appointmentsBefore[0])
 
-        appointmentDao.setArchived(appointment.id, true)
+        appointmentDao.update(appointment.copy(isArchived = true))
         val appointmentsAfterArchive = appointmentDao.getAllAppointmentsFlow().first()
         assertEquals(1, appointmentsAfterArchive.size)
         assertEquals(true, appointmentsAfterArchive[0].isArchived)
 
-        appointmentDao.setArchived(appointment.id, false)
+        appointmentDao.update(appointment.copy(isArchived = false))
         val appointmentsAfterUnarchive = appointmentDao.getAllAppointmentsFlow().first()
         assertEquals(1, appointmentsAfterUnarchive.size)
         assertEquals(false, appointmentsAfterUnarchive[0].isArchived)

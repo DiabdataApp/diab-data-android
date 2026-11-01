@@ -11,6 +11,7 @@ import com.diabdata.core.model.Treatment
 import com.diabdata.core.model.UserDetails
 import com.diabdata.core.model.UserPreferences
 import com.diabdata.core.model.Weight
+import com.diabdata.core.model.nowMillisInLong
 import com.diabdata.core.utils.data.GsonFactory
 import com.diabdata.feature.appointments.data.AppointmentDao
 import com.diabdata.feature.dataMatrixScanner.data.MedicationDao
@@ -153,10 +154,6 @@ class DataRepository(
     suspend fun updateImportantDate(importantDate: ImportantDate) =
         importantDateDao.update(importantDate)
 
-    /** Archive appointment */
-    suspend fun setArchivedImportantDate(id: Int, archived: Boolean) =
-        importantDateDao.setArchived(id, archived)
-
     /** Flow of all diagnosis dates */
     fun getAllImportantDates(): Flow<List<ImportantDate>> =
         importantDateDao.getAllImportantDates()
@@ -227,7 +224,9 @@ class DataRepository(
     suspend fun deleteUserDetails() = userDetailsDao.deleteUserDetails()
 
     /** Add profile photo path */
-    suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(path)
+    suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(path,
+        nowMillisInLong()
+    )
 
     // ----------------
     // User preferences

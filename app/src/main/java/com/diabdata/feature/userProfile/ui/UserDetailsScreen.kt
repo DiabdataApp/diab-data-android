@@ -147,7 +147,11 @@ fun UserDetailsView(
                     }
                 },
                 actions = {
-                    TextButton(onClick = { onSave(buildUpdatedUserDetails()) }) {
+                    TextButton(onClick = { onSave(
+                        buildUpdatedUserDetails().copy(
+                            updatedAt = nowMillis()
+                        )
+                    ) }) {
                         Text(stringResource(shared.string.common_save))
                     }
                 }

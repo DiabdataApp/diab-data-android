@@ -109,13 +109,13 @@ class ImportantDatesDaoTest {
         assertEquals(1, allImportantDates.size)
         assertEquals(false, allImportantDates[0].isArchived)
 
-        importantDateDao.setArchived(importantDate.id, true)
+        importantDateDao.update(importantDate.copy(isArchived = true))
         allImportantDates = importantDateDao.getAllImportantDates().first()
 
         assertEquals(1, allImportantDates.size)
         assertEquals(true, allImportantDates[0].isArchived)
 
-        importantDateDao.setArchived(importantDate.id, false)
+        importantDateDao.update(importantDate.copy(isArchived = false))
         allImportantDates = importantDateDao.getAllImportantDates().first()
 
         assertEquals(1, allImportantDates.size)

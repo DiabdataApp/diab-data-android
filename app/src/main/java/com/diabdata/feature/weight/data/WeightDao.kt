@@ -20,9 +20,6 @@ interface WeightDao {
     @Query("DELETE FROM weight_entries WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("UPDATE weight_entries SET isArchived = :archived WHERE id = :id")
-    suspend fun setArchived(id: Int, archived: Boolean)
-
     @Query("SELECT * FROM weight_entries ORDER BY date DESC")
     fun getAllWeightsFlow(): Flow<List<Weight>>
 
