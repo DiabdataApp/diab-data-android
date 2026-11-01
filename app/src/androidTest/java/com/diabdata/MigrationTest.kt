@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.diabdata.core.database.DiabDataDatabase
 import com.diabdata.core.database.migrations.ALL_MIGRATIONS
 import com.diabdata.core.database.migrations.MIGRATION_20_21
+import com.diabdata.core.database.migrations.MIGRATION_21_22
 import com.diabdata.core.database.migrations.MIGRATION_22_23
 import com.diabdata.core.database.migrations.MIGRATION_23_24
 import com.diabdata.core.database.migrations.MIGRATION_24_25
@@ -94,6 +95,28 @@ class MigrationTest {
 
                     assertEquals(1, updatedAppointment.count)
                     assertEquals("2026-01-15T00:00", updatedAppointment.getString(0))
+                }
+            }
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate21TO22Test() {
+        helper.createDatabase(diabDataTestDb, 21).use { }
+
+        helper.runMigrationsAndValidate(diabDataTestDb, 22, true, MIGRATION_21_22)
+            .use { updatedDb ->
+                updatedDb.query(
+                    """
+                        SELECT id, automaticBackupEnabled, frequency FROM user_preferences
+                    """.trimIndent()
+                ).use { cursor ->
+                    assertEquals(1, cursor.count)
+
+                    cursor.moveToFirst()
+                    assertEquals(0, cursor.getInt(0)) // ID == 0
+                    assertEquals(0, cursor.getInt(1)) // automaticBackupEnabled == false
+                    assertEquals("weekly", cursor.getString(2)) // frequency == weekly
                 }
             }
     }
