@@ -128,4 +128,21 @@ class DataRepositoryImportTest {
         assertEquals(2, allWeights.size)
         assertEquals(listOf(70f, 80f), weightsList)
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun failedImportRollsBackEverything() = runBlocking {
+        try {
+            repository.inTransaction {
+                repository.importWeights(listOf(weight(entryUuid = "weight-a")))
+                throw IllegalStateException("simulated failure")
+            }
+        } catch (e: IllegalStateException) {
+            // expected: simulated failure
+        }
+
+        val allWeights = db.weightDao().getAllWeightsFlow().first()
+
+        assertEquals(0, allWeights.size)
+    }
 }

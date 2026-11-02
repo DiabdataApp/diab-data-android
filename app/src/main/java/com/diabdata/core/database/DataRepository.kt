@@ -1,5 +1,6 @@
 package com.diabdata.core.database
 
+import androidx.room.withTransaction
 import com.diabdata.core.backup.ExportData
 import com.diabdata.core.model.Appointment
 import com.diabdata.core.model.Hba1c
@@ -314,6 +315,12 @@ class DataRepository(
                 backupEntry.updatedAt > localEntry.updatedAt -> updateWeight(backupEntry.copy(id = localEntry.id))
                 else -> Unit // local entry is same or newer: keep it
             }
+        }
+    }
+
+    suspend fun inTransaction(block: suspend () -> Unit) {
+        database.withTransaction {
+            block()
         }
     }
 
