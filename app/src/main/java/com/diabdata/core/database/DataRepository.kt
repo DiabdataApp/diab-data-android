@@ -305,8 +305,16 @@ class DataRepository(
      *
      * @param weights List of weights to import
      */
-    suspend fun  importWeights(weights: List<Weight>) = withContext(Dispatchers.IO) {
-        weights.forEach { insertWeight(it.copy()) }
+    suspend fun importWeights(weights: List<Weight>) = withContext(Dispatchers.IO) {
+        weights.forEach { backupEntry ->
+            val localEntry = weightDao.getByUuid(backupEntry.entryUuid)
+
+            when {
+                localEntry == null -> insertWeight(backupEntry.copy(id = 0))
+                backupEntry.updatedAt > localEntry.updatedAt -> updateWeight(backupEntry.copy(id = localEntry.id))
+                else -> Unit // local entry is same or newer: keep it
+            }
+        }
     }
 
     /**

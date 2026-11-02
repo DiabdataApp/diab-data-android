@@ -20,6 +20,9 @@ interface WeightDao {
     @Query("DELETE FROM weight_entries WHERE id = :id")
     suspend fun deleteById(id: Int)
 
+    @Query("SELECT * FROM weight_entries WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): Weight?
+
     @Query("SELECT * FROM weight_entries ORDER BY date DESC")
     fun getAllWeightsFlow(): Flow<List<Weight>>
 
