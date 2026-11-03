@@ -178,7 +178,7 @@ class Hba1cDaoTest {
         assertEquals(1, allHba1c.size)
         assertEquals(true, allHba1c[0].isArchived)
 
-        hba1cDao.update(hba1c.copy(isArchived = true))
+        hba1cDao.update(hba1c.copy(isArchived = false))
 
         allHba1c = hba1cDao.getAllHBA1CFlow().first()
 

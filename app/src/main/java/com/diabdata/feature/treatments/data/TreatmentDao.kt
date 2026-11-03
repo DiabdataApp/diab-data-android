@@ -19,6 +19,9 @@ interface TreatmentDao {
     @Query("DELETE FROM treatments WHERE id = :id")
     suspend fun deleteById(id: Int)
 
+    @Query("SELECT * FROM treatments WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): Treatment?
+
     @Query("UPDATE treatments SET isArchived = :archived, updatedAt = :updatedAt WHERE id = :id")
     suspend fun setArchived(id: Int, archived: Boolean, updatedAt: Long)
 

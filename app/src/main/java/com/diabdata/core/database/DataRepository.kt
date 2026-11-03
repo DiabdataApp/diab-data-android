@@ -219,20 +219,24 @@ class DataRepository(
     fun getUserDetails(): Flow<UserDetails?> = userDetailsDao.getUserDetails()
 
     /** Update user details */
-    suspend fun updateUserDetails(userDetails: UserDetails) = userDetailsDao.upsertUserDetails(userDetails)
+    suspend fun updateUserDetails(userDetails: UserDetails) =
+        userDetailsDao.upsertUserDetails(userDetails)
 
     /** Delete user details */
     suspend fun deleteUserDetails() = userDetailsDao.deleteUserDetails()
 
     /** Add profile photo path */
-    suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(path,
+    suspend fun addProfilePhotoPath(path: String?) = userDetailsDao.updateProfilePhotoPath(
+        path,
         nowMillisInLong()
     )
 
     // ----------------
     // User preferences
     // ----------------
-    suspend fun insertOrUpdate(preferences: UserPreferences) = userPreferencesDao.insertOrUpdate(preferences)
+    suspend fun insertOrUpdate(preferences: UserPreferences) =
+        userPreferencesDao.insertOrUpdate(preferences)
+
     fun getUserPreferences(): Flow<UserPreferences?> =
         userPreferencesDao.getUserPreferences()
 
@@ -300,9 +304,20 @@ class DataRepository(
         return gson.toJson(exportData)
     }
 
+    /**
+     * Transaction util to run database operations as transactions
+     */
+    suspend fun inTransaction(block: suspend () -> Unit) {
+        database.withTransaction {
+            block()
+        }
+    }
+
     // Domains specific data import functions
     /**
      * Import weights from a list of [Weight]
+     * Compares uuid and updatedAt to insert new entry if none exist or
+     * the most recent one in cases of conflicts
      *
      * @param weights List of weights to import
      */
@@ -318,56 +333,102 @@ class DataRepository(
         }
     }
 
-    suspend fun inTransaction(block: suspend () -> Unit) {
-        database.withTransaction {
-            block()
-        }
-    }
-
     /**
      * Import HBA1C from a list of [Hba1c]
+     * Compares uuid and updatedAt to insert new entry if none exist or
+     * the most recent one in cases of conflicts
      *
      * @param hba1c List of HBA1C to import
      */
     suspend fun importHba1c(hba1c: List<Hba1c>) = withContext(Dispatchers.IO) {
-        hba1c.forEach { insertHba1c(it.copy()) }
+        hba1c.forEach { backupEntry ->
+            val localEntry = hba1cDao.getByUuid(backupEntry.entryUuid)
+
+            when {
+                localEntry == null -> insertHba1c(backupEntry.copy(id = 0))
+                backupEntry.updatedAt > localEntry.updatedAt -> updateHBA1C(backupEntry.copy(id = localEntry.id))
+                else -> Unit // local entry is same or newer: keep it
+            }
+        }
     }
 
     /**
      * Import appointments from a list of [Appointment]
+     * Compares uuid and updatedAt to insert new entry if none exist or
+     * the most recent one in cases of conflicts
      *
      * @param appointments List of appointments to import
      */
     suspend fun importAppointments(appointments: List<Appointment>) = withContext(Dispatchers.IO) {
-        appointments.forEach { insertAppointment(it.copy()) }
+        appointments.forEach { backupEntry ->
+            val localEntry = appointmentDao.getByUuid(backupEntry.entryUuid)
+
+            when {
+                localEntry == null -> insertAppointment(backupEntry.copy(id = 0))
+                backupEntry.updatedAt > localEntry.updatedAt -> updateAppointment(
+                    backupEntry.copy(
+                        id = localEntry.id
+                    )
+                )
+
+                else -> Unit // local entry is same or newer: keep it
+            }
+        }
     }
 
     /**
      * Import treatments from a list of [Treatment]
+     * Compares uuid and updatedAt to insert new entry if none exist or
+     * the most recent one in cases of conflicts
      *
      * @param treatments List of treatments to import
      */
     suspend fun importTreatments(treatments: List<Treatment>) = withContext(Dispatchers.IO) {
-        treatments.forEach { insertTreatment(it.copy()) }
+        treatments.forEach { backupEntry ->
+            val localEntry = treatmentDao.getByUuid(backupEntry.entryUuid)
+
+            when {
+                localEntry == null -> insertTreatment(backupEntry.copy(id = 0))
+                backupEntry.updatedAt > localEntry.updatedAt -> updateTreatment(backupEntry.copy(id = localEntry.id))
+                else -> Unit // local entry is same or newer: keep it
+            }
+        }
     }
 
     /**
      * Import important dates from a list of [ImportantDate]
+     * Compares uuid and updatedAt to insert new entry if none exist or
+     * the most recent one in cases of conflicts
      *
      * @param importantDates List of important dates to import
      */
-    suspend fun importImportantDates(importantDates: List<ImportantDate>) = withContext(Dispatchers.IO) {
-        importantDates.forEach { insertImportantDate(it.copy()) }
-    }
+    suspend fun importImportantDates(importantDates: List<ImportantDate>) =
+        withContext(Dispatchers.IO) {
+            importantDates.forEach { backupEntry ->
+                val localEntry = importantDateDao.getByUuid(backupEntry.entryUuid)
+
+                when {
+                    localEntry == null -> insertImportantDate(backupEntry.copy(id = 0))
+                    backupEntry.updatedAt > localEntry.updatedAt -> updateImportantDate(
+                        backupEntry.copy(
+                            id = localEntry.id
+                        )
+                    )
+
+                    else -> Unit // local entry is same or newer: keep it
+                }
+            }
+        }
 
     /**
      * Import medical devices from a list of [MedicalDevice]
      *
      * @param medicalDevices List of medical devices to import
      */
-    suspend fun importMedicalDevices(medicalDevices: List<MedicalDevice>) = withContext(Dispatchers.IO) {
-        medicalDevices.forEach { insertDevice(it.copy()) }
-    }
+    suspend fun importMedicalDevices(medicalDevices: List<MedicalDevice>) =
+        withContext(Dispatchers.IO) {
+            medicalDevices.forEach { insertDevice(it.copy()) }
+        }
 
     /**
      * Import user details [UserDetails]
@@ -383,9 +444,10 @@ class DataRepository(
      *
      * @param userPreferences User preferences to import
      */
-    suspend fun importUserPreferences(userPreferences: UserPreferences) = withContext(Dispatchers.IO) {
-        insertOrUpdate(userPreferences.copy())
-    }
+    suspend fun importUserPreferences(userPreferences: UserPreferences) =
+        withContext(Dispatchers.IO) {
+            insertOrUpdate(userPreferences.copy())
+        }
 
     /**
      * Toggle backup encryption
@@ -411,19 +473,21 @@ class DataRepository(
      * @param json JSON string to import
      * @param profilePhotoPath Path to profile photo file
      */
-    suspend fun importDataFromJsonString(json: String, profilePhotoPath: String? = null) {
+    suspend fun importDataFromJsonString(json: String) {
         val gson = GsonFactory.create()
 
         val importedData: ExportData = gson.fromJson(json, ExportData::class.java)
 
-        importWeights(importedData.weights)
-        importHba1c(importedData.hba1c)
-        importAppointments(importedData.appointments)
-        importTreatments(importedData.treatments)
-        importImportantDates(importedData.importantDates)
-        importMedicalDevices(importedData.devices)
-        importUserDetails(importedData.userDetails ?: UserDetails())
-        importUserPreferences(importedData.userPreferences ?: UserPreferences())
+        inTransaction {
+            importWeights(importedData.weights)
+            importHba1c(importedData.hba1c)
+            importAppointments(importedData.appointments)
+            importTreatments(importedData.treatments)
+            importImportantDates(importedData.importantDates)
+            importMedicalDevices(importedData.devices)
+            importUserDetails(importedData.userDetails ?: UserDetails())
+            importUserPreferences(importedData.userPreferences ?: UserPreferences())
+        }
     }
 
     /**

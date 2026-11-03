@@ -16,6 +16,9 @@ interface AppointmentDao {
     @Query("DELETE FROM appointments WHERE id = :id")
     suspend fun deleteById(id: Int)
 
+    @Query("SELECT * FROM appointments WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): Appointment?
+
     @Update
     suspend fun update(appointment: Appointment)
 
