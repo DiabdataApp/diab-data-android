@@ -15,8 +15,8 @@ interface ImportantDateDao {
     @Update
     suspend fun update(importantDate: ImportantDate)
 
-    @Query("UPDATE important_date_entries SET isArchived = :archived WHERE id = :id")
-    suspend fun setArchived(id: Int, archived: Boolean)
+    @Query("SELECT * FROM important_date_entries WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): ImportantDate?
 
     @Query("DELETE FROM important_date_entries WHERE id = :id")
     suspend fun deleteById(id: Int)

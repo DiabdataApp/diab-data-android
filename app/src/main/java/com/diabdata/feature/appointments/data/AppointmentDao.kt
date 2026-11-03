@@ -16,11 +16,11 @@ interface AppointmentDao {
     @Query("DELETE FROM appointments WHERE id = :id")
     suspend fun deleteById(id: Int)
 
+    @Query("SELECT * FROM appointments WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): Appointment?
+
     @Update
     suspend fun update(appointment: Appointment)
-
-    @Query("UPDATE appointments SET isArchived = :archived WHERE id = :id")
-    suspend fun setArchived(id: Int, archived: Boolean)
 
     @Query("SELECT * FROM appointments WHERE (isArchived = 0 OR isArchived = 1) ORDER BY date DESC")
     fun getAllAppointmentsFlow(): Flow<List<Appointment>>

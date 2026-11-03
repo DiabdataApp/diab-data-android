@@ -21,8 +21,8 @@ interface HBA1CDao {
     @Query("DELETE FROM hba1c_entries WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("UPDATE hba1c_entries SET isArchived = :archived WHERE id = :id")
-    suspend fun setArchived(id: Int, archived: Boolean)
+    @Query("SELECT * FROM hba1c_entries WHERE entryUuid = :uuid")
+    suspend fun getByUuid(uuid: String): Hba1c?
 
     @Query("SELECT value,date FROM hba1c_entries WHERE (date >= :minDate AND date <= :maxDate) AND isArchived = 0 ORDER BY date ASC ")
     fun getHBA1CPlotData(minDate: LocalDate, maxDate: LocalDate): Flow<List<PlotPoint>>
